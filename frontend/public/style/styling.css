@@ -11,6 +11,7 @@ body{
 	height: 40%;
 	padding: 15px;
 	margin: 2px;
+    float: left;
 }
 .row:after{
 	content: "";
@@ -21,4 +22,35 @@ body{
 	background-color: darkslategrey;
 	text-align: left;
 	color: snow;
+    height: 3%;
+}
+.projectbutton {
+    width: 100%;
+    /* background-color: darkslategray;
+    color: whitesmoke; */
+    padding: 2px;
+    font-size: 20px;
+    text-align: center;
+    border: none;
+}
+.projectbutton:hover {
+    background-color: darkgrey;
+    color:black;
+}
+/* .projectbutton_submit:hover {
+    background-color: darkgrey;
+    color:black;
+} */
+.projectbutton button.active {
+    background-color: darkgrey;
+    color:black;
+}
+.projectdiv {
+    width: 70%;
+    float: left;
+    padding: 2%;
+}
+.button_navigation {
+    width: 25%;
+    float: left;
 }

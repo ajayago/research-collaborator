@@ -3,6 +3,9 @@
     <head>
         <title>Open Research Framework - Login Page</title>
         <script src="scripts/login_page.js" defer></script>
+		<meta name="google-signin-scope" content="profile email">
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<meta name="google-signin-client_id" content="333083862926-v8qsrp8pm7fj86vvihs1ie7q8hf4dqde.apps.googleusercontent.com">
         <link rel="stylesheet" href="style/styling.css">
     </head>
     <body>
@@ -39,8 +42,9 @@
 					    <a href="register_user.html">Register new user</a>
 				    </form>
 			    </div>
+				<div class="g-signin2" data-onsuccess="onSignIn"></div>
 		    </div>
-                    <div class="column">
+            <div class="column">
 			    <div title="login_message">
 	                            <p>Have an account? Login with your credentials on the right.</p>
 				    <p>If you are new here, just click on the 'Register User' option.</p>
