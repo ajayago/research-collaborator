@@ -13,10 +13,133 @@ class DisplayHeader extends React.Component {
 
 }
 
+class StatusTab extends React.Component {
+  render() {
+    const content = this.props.tab_name;
+    const isactivetab = this.props.isActive;
+    return /*#__PURE__*/React.createElement(React.Fragment, null, isactivetab ? /*#__PURE__*/React.createElement("div", {
+      className: "statusdivactive"
+    }, content) : /*#__PURE__*/React.createElement("div", {
+      className: "statusdiv"
+    }, content), /*#__PURE__*/React.createElement("br", null));
+  }
+
+}
+
+class StatusPopup extends React.Component {
+  constructor() {
+    super();
+    this.setStatus = this.setStatus.bind(this);
+  }
+
+  onclose = () => {
+    this.props.toggle();
+  };
+
+  setStatus(e) {
+    console.log(e.target.value);
+    console.log(this.props.tablist);
+    var tablist = this.props.tablist;
+    var tab = Number(e.target.value);
+
+    for (var i = 0; i < tablist.length; i++) {
+      tablist[i] = false;
+    }
+
+    tablist[tab] = true; // this.setState({activeTabList: tablist});
+  }
+
+  render() {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      className: "modal"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "modal-content"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "close",
+      onClick: this.onclose
+    }, "\xD7"), /*#__PURE__*/React.createElement("input", {
+      type: "radio",
+      value: "0",
+      onChange: this.setStatus
+    }), " Literature Survey", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
+      type: "radio",
+      value: "1",
+      onChange: this.setStatus
+    }), " Problem Formulation", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
+      type: "radio",
+      value: "2",
+      onChange: this.setStatus
+    }), " Experimentation", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
+      type: "radio",
+      value: "3",
+      onChange: this.setStatus
+    }), " Documentation", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
+      type: "radio",
+      value: "4",
+      onChange: this.setStatus
+    }), " Review", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
+      type: "radio",
+      value: "5",
+      onChange: this.setStatus
+    }), " Publication", /*#__PURE__*/React.createElement("br", null))));
+  }
+
+}
+
+class StatusDiv extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      togglePopup: false,
+      activeTabList: [false, false, false, false, false, false]
+    };
+    this.showStatusPopup = this.showStatusPopup.bind(this); // this.setStatus = this.setStatus.bind(this);
+  }
+
+  showStatusPopup() {
+    this.setState({
+      togglePopup: !this.state.togglePopup
+    });
+  }
+
+  render() {
+    const all_tabs = ["Literature Survey", "Problem Formulation", "Experimentation", "Documentation", "Review", "Publication"];
+    const displayStatus = [];
+
+    for (var i = 0; i < all_tabs.length; i++) {
+      displayStatus.push( /*#__PURE__*/React.createElement(StatusTab, {
+        tab_name: all_tabs[i],
+        isActive: this.state.activeTabList[i]
+      }));
+    }
+
+    return /*#__PURE__*/React.createElement(React.Fragment, null, displayStatus, /*#__PURE__*/React.createElement("button", {
+      className: "submitbutton",
+      onClick: this.showStatusPopup
+    }, "Update Status"), this.state.togglePopup ? /*#__PURE__*/React.createElement(StatusPopup, {
+      toggle: this.showStatusPopup,
+      tablist: this.state.activeTabList
+    }) : null);
+  }
+
+}
+
 class GenericDiv extends React.Component {
   render() {
     const comp_name = this.props.comp_name;
-    return /*#__PURE__*/React.createElement("div", null, "Hi, you are at ", comp_name, "!");
+    var google_doc = false;
+
+    if (comp_name === "Paper Draft") {
+      var google_doc = true;
+    }
+
+    var res = /*#__PURE__*/React.createElement("div", null, "Hi, you are at ", comp_name, "!");
+
+    if (comp_name === "Status") {
+      res = /*#__PURE__*/React.createElement(StatusDiv, null);
+    }
+
+    return /*#__PURE__*/React.createElement(React.Fragment, null, res);
   }
 
 }

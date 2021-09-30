@@ -6,11 +6,108 @@ class DisplayHeader extends React.Component{
         );
     }
 }
+class StatusTab extends React.Component{
+    render(){
+        const content = this.props.tab_name;
+        const isactivetab = this.props.isActive;
+        return(
+            <React.Fragment>
+                {isactivetab ? <div className="statusdivactive">{content}</div>: <div className="statusdiv">{content}</div>}
+                <br />
+            </React.Fragment>
+
+        );
+    }
+}
+class StatusPopup extends React.Component{
+    constructor(){
+        super();
+        this.setStatus = this.setStatus.bind(this);
+    }
+    onclose = () => {this.props.toggle();};
+    setStatus(e){
+        console.log(e.target.value);
+        console.log(this.props.tablist);
+        var tablist = this.props.tablist;
+        var tab = Number(e.target.value);
+        for(var i = 0; i < tablist.length; i ++)
+        {
+            tablist[i] = false;
+        }
+        tablist[tab] = true;
+        // this.setState({activeTabList: tablist});
+    }
+    render(){
+        return(
+            <React.Fragment>
+                <div className="modal">
+                    <div className="modal-content">
+                        <span className="close" onClick={this.onclose}>&times;</span>
+                        <input type="radio" value="0" onChange={this.setStatus} /> Literature Survey
+                        <br />
+                        <input type="radio" value="1" onChange={this.setStatus} /> Problem Formulation
+                        <br />
+                        <input type="radio" value="2" onChange={this.setStatus} /> Experimentation
+                        <br />
+                        <input type="radio" value="3" onChange={this.setStatus} /> Documentation
+                        <br />
+                        <input type="radio" value="4" onChange={this.setStatus} /> Review
+                        <br />
+                        <input type="radio" value="5" onChange={this.setStatus} /> Publication
+                        <br />
+                        {/* <button className="submitbutton" onClick={this.onclose}>Update Status</button> */}
+                    </div>
+                </div>
+            </React.Fragment>
+        );
+    }
+}
+class StatusDiv extends React.Component{
+    constructor(){
+        super();
+        this.state = {
+            togglePopup: false,
+            activeTabList: [false, false, false, false, false, false]
+        };
+        this.showStatusPopup = this.showStatusPopup.bind(this);
+        // this.setStatus = this.setStatus.bind(this);
+    }
+    showStatusPopup(){
+        this.setState({togglePopup: !this.state.togglePopup});
+    }
+
+    render(){
+        const all_tabs = ["Literature Survey", "Problem Formulation", "Experimentation",
+                            "Documentation", "Review", "Publication"];
+        const displayStatus = [];
+        for (var i=0;i<all_tabs.length;i++){
+            displayStatus.push(<StatusTab tab_name={all_tabs[i]} isActive={this.state.activeTabList[i]} />);
+        }
+        return(
+            <React.Fragment>
+                {displayStatus}
+                <button className="submitbutton" onClick={this.showStatusPopup}>Update Status</button>
+                {this.state.togglePopup ? <StatusPopup toggle={this.showStatusPopup} tablist={this.state.activeTabList}/>:null}
+            </React.Fragment>
+        );
+    }
+}
+
 class GenericDiv extends React.Component{
     render(){
         const comp_name=this.props.comp_name;
+        var google_doc = false;
+        if (comp_name === "Paper Draft"){
+            var google_doc = true;
+        }
+        var res=<div>Hi, you are at {comp_name}!</div>;
+        if (comp_name === "Status"){
+            res=<StatusDiv />;
+        }
         return(
-            <div>Hi, you are at {comp_name}!</div>
+            <React.Fragment>
+                {res}
+            </React.Fragment>
         );
     }
 }
