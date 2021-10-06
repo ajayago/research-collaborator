@@ -1,3 +1,5 @@
+const initialLitSurvey = [];
+
 class DisplayHeader extends React.Component {
   render() {
     return /*#__PURE__*/React.createElement("div", {
@@ -46,7 +48,8 @@ class StatusPopup extends React.Component {
       tablist[i] = false;
     }
 
-    tablist[tab] = true; // this.setState({activeTabList: tablist});
+    tablist[tab] = true;
+    this.props.updateTabList(tablist); // this.setState({activeTabList: tablist});
   }
 
   render() {
@@ -54,10 +57,7 @@ class StatusPopup extends React.Component {
       className: "modal"
     }, /*#__PURE__*/React.createElement("div", {
       className: "modal-content"
-    }, /*#__PURE__*/React.createElement("span", {
-      className: "close",
-      onClick: this.onclose
-    }, "\xD7"), /*#__PURE__*/React.createElement("input", {
+    }, /*#__PURE__*/React.createElement("input", {
       type: "radio",
       value: "0",
       onChange: this.setStatus
@@ -81,7 +81,12 @@ class StatusPopup extends React.Component {
       type: "radio",
       value: "5",
       onChange: this.setStatus
-    }), " Publication", /*#__PURE__*/React.createElement("br", null))));
+    }), " Publication", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
+      type: "submit",
+      className: "submitbutton",
+      onClick: this.onclose,
+      value: "Submit"
+    }))));
   }
 
 }
@@ -90,26 +95,33 @@ class StatusDiv extends React.Component {
   constructor() {
     super();
     this.state = {
-      togglePopup: false,
-      activeTabList: [false, false, false, false, false, false]
+      togglePopup: false // activeTabList: [false, false, false, false, false, false]
+
     };
-    this.showStatusPopup = this.showStatusPopup.bind(this); // this.setStatus = this.setStatus.bind(this);
+    this.showStatusPopup = this.showStatusPopup.bind(this); // this.updateTabList = this.updateTabList.bind(this);
+    // this.setStatus = this.setStatus.bind(this);
   }
 
   showStatusPopup() {
     this.setState({
       togglePopup: !this.state.togglePopup
     });
-  }
+  } // updateTabList(tablist){
+  //     console.log(tablist);
+  //     this.setState({activeTabList: tablist});
+  // }
+
 
   render() {
     const all_tabs = ["Literature Survey", "Problem Formulation", "Experimentation", "Documentation", "Review", "Publication"];
     const displayStatus = [];
+    const activeTabList = this.props.activeTabList;
+    const updateTabList = this.props.updateTabList;
 
     for (var i = 0; i < all_tabs.length; i++) {
       displayStatus.push( /*#__PURE__*/React.createElement(StatusTab, {
         tab_name: all_tabs[i],
-        isActive: this.state.activeTabList[i]
+        isActive: activeTabList[i]
       }));
     }
 
@@ -118,13 +130,120 @@ class StatusDiv extends React.Component {
       onClick: this.showStatusPopup
     }, "Update Status"), this.state.togglePopup ? /*#__PURE__*/React.createElement(StatusPopup, {
       toggle: this.showStatusPopup,
-      tablist: this.state.activeTabList
+      tablist: activeTabList,
+      updateTabList: updateTabList
     }) : null);
   }
 
 }
 
+class LitSurveyPopup extends React.Component {
+  render() {
+    const handleSubmit = e => {
+      e.preventDefault();
+      const form = document.forms.add_lit_survey_form;
+      const litsurvey_item = {
+        paper_title: form.paper_title.value,
+        publisher_name: form.publisher_name.value,
+        doi: form.doi.value
+      };
+      console.log(litsurvey_item);
+      this.props.addLitSurveyItem(litsurvey_item);
+      form.paper_title.value = "";
+      form.publisher_name.value = "";
+      form.doi.value = "";
+    };
+
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("form", {
+      name: "add_lit_survey_form",
+      onSubmit: handleSubmit
+    }, /*#__PURE__*/React.createElement("input", {
+      type: "text",
+      name: "paper_title",
+      placeholder: "Name of Paper"
+    }), /*#__PURE__*/React.createElement("input", {
+      type: "text",
+      name: "publisher_name",
+      placeholder: "Publisher"
+    }), /*#__PURE__*/React.createElement("input", {
+      type: "text",
+      name: "doi",
+      placeholder: "Paper DOI Link"
+    }), /*#__PURE__*/React.createElement("button", {
+      className: "submitbutton"
+    }, "Add")));
+  }
+
+}
+
+class LitSurveyItem extends React.Component {
+  render() {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      className: "litsurveyitem"
+    }, /*#__PURE__*/React.createElement("p", null, "Paper Title: ", this.props.item.paper_title, " "), /*#__PURE__*/React.createElement("p", null, "Publisher Name: ", this.props.item.publisher_name), /*#__PURE__*/React.createElement("p", null, "DOI Link: ", this.props.item.doi)));
+  }
+
+}
+
+class DisplayLitSurveyArray extends React.Component {
+  render() {
+    const litsurvey_array = this.props.litsurvey_array.map(item => /*#__PURE__*/React.createElement(LitSurveyItem, {
+      item: item
+    }));
+    return /*#__PURE__*/React.createElement(React.Fragment, null, litsurvey_array);
+  }
+
+}
+
+class LiteratureSurvey extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      // togglePopup: false,
+      litsurvey_array: initialLitSurvey
+    }; // this.showLitSurveyPopup = this.showLitSurveyPopup.bind(this);
+
+    this.addLitSurveyItem = this.addLitSurveyItem.bind(this); // this.setStatus = this.setStatus.bind(this);
+  } // showLitSurveyPopup(){
+  //     this.setState({togglePopup: !this.state.togglePopup});
+  // }
+
+
+  addLitSurveyItem(litsurvey_item) {
+    const litsurvey = this.state.litsurvey_array.slice();
+    litsurvey.push(litsurvey_item);
+    this.setState({
+      litsurvey_array: litsurvey
+    });
+    console.log(this.state.litsurvey_array);
+  }
+
+  render() {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(DisplayLitSurveyArray, {
+      litsurvey_array: this.state.litsurvey_array
+    }), /*#__PURE__*/React.createElement(LitSurveyPopup, {
+      addLitSurveyItem: this.addLitSurveyItem
+    }));
+  }
+
+}
+
 class GenericDiv extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      activeTabList: [false, false, false, false, false, false]
+    };
+    this.updateTabList = this.updateTabList.bind(this);
+  }
+
+  updateTabList(tablist) {
+    console.log(tablist);
+    this.setState({
+      activeTabList: tablist
+    });
+  }
+
   render() {
     const comp_name = this.props.comp_name;
     var google_doc = false;
@@ -136,7 +255,14 @@ class GenericDiv extends React.Component {
     var res = /*#__PURE__*/React.createElement("div", null, "Hi, you are at ", comp_name, "!");
 
     if (comp_name === "Status") {
-      res = /*#__PURE__*/React.createElement(StatusDiv, null);
+      res = /*#__PURE__*/React.createElement(StatusDiv, {
+        updateTabList: this.updateTabList,
+        activeTabList: this.state.activeTabList
+      });
+    }
+
+    if (comp_name === "Literature Survey") {
+      res = /*#__PURE__*/React.createElement(LiteratureSurvey, null);
     }
 
     return /*#__PURE__*/React.createElement(React.Fragment, null, res);

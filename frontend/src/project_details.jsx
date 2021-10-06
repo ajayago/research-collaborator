@@ -1,3 +1,4 @@
+const initialLitSurvey = [];
 class DisplayHeader extends React.Component{
     render(){
         return(
@@ -35,6 +36,7 @@ class StatusPopup extends React.Component{
             tablist[i] = false;
         }
         tablist[tab] = true;
+        this.props.updateTabList(tablist);
         // this.setState({activeTabList: tablist});
     }
     render(){
@@ -42,7 +44,7 @@ class StatusPopup extends React.Component{
             <React.Fragment>
                 <div className="modal">
                     <div className="modal-content">
-                        <span className="close" onClick={this.onclose}>&times;</span>
+                        {/* <span className="close" onClick={this.onclose}>&times;</span> */}
                         <input type="radio" value="0" onChange={this.setStatus} /> Literature Survey
                         <br />
                         <input type="radio" value="1" onChange={this.setStatus} /> Problem Formulation
@@ -55,7 +57,7 @@ class StatusPopup extends React.Component{
                         <br />
                         <input type="radio" value="5" onChange={this.setStatus} /> Publication
                         <br />
-                        {/* <button className="submitbutton" onClick={this.onclose}>Update Status</button> */}
+                        <input type="submit" className="submitbutton" onClick={this.onclose} value="Submit"/>
                     </div>
                 </div>
             </React.Fragment>
@@ -67,33 +69,135 @@ class StatusDiv extends React.Component{
         super();
         this.state = {
             togglePopup: false,
-            activeTabList: [false, false, false, false, false, false]
+            // activeTabList: [false, false, false, false, false, false]
         };
         this.showStatusPopup = this.showStatusPopup.bind(this);
+        // this.updateTabList = this.updateTabList.bind(this);
         // this.setStatus = this.setStatus.bind(this);
     }
     showStatusPopup(){
         this.setState({togglePopup: !this.state.togglePopup});
     }
-
+    // updateTabList(tablist){
+    //     console.log(tablist);
+    //     this.setState({activeTabList: tablist});
+    // }
     render(){
         const all_tabs = ["Literature Survey", "Problem Formulation", "Experimentation",
                             "Documentation", "Review", "Publication"];
         const displayStatus = [];
+        const activeTabList= this.props.activeTabList;
+        const updateTabList = this.props.updateTabList;
         for (var i=0;i<all_tabs.length;i++){
-            displayStatus.push(<StatusTab tab_name={all_tabs[i]} isActive={this.state.activeTabList[i]} />);
+            displayStatus.push(<StatusTab tab_name={all_tabs[i]} isActive={activeTabList[i]} />);
         }
         return(
             <React.Fragment>
                 {displayStatus}
                 <button className="submitbutton" onClick={this.showStatusPopup}>Update Status</button>
-                {this.state.togglePopup ? <StatusPopup toggle={this.showStatusPopup} tablist={this.state.activeTabList}/>:null}
+                {this.state.togglePopup ? <StatusPopup toggle={this.showStatusPopup} tablist={activeTabList} updateTabList={updateTabList}/>:null}
+            </React.Fragment>
+        );
+    }
+}
+
+class LitSurveyPopup extends React.Component{
+    render(){
+        const handleSubmit = (e) => {
+            e.preventDefault();
+            const form = document.forms.add_lit_survey_form;
+            const litsurvey_item = {
+                paper_title: form.paper_title.value,
+                publisher_name: form.publisher_name.value,
+                doi: form.doi.value
+            };
+            console.log(litsurvey_item);
+            this.props.addLitSurveyItem(litsurvey_item);
+            form.paper_title.value = "";
+            form.publisher_name.value = "";
+            form.doi.value = "";
+        }
+        return(
+            <React.Fragment>
+                        <form name="add_lit_survey_form" onSubmit={handleSubmit}>
+                            <input type="text" name="paper_title" placeholder="Name of Paper" />
+                            <input type="text" name="publisher_name" placeholder="Publisher" />
+                            <input type="text" name="doi" placeholder="Paper DOI Link" />
+                            <button className="submitbutton">Add</button>
+                        </form>
+            </React.Fragment>
+        );
+    }
+}
+
+class LitSurveyItem extends React.Component{
+    render(){
+        return(
+            <React.Fragment>
+                <div className="litsurveyitem">
+                    <p>Paper Title: {this.props.item.paper_title} </p>
+                    <p>Publisher Name: {this.props.item.publisher_name}</p>
+                    <p>DOI Link: {this.props.item.doi}</p>
+                </div>
+            </React.Fragment>
+        );
+    }
+}
+class DisplayLitSurveyArray extends React.Component{
+    render()
+    {
+        const litsurvey_array = this.props.litsurvey_array.map(item =>
+            <LitSurveyItem item={item} />
+            );
+        return(
+            <React.Fragment>
+                {litsurvey_array}
+            </React.Fragment>
+        );
+    }
+}
+
+class LiteratureSurvey extends React.Component{
+    constructor(){
+        super();
+        this.state = {
+            // togglePopup: false,
+            litsurvey_array: initialLitSurvey
+        };
+        // this.showLitSurveyPopup = this.showLitSurveyPopup.bind(this);
+        this.addLitSurveyItem = this.addLitSurveyItem.bind(this);
+        // this.setStatus = this.setStatus.bind(this);
+    }
+    // showLitSurveyPopup(){
+    //     this.setState({togglePopup: !this.state.togglePopup});
+    // }
+    addLitSurveyItem(litsurvey_item){
+        const litsurvey = this.state.litsurvey_array.slice();
+        litsurvey.push(litsurvey_item);
+        this.setState({litsurvey_array: litsurvey});
+        console.log(this.state.litsurvey_array);
+    }
+    render(){
+        return(
+            <React.Fragment>
+                <DisplayLitSurveyArray litsurvey_array={this.state.litsurvey_array}/>
+                {/* <button className="submitbutton" onClick={this.showLitSurveyPopup}>Add Literature Survey</button> */}
+                <LitSurveyPopup addLitSurveyItem={this.addLitSurveyItem}/>
             </React.Fragment>
         );
     }
 }
 
 class GenericDiv extends React.Component{
+    constructor(){
+        super();
+        this.state = {activeTabList: [false, false, false, false, false, false]};
+        this.updateTabList = this.updateTabList.bind(this);
+    }
+    updateTabList(tablist){
+        console.log(tablist);
+        this.setState({activeTabList: tablist});
+    }
     render(){
         const comp_name=this.props.comp_name;
         var google_doc = false;
@@ -102,7 +206,10 @@ class GenericDiv extends React.Component{
         }
         var res=<div>Hi, you are at {comp_name}!</div>;
         if (comp_name === "Status"){
-            res=<StatusDiv />;
+            res=<StatusDiv updateTabList={this.updateTabList} activeTabList={this.state.activeTabList}/>;
+        }
+        if (comp_name === "Literature Survey"){
+            res=<LiteratureSurvey />;
         }
         return(
             <React.Fragment>
