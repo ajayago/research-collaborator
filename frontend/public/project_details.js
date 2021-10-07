@@ -180,7 +180,11 @@ class LitSurveyItem extends React.Component {
   render() {
     return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
       className: "litsurveyitem"
-    }, /*#__PURE__*/React.createElement("p", null, "Paper Title: ", this.props.item.paper_title, " "), /*#__PURE__*/React.createElement("p", null, "Publisher Name: ", this.props.item.publisher_name), /*#__PURE__*/React.createElement("p", null, "DOI Link: ", this.props.item.doi)));
+    }, /*#__PURE__*/React.createElement("h3", {
+      className: "card_header"
+    }, this.props.item.paper_title), /*#__PURE__*/React.createElement("p", null, "Publisher Name: ", this.props.item.publisher_name), /*#__PURE__*/React.createElement("p", null, "DOI Link: ", /*#__PURE__*/React.createElement("a", {
+      href: this.props.item.doi
+    }, this.props.item.paper_title))));
   }
 
 }
@@ -228,6 +232,113 @@ class LiteratureSurvey extends React.Component {
 
 }
 
+class EditProblem extends React.Component {
+  render() {
+    const handleSubmit = e => {
+      e.preventDefault();
+      const form = document.forms.edit_problem_form;
+      const content = form.problem.value;
+      console.log(content);
+      this.props.updateProblem(content);
+    };
+
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", null, "Update Problem Statement below"), /*#__PURE__*/React.createElement("form", {
+      name: "edit_problem_form",
+      onSubmit: handleSubmit
+    }, /*#__PURE__*/React.createElement("input", {
+      type: "text",
+      name: "problem",
+      defaultValue: this.props.problem
+    }), /*#__PURE__*/React.createElement("button", {
+      className: "submitbutton"
+    }, "Update")));
+  }
+
+}
+
+class ProblemFormulation extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      problem: ""
+    };
+    this.updateProblem = this.updateProblem.bind(this);
+  }
+
+  updateProblem(content) {
+    this.setState({
+      problem: content
+    });
+  }
+
+  render() {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      className: "problem_statement"
+    }, this.state.problem === "" ? null : /*#__PURE__*/React.createElement("h3", {
+      className: "card_header"
+    }, "Problem Statement"), this.state.problem), /*#__PURE__*/React.createElement(EditProblem, {
+      problem: this.state.problem,
+      updateProblem: this.updateProblem
+    }));
+  }
+
+}
+
+class UpdateSheetLink extends React.Component {
+  render() {
+    const handleSubmit = e => {
+      e.preventDefault();
+      const form = document.forms.update_sheet_form;
+      const content = form.sheet_link.value;
+      console.log(content);
+      this.props.updateSheetLink(content);
+    };
+
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", null, "Update Experimentation below"), /*#__PURE__*/React.createElement("form", {
+      name: "update_sheet_form",
+      onSubmit: handleSubmit
+    }, /*#__PURE__*/React.createElement("input", {
+      type: "text",
+      name: "sheet_link",
+      defaultValue: this.props.link
+    }), /*#__PURE__*/React.createElement("button", {
+      className: "submitbutton"
+    }, "Update")));
+  }
+
+}
+
+class Experimentation extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      google_sheet: ""
+    };
+    this.updateSheetLink = this.updateSheetLink.bind(this);
+  }
+
+  updateSheetLink(link) {
+    const link_complete = link;
+    console.log(link_complete);
+    this.setState({
+      google_sheet: link_complete
+    });
+  }
+
+  render() {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      className: "experimentation"
+    }, /*#__PURE__*/React.createElement("iframe", {
+      src: this.state.google_sheet,
+      className: "iframe_sheet"
+    })), /*#__PURE__*/React.createElement(UpdateSheetLink, {
+      updateSheetLink: this.updateSheetLink,
+      link: this.state.google_sheet
+    }));
+  }
+
+}
+
 class GenericDiv extends React.Component {
   constructor() {
     super();
@@ -263,6 +374,14 @@ class GenericDiv extends React.Component {
 
     if (comp_name === "Literature Survey") {
       res = /*#__PURE__*/React.createElement(LiteratureSurvey, null);
+    }
+
+    if (comp_name === "Problem Formulation") {
+      res = /*#__PURE__*/React.createElement(ProblemFormulation, null);
+    }
+
+    if (comp_name === "Experimentation") {
+      res = /*#__PURE__*/React.createElement(Experimentation, null);
     }
 
     return /*#__PURE__*/React.createElement(React.Fragment, null, res);

@@ -115,5 +115,23 @@ body{
 }
 .litsurveyitem {
     border-radius: 4px;
-    background-color: rgb(219, 212, 212);
+    background-color: whitesmoke;
+    border-color: teal;
+    border-style: solid;
+    margin-bottom: 2%;
+}
+.problem_statement {
+    border-radius: 4px;
+    background-color: whitesmoke;
+    border-color: teal;
+    border-style: solid;
+    margin-bottom: 2%;
+}
+.card_header {
+    background-color: cadetblue;
+    margin: 0%;
+}
+.iframe_sheet {
+    width: 100%;
+    height: 100%;
 }

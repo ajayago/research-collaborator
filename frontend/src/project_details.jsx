@@ -135,9 +135,9 @@ class LitSurveyItem extends React.Component{
         return(
             <React.Fragment>
                 <div className="litsurveyitem">
-                    <p>Paper Title: {this.props.item.paper_title} </p>
+                    <h3 className="card_header">{this.props.item.paper_title}</h3>
                     <p>Publisher Name: {this.props.item.publisher_name}</p>
-                    <p>DOI Link: {this.props.item.doi}</p>
+                    <p>DOI Link: <a href={this.props.item.doi}>{this.props.item.paper_title}</a></p>
                 </div>
             </React.Fragment>
         );
@@ -188,6 +188,92 @@ class LiteratureSurvey extends React.Component{
     }
 }
 
+class EditProblem extends React.Component {
+    render(){
+        const handleSubmit = (e) => {
+            e.preventDefault();
+            const form = document.forms.edit_problem_form;
+            const content = form.problem.value;
+            console.log(content);
+            this.props.updateProblem(content);
+        };
+        return(
+            <React.Fragment>
+                <p>Update Problem Statement below</p>
+                <form name="edit_problem_form" onSubmit={handleSubmit}>
+                    <input type="text" name="problem" defaultValue={this.props.problem} />
+                    <button className="submitbutton">Update</button>
+                </form>
+            </React.Fragment>
+        );
+    }
+}
+
+class ProblemFormulation extends React.Component {
+    constructor(){
+        super();
+        this.state = {problem: ""};
+        this.updateProblem = this.updateProblem.bind(this);
+    }
+    updateProblem(content){
+        this.setState({problem: content});
+    }
+    render(){
+        return(
+            <React.Fragment>
+                <div className="problem_statement">
+                    {this.state.problem === "" ? null: <h3 className="card_header">Problem Statement</h3>}
+                    {this.state.problem}
+                </div>
+                <EditProblem problem={this.state.problem} updateProblem={this.updateProblem}/>
+            </React.Fragment>
+
+        );
+    }
+}
+
+class UpdateSheetLink extends React.Component{
+    render(){
+        const handleSubmit = (e) => {
+            e.preventDefault();
+            const form = document.forms.update_sheet_form;
+            const content = form.sheet_link.value;
+            console.log(content);
+            this.props.updateSheetLink(content);
+        };
+        return(
+        <React.Fragment>
+            <p>Update Experimentation below</p>
+            <form name="update_sheet_form" onSubmit={handleSubmit}>
+                <input type="text" name="sheet_link" defaultValue={this.props.link} />
+                <button className="submitbutton">Update</button>
+            </form>
+        </React.Fragment>
+        );
+    }
+}
+class Experimentation extends React.Component{
+    constructor(){
+        super();
+        this.state = {google_sheet: ""};
+        this.updateSheetLink = this.updateSheetLink.bind(this);
+    }
+    updateSheetLink(link){
+        const link_complete = link;
+        console.log(link_complete);
+        this.setState({google_sheet: link_complete});
+    }
+    render(){
+        return(
+            <React.Fragment>
+                <div className="experimentation">
+                    <iframe src={this.state.google_sheet} className="iframe_sheet"></iframe>
+                </div>
+                <UpdateSheetLink updateSheetLink={this.updateSheetLink} link={this.state.google_sheet}/>
+            </React.Fragment>
+        );
+    }
+}
 class GenericDiv extends React.Component{
     constructor(){
         super();
@@ -210,6 +296,12 @@ class GenericDiv extends React.Component{
         }
         if (comp_name === "Literature Survey"){
             res=<LiteratureSurvey />;
+        }
+        if (comp_name === "Problem Formulation"){
+            res=<ProblemFormulation />;
+        }
+        if (comp_name === "Experimentation"){
+            res=<Experimentation />;
         }
         return(
             <React.Fragment>
