@@ -121,10 +121,21 @@ class LitSurveyPopup extends React.Component {
         return (
             <React.Fragment>
                 <form name="add_lit_survey_form" onSubmit={handleSubmit}>
-                    <input type="text" name="paper_title" placeholder="Name of Paper" />
-                    <input type="text" name="publisher_name" placeholder="Publisher" />
-                    <input type="text" name="doi" placeholder="Paper DOI Link" />
-                    <button className="submitbutton">Add</button>
+                    <label for="title">Enter Paper Title</label>
+                    <br />
+                    <input className="project_name" type="text" id="title" name="paper_title" placeholder="Name of Paper" />
+                    <br />
+                    <label for="publisher">Enter Publisher Name </label>
+                    <br />
+                    <input type="text" className="project_name" id="publisher" name="publisher_name" placeholder="Publisher" />
+                    <br />
+
+                    <label for="doi">Enter DOI </label>
+                    <br />
+                    <input type="text" className="project_name" id="doi" name="doi" placeholder="Paper DOI Link" />
+
+                    <br />
+                    <button className="create_project_button">Add</button>
                 </form>
             </React.Fragment>
         );
@@ -180,9 +191,10 @@ class LiteratureSurvey extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <DisplayLitSurveyArray litsurvey_array={this.state.litsurvey_array} />
                 {/* <button className="submitbutton" onClick={this.showLitSurveyPopup}>Add Literature Survey</button> */}
                 <LitSurveyPopup addLitSurveyItem={this.addLitSurveyItem} />
+                <br />
+                <DisplayLitSurveyArray litsurvey_array={this.state.litsurvey_array} />
             </React.Fragment>
         );
     }
@@ -201,8 +213,8 @@ class EditProblem extends React.Component {
             <React.Fragment>
                 <p>Update Problem Statement below</p>
                 <form name="edit_problem_form" onSubmit={handleSubmit}>
-                    <input type="text" name="problem" defaultValue={this.props.problem} />
-                    <button className="submitbutton">Update</button>
+                    <input className="project_name" type="text" name="problem" defaultValue={this.props.problem} />
+                    <button className="create_project_button">Update</button>
                 </form>
             </React.Fragment>
         );
@@ -245,8 +257,8 @@ class UpdateSheetLink extends React.Component {
             <React.Fragment>
                 <p>Update Experimentation below</p>
                 <form name="update_sheet_form" onSubmit={handleSubmit}>
-                    <input type="text" name="sheet_link" defaultValue={this.props.link} />
-                    <button className="submitbutton">Update</button>
+                    <input className="project_name" type="text" name="sheet_link" defaultValue={this.props.link} />
+                    <button className="create_project_button">Update</button>
                 </form>
             </React.Fragment>
         );
@@ -266,10 +278,10 @@ class Experimentation extends React.Component {
     render() {
         return (
             <React.Fragment>
+                <UpdateSheetLink updateSheetLink={this.updateSheetLink} link={this.state.google_sheet} />
                 <div className="experimentation">
                     <iframe src={this.state.google_sheet} className="iframe_sheet"></iframe>
                 </div>
-                <UpdateSheetLink updateSheetLink={this.updateSheetLink} link={this.state.google_sheet} />
             </React.Fragment>
         );
     }
@@ -282,7 +294,7 @@ class CreateRow extends React.Component {
         return (
             <tr>
                 <td>{t.id}</td>
-                <td>{t.link}</td>
+                <td><a href={t.link}>{t.link}</a></td>
                 <td>{t.des}</td>
             </tr>
         );
@@ -342,10 +354,14 @@ class Sourcecode extends React.Component {
                 <div>
                     <form name="sourceadd" className="addcode" onSubmit={this.SourceSubmit}>
                         <label for="git_link">Enter Code Link</label>
-                        <input type='url' name="sourcelink"></input>
+                        <br />
+                        <input className="project_name" type='url' name="sourcelink"></input>
+                        <br />
                         <label for="repo_des"> Enter Link Description</label>
-                        <input type="text" name="sourcedes"></input>
-                        <button className="add_button">Add</button>
+                        <br />
+                        <input type="text" className="project_name" name="sourcedes"></input>
+                        <br />
+                        <button className="create_project_button">Add</button>
                     </form>
                 </div>
                 <br />
@@ -375,10 +391,11 @@ class PaperDraft extends React.Component {
     render() {
         return (
             <React.Fragment>
+                <UpdateSheetLink updateSheetLink={this.updateSheetLink} link={this.state.google_sheet} />
                 <div className="experimentation">
                     <iframe src={this.state.google_sheet} className="iframe_sheet"></iframe>
                 </div>
-                <UpdateSheetLink updateSheetLink={this.updateSheetLink} link={this.state.google_sheet} />
+
             </React.Fragment>
         );
     }
@@ -437,20 +454,25 @@ class PaperSub extends React.Component {
     render() {
         return (
             <div>
+                <form name="addPaper" onSubmit={this.paperSubmit}>
+                    <label for="conf">Enter Conference/Journal link</label>
+                    <br />
+                    <input id="conf" className="project_name" type="text" name="conf"></input>
+                    <br />
+                    <label for="reqr"> Enter Requirements </label>
+                    <br />
+                    <input id="reqr" className="project_name" name="reqr"></input>
+                    <br />
+                    <label>Enter Last Date for Registration</label>
+                    <br />
+                    <input type='date' className="project_name" name="date_val"></input>
+                    <br />
+                    <button className="create_project_button">Submit</button>
+                </form>
+                <br />
                 <div>
                     <DispPaper data={this.state.val} />
                 </div>
-                <form name="addPaper" onSubmit={this.paperSubmit}>
-                    <label for="conf">Enter Conference/Journal link</label>
-                    <input id="conf" type="text" name="conf"></input>
-
-                    <label for="reqr"> Enter Requirements </label>
-                    <input id="reqr" name="reqr"></input>
-
-                    <label>Enter Last Date for Registration</label>
-                    <input type='date' name="date_val"></input>
-                    <button>Submit</button>
-                </form>
             </div>
         );
     }
@@ -476,7 +498,7 @@ class ScheduleTable extends React.Component {
         const arr = this.props.data.map(r => <ScheduleRow data={r} />);
         return (
             <div>
-                <table>
+                <table className="sourcetable">
                     <thead>
                         <tr>
                             <th>Serial Number</th>
@@ -530,19 +552,24 @@ class Scheduling extends React.Component {
                 <div>
                     <form name="addSch" onSubmit={this.schSubmit}>
                         <label for="task" >Enter Task Name</label>
-                        <input id="task" name="task"></input>
-
+                        <br />
+                        <input id="task" className="project_name" name="task"></input>
+                        <br />
                         <label for="from_date">Enter Start Date</label>
-                        <input id="from_date" name="from_date" type='date'></input>
-
+                        <br />
+                        <input id="from_date" className="project_name" name="from_date" type='date'></input>
+                        <br />
                         <label for="user">Enter User you want to assign to </label>
-                        <input id="user" type='text' name="user_text"></input>
-
+                        <br />
+                        <input id="user" type='text' className="project_name" name="user_text"></input>
+                        <br />
                         <label for="to_date">Enter End Date</label>
-                        <input id="to_date" name="to_date" type='date'></input>
-
-                        <button>Add Task</button>
+                        <br />
+                        <input id="to_date" name="to_date" className="project_name" type='date'></input>
+                        <br />
+                        <button className="create_project_button">Add Task</button>
                     </form>
+                    <br />
                 </div>
                 <div>
                     <ScheduleTable data={this.state.data} />
@@ -619,7 +646,6 @@ class CreateProject extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        alert("in handle");
         const form = document.forms.project_add;
         const field = {
             proj_name: form.project_name.value, proj_desc: form.project_desc.value,
@@ -674,7 +700,7 @@ class CreateProject extends React.Component {
 
                             <button className="create_project_button">Create Project</button>
                         </form>
-                        <button onClick={this.goback}>Go Back</button>
+                        <button className="create_project_button" onClick={this.goback}>Go Back</button>
                     </div>
                 }
                 {
@@ -699,10 +725,9 @@ class Temp_display extends React.Component {
                 {this.state.d == '1' &&
                     < div >
                         < React.Fragment >
-                            <DisplayHeader />
                             <DisplayTabs />
                         </React.Fragment >
-                        <button onClick={this.handleSubmit}> Go Back </button>
+                        <button className="button_navigation_half" onClick={this.handleSubmit}> Go Back </button>
                     </div>
                 }
                 {
@@ -728,8 +753,8 @@ class Projects_Display extends React.Component {
         return (
             <div>
                 {this.state.d == '1' &&
-                    <button onClick={this.handleSubmit}>
-                        <div className="litsurveyitem">
+                    <button className="project_class" onClick={this.handleSubmit}>
+                        <div className="project_class">
                             <h3 className="card_header">{t.project_name}</h3>
                             <p>Project Description: {t.project_desc}</p>
                             <p>Project Member: {t.user_name}</p>
@@ -769,7 +794,8 @@ class My_Projects extends React.Component {
                         <div>
                             {d}
                         </div>
-                        <button onClick={this.handleSubmit}>Go to Dashboard</button>
+
+                        <button className="button_navigation_half" onClick={this.handleSubmit}>Go to Dashboard</button>
                     </div>
                 }
                 {
@@ -812,9 +838,9 @@ class Dashboard extends React.Component {
             <div>
                 {
                     this.state.d == '1' &&
-                    <div>
-                        <button classname="create_pro" onClick={this.create}>Create Project</button>
-                        <button classname="view_pro" onClick={this.displayproj}>View My Projects</button>
+                    <div className="dashboard_buttons">
+                        <button className="create_pro_button" onClick={this.create}>Create Project</button>
+                        <button className="view_pro_button" onClick={this.displayproj}>View My Projects</button>
                     </div>
                 }
 
@@ -1007,7 +1033,10 @@ class RenderProjectDetailsPage extends React.Component {
             <div>
                 {
                     this.state.d == '1' &&
-                    <Dashboard data={this.state.data} />
+                    <div>
+                        <DisplayHeader />
+                        <Dashboard data={this.state.data} />
+                    </div>
                 }
             </div>
         );

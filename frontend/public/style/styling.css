@@ -1,7 +1,7 @@
 body{
     font-family: arial;
     color: black;
-    background-color: brown;
+    background-color:#E5E8E8 ;
 }
 .column{
 	border-style: solid;
@@ -54,6 +54,18 @@ body{
 .button_navigation {
     width: 25%;
     float: left;
+}
+
+.button_navigation_half {
+    width: 12.5%;
+    float: left;
+    background-color: darkslategrey;
+    color: snow;
+}
+
+.button_navigation_half:hover {
+    background-color: black;
+    color: white;
 }
 
 .statusdiv {
@@ -115,6 +127,16 @@ body{
     cursor: pointer;
 }
 .litsurveyitem , .PaperDiv {
+    border-radius: 4px;
+    background-color: whitesmoke;
+    border-color: teal;
+    border-style: solid;
+    margin-bottom: 2%;
+}
+
+.project_class
+{
+    width: 100%;
     border-radius: 4px;
     background-color: whitesmoke;
     border-color: teal;
@@ -231,9 +253,39 @@ body{
     border-radius: 5px;
     width: 30%;
     height: 40px;
+    background-color: darkslategrey;
+    color: snow;
 }
 .create_project_button:hover , .add_user_button:hover
 {
     background-color: black;
     color: white;
+}
+
+.create_pro_button , .view_pro_button
+{
+    border-radius: 5px;
+    height: 300px;
+    width: 300px;
+    background-color: darkslategrey;
+    color: snow;
+    
+}
+
+/* Home Screen big button */
+.create_pro_button:hover , .view_pro_button:hover
+{
+    background-color: black;
+    color: white;
+}
+
+.dashboard_buttons
+{
+    margin-left: 30%;
+    margin-top: 13%;
+}
+
+.experimentation
+{
+    height: 500px;
 }

@@ -265,20 +265,32 @@ var LitSurveyPopup = /*#__PURE__*/function (_React$Component5) {
       return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("form", {
         name: "add_lit_survey_form",
         onSubmit: handleSubmit
-      }, /*#__PURE__*/React.createElement("input", {
+      }, /*#__PURE__*/React.createElement("label", {
+        for: "title"
+      }, "Enter Paper Title"), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
+        className: "project_name",
         type: "text",
+        id: "title",
         name: "paper_title",
         placeholder: "Name of Paper"
-      }), /*#__PURE__*/React.createElement("input", {
+      }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", {
+        for: "publisher"
+      }, "Enter Publisher Name "), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
         type: "text",
+        className: "project_name",
+        id: "publisher",
         name: "publisher_name",
         placeholder: "Publisher"
-      }), /*#__PURE__*/React.createElement("input", {
+      }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", {
+        for: "doi"
+      }, "Enter DOI "), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
         type: "text",
+        className: "project_name",
+        id: "doi",
         name: "doi",
         placeholder: "Paper DOI Link"
-      }), /*#__PURE__*/React.createElement("button", {
-        className: "submitbutton"
+      }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("button", {
+        className: "create_project_button"
       }, "Add")));
     }
   }]);
@@ -376,10 +388,10 @@ var LiteratureSurvey = /*#__PURE__*/function (_React$Component8) {
   }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(DisplayLitSurveyArray, {
-        litsurvey_array: this.state.litsurvey_array
-      }), /*#__PURE__*/React.createElement(LitSurveyPopup, {
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(LitSurveyPopup, {
         addLitSurveyItem: this.addLitSurveyItem
+      }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement(DisplayLitSurveyArray, {
+        litsurvey_array: this.state.litsurvey_array
       }));
     }
   }]);
@@ -416,11 +428,12 @@ var EditProblem = /*#__PURE__*/function (_React$Component9) {
         name: "edit_problem_form",
         onSubmit: handleSubmit
       }, /*#__PURE__*/React.createElement("input", {
+        className: "project_name",
         type: "text",
         name: "problem",
         defaultValue: this.props.problem
       }), /*#__PURE__*/React.createElement("button", {
-        className: "submitbutton"
+        className: "create_project_button"
       }, "Update")));
     }
   }]);
@@ -499,11 +512,12 @@ var UpdateSheetLink = /*#__PURE__*/function (_React$Component11) {
         name: "update_sheet_form",
         onSubmit: handleSubmit
       }, /*#__PURE__*/React.createElement("input", {
+        className: "project_name",
         type: "text",
         name: "sheet_link",
         defaultValue: this.props.link
       }), /*#__PURE__*/React.createElement("button", {
-        className: "submitbutton"
+        className: "create_project_button"
       }, "Update")));
     }
   }]);
@@ -541,15 +555,15 @@ var Experimentation = /*#__PURE__*/function (_React$Component12) {
   }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(UpdateSheetLink, {
+        updateSheetLink: this.updateSheetLink,
+        link: this.state.google_sheet
+      }), /*#__PURE__*/React.createElement("div", {
         className: "experimentation"
       }, /*#__PURE__*/React.createElement("iframe", {
         src: this.state.google_sheet,
         className: "iframe_sheet"
-      })), /*#__PURE__*/React.createElement(UpdateSheetLink, {
-        updateSheetLink: this.updateSheetLink,
-        link: this.state.google_sheet
-      }));
+      })));
     }
   }]);
 
@@ -571,7 +585,9 @@ var CreateRow = /*#__PURE__*/function (_React$Component13) {
     key: "render",
     value: function render() {
       var t = this.props.r;
-      return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, t.id), /*#__PURE__*/React.createElement("td", null, t.link), /*#__PURE__*/React.createElement("td", null, t.des));
+      return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, t.id), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("a", {
+        href: t.link
+      }, t.link)), /*#__PURE__*/React.createElement("td", null, t.des));
     }
   }]);
 
@@ -658,16 +674,18 @@ var Sourcecode = /*#__PURE__*/function (_React$Component15) {
         onSubmit: this.SourceSubmit
       }, /*#__PURE__*/React.createElement("label", {
         for: "git_link"
-      }, "Enter Code Link"), /*#__PURE__*/React.createElement("input", {
+      }, "Enter Code Link"), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
+        className: "project_name",
         type: "url",
         name: "sourcelink"
-      }), /*#__PURE__*/React.createElement("label", {
+      }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", {
         for: "repo_des"
-      }, " Enter Link Description"), /*#__PURE__*/React.createElement("input", {
+      }, " Enter Link Description"), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
         type: "text",
+        className: "project_name",
         name: "sourcedes"
-      }), /*#__PURE__*/React.createElement("button", {
-        className: "add_button"
+      }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("button", {
+        className: "create_project_button"
       }, "Add"))), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement("div", {
         className: "SourceTable"
       }, /*#__PURE__*/React.createElement(SourceTable, {
@@ -709,15 +727,15 @@ var PaperDraft = /*#__PURE__*/function (_React$Component16) {
   }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(UpdateSheetLink, {
+        updateSheetLink: this.updateSheetLink,
+        link: this.state.google_sheet
+      }), /*#__PURE__*/React.createElement("div", {
         className: "experimentation"
       }, /*#__PURE__*/React.createElement("iframe", {
         src: this.state.google_sheet,
         className: "iframe_sheet"
-      })), /*#__PURE__*/React.createElement(UpdateSheetLink, {
-        updateSheetLink: this.updateSheetLink,
-        link: this.state.google_sheet
-      }));
+      })));
     }
   }]);
 
@@ -824,26 +842,31 @@ var PaperSub = /*#__PURE__*/function (_React$Component19) {
   }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(DispPaper, {
-        data: this.state.val
-      })), /*#__PURE__*/React.createElement("form", {
+      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("form", {
         name: "addPaper",
         onSubmit: this.paperSubmit
       }, /*#__PURE__*/React.createElement("label", {
         for: "conf"
-      }, "Enter Conference/Journal link"), /*#__PURE__*/React.createElement("input", {
+      }, "Enter Conference/Journal link"), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
         id: "conf",
+        className: "project_name",
         type: "text",
         name: "conf"
-      }), /*#__PURE__*/React.createElement("label", {
+      }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", {
         for: "reqr"
-      }, " Enter Requirements "), /*#__PURE__*/React.createElement("input", {
+      }, " Enter Requirements "), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
         id: "reqr",
+        className: "project_name",
         name: "reqr"
-      }), /*#__PURE__*/React.createElement("label", null, "Enter Last Date for Registration"), /*#__PURE__*/React.createElement("input", {
+      }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", null, "Enter Last Date for Registration"), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
         type: "date",
+        className: "project_name",
         name: "date_val"
-      }), /*#__PURE__*/React.createElement("button", null, "Submit")));
+      }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("button", {
+        className: "create_project_button"
+      }, "Submit")), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(DispPaper, {
+        data: this.state.val
+      })));
     }
   }]);
 
@@ -891,7 +914,9 @@ var ScheduleTable = /*#__PURE__*/function (_React$Component21) {
           data: r
         });
       });
-      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("table", null, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Serial Number"), /*#__PURE__*/React.createElement("th", null, "Task"), /*#__PURE__*/React.createElement("th", null, "Start Date"), /*#__PURE__*/React.createElement("th", null, "End Date"), /*#__PURE__*/React.createElement("th", null, "Time(Days)"), /*#__PURE__*/React.createElement("th", null, "User"))), /*#__PURE__*/React.createElement("tbody", null, arr)));
+      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("table", {
+        className: "sourcetable"
+      }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Serial Number"), /*#__PURE__*/React.createElement("th", null, "Task"), /*#__PURE__*/React.createElement("th", null, "Start Date"), /*#__PURE__*/React.createElement("th", null, "End Date"), /*#__PURE__*/React.createElement("th", null, "Time(Days)"), /*#__PURE__*/React.createElement("th", null, "User"))), /*#__PURE__*/React.createElement("tbody", null, arr)));
     }
   }]);
 
@@ -955,28 +980,34 @@ var Scheduling = /*#__PURE__*/function (_React$Component22) {
         onSubmit: this.schSubmit
       }, /*#__PURE__*/React.createElement("label", {
         for: "task"
-      }, "Enter Task Name"), /*#__PURE__*/React.createElement("input", {
+      }, "Enter Task Name"), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
         id: "task",
+        className: "project_name",
         name: "task"
-      }), /*#__PURE__*/React.createElement("label", {
+      }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", {
         for: "from_date"
-      }, "Enter Start Date"), /*#__PURE__*/React.createElement("input", {
+      }, "Enter Start Date"), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
         id: "from_date",
+        className: "project_name",
         name: "from_date",
         type: "date"
-      }), /*#__PURE__*/React.createElement("label", {
+      }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", {
         for: "user"
-      }, "Enter User you want to assign to "), /*#__PURE__*/React.createElement("input", {
+      }, "Enter User you want to assign to "), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
         id: "user",
         type: "text",
+        className: "project_name",
         name: "user_text"
-      }), /*#__PURE__*/React.createElement("label", {
+      }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", {
         for: "to_date"
-      }, "Enter End Date"), /*#__PURE__*/React.createElement("input", {
+      }, "Enter End Date"), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
         id: "to_date",
         name: "to_date",
+        className: "project_name",
         type: "date"
-      }), /*#__PURE__*/React.createElement("button", null, "Add Task"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(ScheduleTable, {
+      }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("button", {
+        className: "create_project_button"
+      }, "Add Task")), /*#__PURE__*/React.createElement("br", null)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(ScheduleTable, {
         data: this.state.data
       })));
     }
@@ -1088,7 +1119,6 @@ var CreateProject = /*#__PURE__*/function (_React$Component24) {
     key: "handleSubmit",
     value: function handleSubmit(e) {
       e.preventDefault();
-      alert("in handle");
       var form = document.forms.project_add;
       var field = {
         proj_name: form.project_name.value,
@@ -1163,6 +1193,7 @@ var CreateProject = /*#__PURE__*/function (_React$Component24) {
       }))), /*#__PURE__*/React.createElement("button", {
         className: "create_project_button"
       }, "Create Project")), /*#__PURE__*/React.createElement("button", {
+        className: "create_project_button",
         onClick: this.goback
       }, "Go Back")), this.state.d == '2' && /*#__PURE__*/React.createElement(Dashboard, {
         data: this.props.data
@@ -1201,7 +1232,8 @@ var Temp_display = /*#__PURE__*/function (_React$Component25) {
   }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(DisplayHeader, null), /*#__PURE__*/React.createElement(DisplayTabs, null)), /*#__PURE__*/React.createElement("button", {
+      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(DisplayTabs, null)), /*#__PURE__*/React.createElement("button", {
+        className: "button_navigation_half",
         onClick: this.handleSubmit
       }, " Go Back ")), this.state.d == '2' && /*#__PURE__*/React.createElement(Projects_Display, {
         data: this.props.data
@@ -1242,9 +1274,10 @@ var Projects_Display = /*#__PURE__*/function (_React$Component26) {
     value: function render() {
       var t = this.props.data;
       return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("button", {
+        className: "project_class",
         onClick: this.handleSubmit
       }, /*#__PURE__*/React.createElement("div", {
-        className: "litsurveyitem"
+        className: "project_class"
       }, /*#__PURE__*/React.createElement("h3", {
         className: "card_header"
       }, t.project_name), /*#__PURE__*/React.createElement("p", null, "Project Description: ", t.project_desc), /*#__PURE__*/React.createElement("p", null, "Project Member: ", t.user_name), /*#__PURE__*/React.createElement("p", null, "Member Role : ", t.user_role))), this.state.d == '2' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Temp_display, {
@@ -1290,6 +1323,7 @@ var My_Projects = /*#__PURE__*/function (_React$Component27) {
         });
       });
       return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", null, "My Projects"), /*#__PURE__*/React.createElement("div", null, d), /*#__PURE__*/React.createElement("button", {
+        className: "button_navigation_half",
         onClick: this.handleSubmit
       }, "Go to Dashboard")), this.state.d == '2' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Dashboard, {
         data: this.props.data
@@ -1351,11 +1385,13 @@ var Dashboard = /*#__PURE__*/function (_React$Component28) {
   }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
-        classname: "create_pro",
+      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", {
+        className: "dashboard_buttons"
+      }, /*#__PURE__*/React.createElement("button", {
+        className: "create_pro_button",
         onClick: this.create
       }, "Create Project"), /*#__PURE__*/React.createElement("button", {
-        classname: "view_pro",
+        className: "view_pro_button",
         onClick: this.displayproj
       }, "View My Projects")), this.state.d == '2' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(CreateProject, {
         addproject: this.addproject,
@@ -1577,9 +1613,9 @@ var RenderProjectDetailsPage = /*#__PURE__*/function (_React$Component30) {
   _createClass(RenderProjectDetailsPage, [{
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement(Dashboard, {
+      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(DisplayHeader, null), /*#__PURE__*/React.createElement(Dashboard, {
         data: this.state.data
-      }));
+      })));
     }
   }]);
 
