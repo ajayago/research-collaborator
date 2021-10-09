@@ -255,7 +255,7 @@ class UpdateSheetLink extends React.Component {
         };
         return (
             <React.Fragment>
-                <p>Update Experimentation below</p>
+                <p>{this.props.val}</p>
                 <form name="update_sheet_form" onSubmit={handleSubmit}>
                     <input className="project_name" type="text" name="sheet_link" defaultValue={this.props.link} />
                     <button className="create_project_button">Update</button>
@@ -278,7 +278,7 @@ class Experimentation extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <UpdateSheetLink updateSheetLink={this.updateSheetLink} link={this.state.google_sheet} />
+                <UpdateSheetLink updateSheetLink={this.updateSheetLink} link={this.state.google_sheet} val="Update Experimentation below" />
                 <div className="experimentation">
                     <iframe src={this.state.google_sheet} className="iframe_sheet"></iframe>
                 </div>
@@ -391,7 +391,7 @@ class PaperDraft extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <UpdateSheetLink updateSheetLink={this.updateSheetLink} link={this.state.google_sheet} />
+                <UpdateSheetLink updateSheetLink={this.updateSheetLink} link={this.state.google_sheet} val="Update Link to Paper" />
                 <div className="experimentation">
                     <iframe src={this.state.google_sheet} className="iframe_sheet"></iframe>
                 </div>
@@ -648,7 +648,7 @@ class CreateProject extends React.Component {
         e.preventDefault();
         const form = document.forms.project_add;
         const field = {
-            proj_name: form.project_name.value, proj_desc: form.project_desc.value,
+            project_name: form.project_name.value, project_desc: form.project_desc.value,
             user_name: form.user_name.value, user_role: form.user_role.value
         }
 
@@ -679,7 +679,7 @@ class CreateProject extends React.Component {
                                 </div>
                             </div>
                             <div className="input">
-                                <label for="project_description">Enter Project Project Description</label>
+                                <label for="project_description">Enter Project Description</label>
                                 <div>
                                     <input type="text" className="project_description" id="project_description" name="project_desc" placeholder="Enter Description"></input>
                                 </div>

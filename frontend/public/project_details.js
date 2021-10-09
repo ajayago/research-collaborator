@@ -508,7 +508,7 @@ var UpdateSheetLink = /*#__PURE__*/function (_React$Component11) {
         _this7.props.updateSheetLink(content);
       };
 
-      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", null, "Update Experimentation below"), /*#__PURE__*/React.createElement("form", {
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", null, this.props.val), /*#__PURE__*/React.createElement("form", {
         name: "update_sheet_form",
         onSubmit: handleSubmit
       }, /*#__PURE__*/React.createElement("input", {
@@ -557,7 +557,8 @@ var Experimentation = /*#__PURE__*/function (_React$Component12) {
     value: function render() {
       return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(UpdateSheetLink, {
         updateSheetLink: this.updateSheetLink,
-        link: this.state.google_sheet
+        link: this.state.google_sheet,
+        val: "Update Experimentation below"
       }), /*#__PURE__*/React.createElement("div", {
         className: "experimentation"
       }, /*#__PURE__*/React.createElement("iframe", {
@@ -729,7 +730,8 @@ var PaperDraft = /*#__PURE__*/function (_React$Component16) {
     value: function render() {
       return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(UpdateSheetLink, {
         updateSheetLink: this.updateSheetLink,
-        link: this.state.google_sheet
+        link: this.state.google_sheet,
+        val: "Update Link to Paper"
       }), /*#__PURE__*/React.createElement("div", {
         className: "experimentation"
       }, /*#__PURE__*/React.createElement("iframe", {
@@ -1121,8 +1123,8 @@ var CreateProject = /*#__PURE__*/function (_React$Component24) {
       e.preventDefault();
       var form = document.forms.project_add;
       var field = {
-        proj_name: form.project_name.value,
-        proj_desc: form.project_desc.value,
+        project_name: form.project_name.value,
+        project_desc: form.project_desc.value,
         user_name: form.user_name.value,
         user_role: form.user_role.value
       };
@@ -1161,7 +1163,7 @@ var CreateProject = /*#__PURE__*/function (_React$Component24) {
         className: "input"
       }, /*#__PURE__*/React.createElement("label", {
         for: "project_description"
-      }, "Enter Project Project Description"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("input", {
+      }, "Enter Project Description"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("input", {
         type: "text",
         className: "project_description",
         id: "project_description",
