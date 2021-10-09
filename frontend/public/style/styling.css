@@ -1,6 +1,7 @@
 body{
     font-family: arial;
     color: black;
+    background-color: brown;
 }
 .column{
 	border-style: solid;
@@ -22,7 +23,7 @@ body{
 	background-color: darkslategrey;
 	text-align: left;
 	color: snow;
-    height: 3%;
+    height: 35%;
 }
 .projectbutton {
     width: 100%;
@@ -113,7 +114,7 @@ body{
     text-decoration: none;
     cursor: pointer;
 }
-.litsurveyitem {
+.litsurveyitem , .PaperDiv {
     border-radius: 4px;
     background-color: whitesmoke;
     border-color: teal;
@@ -127,11 +128,112 @@ body{
     border-style: solid;
     margin-bottom: 2%;
 }
-.card_header {
+.card_header , .paper_header {
     background-color: cadetblue;
     margin: 0%;
 }
 .iframe_sheet {
     width: 100%;
     height: 100%;
+}
+
+.sourcetable th,td 
+{
+    border: 1px solid black;
+   
+}
+
+.sourcetable
+{
+    border-collapse: collapse;
+}
+
+.create_project
+{
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+}
+
+.role_label
+{
+    margin-top: 10px;
+}
+
+.project_name , .project_description
+{
+    width: 50%;
+    border-radius: 4px;
+    height: 35px;    
+}
+
+.input
+{
+    margin-top: 20px;
+}
+
+.temp
+{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 10px;
+
+}
+.users_label
+{
+    margin-top: 0px;
+    border-bottom: solid gray 1px;
+    width: 100%;
+    height: 25px;
+    background-color:#D5D8DC;
+}
+.add_user
+{
+    margin-top: 10px;
+    border: solid gray 1px;
+    width: 50%;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+}
+
+.username , .user_role
+{
+    width: 50%;
+    border-radius: 4px;
+    height: 35px;
+}
+
+.user_input
+{
+    margin-top: 10px;
+    margin-left: 5px;
+    height: 50px;
+    display: 'block';
+    
+}
+.add_user_button
+{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    width: 30%;
+    height: 40px;
+}
+
+.create_project_button
+{
+    margin-top: 10px;
+    border-radius: 5px;
+    width: 30%;
+    height: 40px;
+}
+.create_project_button:hover , .add_user_button:hover
+{
+    background-color: black;
+    color: white;
 }
