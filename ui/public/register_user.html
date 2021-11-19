@@ -3,7 +3,9 @@
 
 <head>
 	<title>User Registration Page</title>
-	<script src="scripts/register_user_page.js" defer></script>
+	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/polyfill@7/dist/polyfill.min.js"></script>
 	<link rel="stylesheet" href="style/styling.css">
 </head>
 
@@ -11,7 +13,7 @@
 	<div class="header">
 		<h1>Open Research Framework</h1>
 	</div>
-	<div class="column">
+	<!-- <div class="column">
 		<form class="user_registration">
 			<label for="user_email_address">Enter User Email Adress</label>
 			<br>
@@ -24,7 +26,9 @@
 			<br>
 			<input type="submit" class="create_project_button" id="create_user_submit">
 		</form>
-	</div>
+	</div> -->
+	<div id="usercreationpage"></div>
+	<script src="register_user_page.js"></script>
 </body>
 
 </html>

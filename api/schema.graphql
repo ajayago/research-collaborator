@@ -1,0 +1,40 @@
+scalar GraphQLDate
+
+type Organization {
+    _id: ID!
+    serial_no: Int!
+    org_name: String!
+    org_short_name: String!
+}
+
+"Without system generated values"
+input OrganizationInputs {
+    org_name: String!
+    org_short_name: String!
+}
+
+type User {
+    _id: ID!
+    username: String!
+    password: String!
+    org_short_name: String!
+    google_auth: Boolean!
+}
+
+input UserInputs {
+    username: String!
+    password: String!
+    org_short_name: String!
+    google_auth: Boolean = false
+}
+
+type Query {
+    getOrganization(org_short_name: String!): [Organization!]!
+    getExistingUsers(username: String!): [User!]!
+    getAllOrganization(org: String=""): [Organization!]!
+}
+
+type Mutation {
+    addOrganization(org: OrganizationInputs!): Organization!
+    addNewUser(user: UserInputs!): User!
+}

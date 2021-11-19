@@ -183,7 +183,7 @@ body{
     margin-top: 10px;
 }
 
-.project_name , .project_description, .user_email_id, .user_password, .org_name, .org_id, .user_email_address
+.project_name , .project_description, .user_email_id, .user_password, .org_name, .org_short_name, .org_id, .user_email_address
 {
     width: 50%;
     border-radius: 4px;
@@ -288,4 +288,10 @@ body{
 .experimentation
 {
     height: 500px;
+}
+
+.dropdown
+{
+    width: 30%;
+    margin: 2px;
 }
