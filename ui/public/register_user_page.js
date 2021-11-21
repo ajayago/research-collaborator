@@ -107,30 +107,70 @@ var AddUser = /*#__PURE__*/function (_React$Component) {
   var _super = _createSuper(AddUser);
 
   function AddUser() {
+    var _this;
+
     _classCallCheck(this, AddUser);
 
-    return _super.apply(this, arguments);
+    _this = _super.call(this);
+    _this.state = {
+      google_auth: false,
+      password: "xxxxxxxx",
+      selected_value: "No"
+    };
+    _this.change = _this.change.bind(_assertThisInitialized(_this));
+    return _this;
   }
 
   _createClass(AddUser, [{
+    key: "change",
+    value: function change(event) {
+      console.log(event.target.value);
+
+      if (event.target.value == "Yes") {
+        this.setState({
+          google_auth: true,
+          selected_value: "Yes",
+          password: "xxxxxxxx"
+        });
+      } else {
+        this.setState({
+          google_auth: false,
+          selected_value: "No"
+        });
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
-      var _this = this;
+      var _this2 = this;
 
       var handleSubmit = function handleSubmit(e) {
         e.preventDefault();
         var form = document.forms.addUser;
+        var pass;
+
+        if (_this2.state.google_auth) {
+          pass = _this2.state.password;
+        } else {
+          pass = form.password.value;
+        }
+
         var user = {
           username: form.username.value,
-          password: form.password.value,
-          org_short_name: form.org_short_name.value
+          password: pass,
+          org_short_name: form.org_short_name.value,
+          google_auth: _this2.state.google_auth
         };
         console.log(user);
 
-        _this.props.createUser(user);
+        _this2.props.createUser(user);
 
         form.username.value = "";
-        form.password.value = "";
+
+        if (!_this2.state.google_auth) {
+          form.password.value = "";
+        }
+
         form.org_short_name.value = "";
       };
 
@@ -144,7 +184,19 @@ var AddUser = /*#__PURE__*/function (_React$Component) {
         name: "username",
         id: "username",
         placeholder: "User email address"
-      })), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", null, "Enter password", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
+      })), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", null, "Are you signing in with Google?", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("select", {
+        name: "is_google_auth",
+        id: "google_auth",
+        value: this.state.selected_value,
+        className: "dropdown",
+        onChange: this.change
+      }, /*#__PURE__*/React.createElement("option", {
+        key: "No",
+        value: "No"
+      }, "No"), /*#__PURE__*/React.createElement("option", {
+        key: "Yes",
+        value: "Yes"
+      }, "Yes"))), /*#__PURE__*/React.createElement("br", null), this.state.google_auth ? null : /*#__PURE__*/React.createElement("label", null, "Enter password", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
         type: "password",
         name: "password",
         id: "password",
@@ -173,18 +225,18 @@ var DisplayUserCreationForm = /*#__PURE__*/function (_React$Component2) {
   var _super2 = _createSuper(DisplayUserCreationForm);
 
   function DisplayUserCreationForm() {
-    var _this2;
+    var _this3;
 
     _classCallCheck(this, DisplayUserCreationForm);
 
-    _this2 = _super2.call(this);
-    _this2.state = {
+    _this3 = _super2.call(this);
+    _this3.state = {
       organizations: [],
       errormessage: null
     };
-    _this2.createUser = _this2.createUser.bind(_assertThisInitialized(_this2));
-    _this2.getOrgs = _this2.getOrgs.bind(_assertThisInitialized(_this2));
-    return _this2;
+    _this3.createUser = _this3.createUser.bind(_assertThisInitialized(_this3));
+    _this3.getOrgs = _this3.getOrgs.bind(_assertThisInitialized(_this3));
+    return _this3;
   }
 
   _createClass(DisplayUserCreationForm, [{

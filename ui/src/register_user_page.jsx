@@ -31,19 +31,47 @@ async function graphQLFetch(query, variables = {}) {
 }
 
 class AddUser extends React.Component{
+    constructor(){
+        super();
+        this.state = {
+            google_auth: false,
+            password: "xxxxxxxx",
+            selected_value: "No"
+        };
+        this.change = this.change.bind(this);
+    }
+    change(event){
+        console.log(event.target.value);
+        if (event.target.value == "Yes"){
+            this.setState({google_auth: true, selected_value: "Yes", password: "xxxxxxxx"});
+        }
+        else{
+            this.setState({google_auth: false, selected_value: "No"});
+        }
+    }
     render(){
         const handleSubmit = (e) => {
             e.preventDefault();
             const form = document.forms.addUser;
+            let pass;
+            if (this.state.google_auth){
+                pass = this.state.password;
+            }
+            else{
+                pass = form.password.value;
+            }
             const user = {
                 username: form.username.value, 
-                password: form.password.value,
-                org_short_name: form.org_short_name.value
+                password: pass,
+                org_short_name: form.org_short_name.value,
+                google_auth: this.state.google_auth
             }
             console.log(user);
             this.props.createUser(user);
             form.username.value = "";
-            form.password.value = "";
+            if (!this.state.google_auth){
+                form.password.value = "";
+            }
             form.org_short_name.value = "";
         }
         
@@ -57,10 +85,20 @@ class AddUser extends React.Component{
                     </label>
                     <br />
                     <label>
+                        Are you signing in with Google?
+                        <br />
+                        <select name="is_google_auth" id="google_auth" value={this.state.selected_value} className="dropdown" onChange={this.change}>
+                            <option key="No" value="No">No</option>
+                            <option key="Yes" value="Yes">Yes</option>
+                        </select>
+                    </label>
+                    <br />
+                    {this.state.google_auth? null: 
+                    <label>
                         Enter password
                         <br />
                         <input type="password" name="password" id="password" placeholder="Password" />
-                    </label>
+                    </label>}
                     <br />
                     <label>
                         Select Organization
