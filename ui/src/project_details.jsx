@@ -1,6 +1,8 @@
 const initialLitSurvey = [];
 const SourceCodeList = [];
-const Displist = []
+const Displist = [];
+const activeuser = window.sessionStorage.getItem("username");
+console.log(activeuser);
 class DisplayHeader extends React.Component {
     render() {
         return (

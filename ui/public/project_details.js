@@ -27,6 +27,8 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 var initialLitSurvey = [];
 var SourceCodeList = [];
 var Displist = [];
+var activeuser = window.sessionStorage.getItem("username");
+console.log(activeuser);
 
 var DisplayHeader = /*#__PURE__*/function (_React$Component) {
   _inherits(DisplayHeader, _React$Component);

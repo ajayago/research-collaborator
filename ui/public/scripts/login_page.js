@@ -36,6 +36,7 @@ function onSignIn(googleUser) {
 	console.log('Name: ' + profile.getName());
 	console.log('Image URL: ' + profile.getImageUrl());
 	console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+	window.sessionStorage.setItem("username", profile.getEmail());
 	window.open("../project_details.html", "_self");
 	return;
 }

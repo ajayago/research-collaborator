@@ -103,6 +103,7 @@ class DisplayLoginPage extends React.Component{
         }
         else{
             if (user_data.getExistingUsers[0].password == password){
+                window.sessionStorage.setItem("username", user.username);
                 window.open("./project_details.html", "_self");
 	            return;
             }

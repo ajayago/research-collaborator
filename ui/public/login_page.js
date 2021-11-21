@@ -230,19 +230,20 @@ var DisplayLoginPage = /*#__PURE__*/function (_React$Component2) {
 
               case 19:
                 if (!(user_data.getExistingUsers[0].password == password)) {
-                  _context.next = 24;
+                  _context.next = 25;
                   break;
                 }
 
+                window.sessionStorage.setItem("username", user.username);
                 window.open("./project_details.html", "_self");
                 return _context.abrupt("return");
 
-              case 24:
+              case 25:
                 this.setState({
                   errormessage: "Incorrect password!"
                 });
 
-              case 25:
+              case 26:
               case "end":
                 return _context.stop();
             }
