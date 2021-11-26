@@ -26,7 +26,8 @@ type User {
     password: String!
     org_short_name: String!
     google_auth: Boolean!
-    pending: [pending_output_user]!
+    pending: [pending_output_user]
+    accepted: [pending_output_user]
     
 }
 
@@ -102,11 +103,19 @@ type OutputRequest
 
 }
 
+type ProjectDetails
+{
+    projectID: String!
+    activeTabList: [Boolean!]!
+}
+
 type Query {
     getOrganization(org_short_name: String!): [Organization!]!
     getExistingUsers(username: String!): [User!]!
     getAllOrganization(org: String=""): [Organization!]!
     getProjectDetails(owner : String!): [ProjectRec!]!
+    getProjectDetailsFromProjectID(projectID: String!): [ProjectRec!]!
+    getProjectDetailsInner(projectID: String!): ProjectDetails!
 }
 
 type Mutation {
@@ -114,5 +123,5 @@ type Mutation {
     addNewUser(user: UserInputs!): User!
     addProjectDetails(field : ProjectData!): ProjectRec!
     addNewRequests(field : RequestData!): OutputRequest!
-
+    updateActiveTabList(projectID: String!, activeTabList: [Boolean]): ProjectDetails!
 }

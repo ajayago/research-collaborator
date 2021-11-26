@@ -45,21 +45,21 @@ function graphQLFetch(_x) {
 }
 
 function _graphQLFetch() {
-  _graphQLFetch = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(query) {
+  _graphQLFetch = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(query) {
     var variables,
         response,
         body,
         result,
         error,
         details,
-        _args4 = arguments;
-    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        _args6 = arguments;
+    return regeneratorRuntime.wrap(function _callee6$(_context6) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context6.prev = _context6.next) {
           case 0:
-            variables = _args4.length > 1 && _args4[1] !== undefined ? _args4[1] : {};
-            _context4.prev = 1;
-            _context4.next = 4;
+            variables = _args6.length > 1 && _args6[1] !== undefined ? _args6[1] : {};
+            _context6.prev = 1;
+            _context6.next = 4;
             return fetch("http://localhost:5000/graphql", {
               method: 'POST',
               headers: {
@@ -72,12 +72,12 @@ function _graphQLFetch() {
             });
 
           case 4:
-            response = _context4.sent;
-            _context4.next = 7;
+            response = _context6.sent;
+            _context6.next = 7;
             return response.text();
 
           case 7:
-            body = _context4.sent;
+            body = _context6.sent;
             result = JSON.parse(body, jsonDateReviver);
 
             if (result.errors) {
@@ -91,19 +91,19 @@ function _graphQLFetch() {
               }
             }
 
-            return _context4.abrupt("return", result.data);
+            return _context6.abrupt("return", result.data);
 
           case 13:
-            _context4.prev = 13;
-            _context4.t0 = _context4["catch"](1);
-            alert("Error in sending data to server: ".concat(_context4.t0.message));
+            _context6.prev = 13;
+            _context6.t0 = _context6["catch"](1);
+            alert("Error in sending data to server: ".concat(_context6.t0.message));
 
           case 16:
           case "end":
-            return _context4.stop();
+            return _context6.stop();
         }
       }
-    }, _callee4, null, [[1, 13]]);
+    }, _callee6, null, [[1, 13]]);
   }));
   return _graphQLFetch.apply(this, arguments);
 }
@@ -1210,13 +1210,99 @@ var GenericDiv = /*#__PURE__*/function (_React$Component24) {
   }
 
   _createClass(GenericDiv, [{
-    key: "updateTabList",
-    value: function updateTabList(tablist) {
-      console.log(tablist);
-      this.setState({
-        activeTabList: tablist
-      });
+    key: "loadData",
+    value: function () {
+      var _loadData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var query, projectID, response, tablist;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                query = "query getProjectDetailsInner($projectID: String!)\n        {\n            getProjectDetailsInner(projectID: $projectID)\n            {\n                projectID\n                activeTabList\n            }\n        }";
+                projectID = this.props.projectID;
+                console.log("In GenericDiv");
+                console.log(projectID);
+                _context.next = 6;
+                return graphQLFetch(query, {
+                  projectID: projectID
+                });
+
+              case 6:
+                response = _context.sent;
+                console.log(response);
+                tablist = response.getProjectDetailsInner.activeTabList;
+                console.log(tablist);
+                this.setState({
+                  activeTabList: tablist
+                });
+
+              case 11:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function loadData() {
+        return _loadData.apply(this, arguments);
+      }
+
+      return loadData;
+    }()
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.loadData();
     }
+  }, {
+    key: "updateTabList",
+    value: function () {
+      var _updateTabList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(tablist) {
+        var query, projectID, activeTabList, response;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                console.log(tablist);
+                this.setState({
+                  activeTabList: tablist
+                });
+                query = "mutation updateActiveTabList($projectID : String!, $activeTabList: [Boolean])\n        {\n            updateActiveTabList(projectID : $projectID, activeTabList: $activeTabList)\n            {\n                projectID\n                activeTabList\n            }\n        }";
+                projectID = this.props.projectID;
+                activeTabList = this.state.activeTabList;
+                _context2.next = 7;
+                return fetch('http://localhost:5000/graphql', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    query: query,
+                    variables: {
+                      projectID: projectID,
+                      activeTabList: activeTabList
+                    }
+                  })
+                });
+
+              case 7:
+                response = _context2.sent;
+
+              case 8:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function updateTabList(_x2) {
+        return _updateTabList.apply(this, arguments);
+      }
+
+      return updateTabList;
+    }()
   }, {
     key: "render",
     value: function render() {
@@ -1232,36 +1318,51 @@ var GenericDiv = /*#__PURE__*/function (_React$Component24) {
       if (comp_name === "Status") {
         res = /*#__PURE__*/React.createElement(StatusDiv, {
           updateTabList: this.updateTabList,
-          activeTabList: this.state.activeTabList
+          activeTabList: this.state.activeTabList,
+          projectID: this.props.projectID
         });
       }
 
       if (comp_name === "Literature Survey") {
-        res = /*#__PURE__*/React.createElement(LiteratureSurvey, null);
+        res = /*#__PURE__*/React.createElement(LiteratureSurvey, {
+          projectID: this.props.projectID
+        });
       }
 
       if (comp_name === "Problem Formulation") {
-        res = /*#__PURE__*/React.createElement(ProblemFormulation, null);
+        res = /*#__PURE__*/React.createElement(ProblemFormulation, {
+          projectID: this.props.projectID
+        });
       }
 
       if (comp_name === "Experimentation") {
-        res = /*#__PURE__*/React.createElement(Experimentation, null);
+        res = /*#__PURE__*/React.createElement(Experimentation, {
+          projectID: this.props.projectID
+        });
       }
 
       if (comp_name === "Source Code") {
-        res = /*#__PURE__*/React.createElement(Sourcecode, null);
+        res = /*#__PURE__*/React.createElement(Sourcecode, {
+          projectID: this.props.projectID
+        });
       }
 
       if (comp_name === "Paper Draft") {
-        res = /*#__PURE__*/React.createElement(PaperDraft, null);
+        res = /*#__PURE__*/React.createElement(PaperDraft, {
+          projectID: this.props.projectID
+        });
       }
 
       if (comp_name === "Paper Submission") {
-        res = /*#__PURE__*/React.createElement(PaperSub, null);
+        res = /*#__PURE__*/React.createElement(PaperSub, {
+          projectID: this.props.projectID
+        });
       }
 
       if (comp_name === "Scheduling") {
-        res = /*#__PURE__*/React.createElement(Scheduling, null);
+        res = /*#__PURE__*/React.createElement(Scheduling, {
+          projectID: this.props.projectID
+        });
       }
 
       return /*#__PURE__*/React.createElement(React.Fragment, null, res);
@@ -1402,7 +1503,12 @@ var Temp_display = /*#__PURE__*/function (_React$Component26) {
   }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(DisplayTabs, null)), /*#__PURE__*/React.createElement("button", {
+      var localdata = this.props.data;
+      console.log("In Temp_Display");
+      console.log(localdata['projectID']);
+      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(DisplayTabs, {
+        projectID: localdata.projectID
+      })), /*#__PURE__*/React.createElement("button", {
         className: "button_navigation_half",
         onClick: this.handleSubmit
       }, " Go Back ")), this.state.d == '2' && /*#__PURE__*/React.createElement(Projects_Display, {
@@ -1443,6 +1549,8 @@ var Projects_Display = /*#__PURE__*/function (_React$Component27) {
     key: "render",
     value: function render() {
       var t = this.props.data;
+      console.log("In Projects_Display");
+      console.log(t);
       return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("button", {
         className: "project_class",
         onClick: this.handleSubmit
@@ -1450,7 +1558,7 @@ var Projects_Display = /*#__PURE__*/function (_React$Component27) {
         className: "project_class"
       }, /*#__PURE__*/React.createElement("h3", {
         className: "card_header"
-      }, t.name), /*#__PURE__*/React.createElement("p", null, "Project Description: ", t.project_desc), /*#__PURE__*/React.createElement("p", null, "Project Member: ", t.owner), /*#__PURE__*/React.createElement("p", null, "Project ID  : ", t.projectID))), this.state.d == '2' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Temp_display, {
+      }, t.name), /*#__PURE__*/React.createElement("p", null, "Project Description: ", t.desc), /*#__PURE__*/React.createElement("p", null, "Project Member: ", t.owner), /*#__PURE__*/React.createElement("p", null, "Project ID  : ", t.projectID))), this.state.d == '2' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Temp_display, {
         data: this.props.data
       })));
     }
@@ -1487,6 +1595,8 @@ var My_Projects = /*#__PURE__*/function (_React$Component28) {
   }, {
     key: "render",
     value: function render() {
+      console.log("In My_Projects");
+      console.log(this.props.data);
       var d = this.props.data.map(function (r) {
         return /*#__PURE__*/React.createElement(Projects_Display, {
           data: r
@@ -1664,16 +1774,17 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
   }, {
     key: "loadData",
     value: function () {
-      var _loadData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var query, username, response, body, result;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+      var _loadData2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+        var query, username, response, body, result, proj_query, user_accepted_projects, get_project_from_ID, data_obtained, i, projectID, proj_data;
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
-                query = "query getExistingUsers($username : String!)\n        {\n            getExistingUsers(username : $username)\n            {\n                username\n                pending\n                {\n                    name\n                    role\n                    projectID\n                }\n            }\n        }";
-                username = "e0674494@u.nus.edu"; //const response = await graphQLFetch(query, { username });
+                query = "query getExistingUsers($username : String!)\n        {\n            getExistingUsers(username : $username)\n            {\n                username\n                pending\n                {\n                    projectID\n                }\n                accepted\n                {\n                    projectID\n                }\n            }\n        }"; // const username = "e0674494@u.nus.edu";
+                //const response = await graphQLFetch(query, { username });
 
-                _context.next = 4;
+                username = activeuser;
+                _context3.next = 4;
                 return fetch('http://localhost:5000/graphql', {
                   method: 'POST',
                   headers: {
@@ -1688,28 +1799,67 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
                 });
 
               case 4:
-                response = _context.sent;
-                _context.next = 7;
+                response = _context3.sent;
+                _context3.next = 7;
                 return response.text();
 
               case 7:
-                body = _context.sent;
-                result = JSON.parse(body);
-                console.log(response);
-                this.setState({
-                  userReq: result.data.getExistingUsers
+                body = _context3.sent;
+                result = JSON.parse(body); // console.log(result.data.getExistingUsers);
+                // get list of project IDs for the user and assign to data state
+
+                _context3.next = 11;
+                return graphQLFetch(query, {
+                  username: username
                 });
 
               case 11:
+                proj_query = _context3.sent;
+                user_accepted_projects = [];
+                console.log("User accepted projects");
+                get_project_from_ID = "query getProjectDetailsFromProjectID($projectID : String!)\n        {\n            getProjectDetailsFromProjectID(projectID : $projectID)\n            {\n                name\n                desc\n                owner\n                projectID\n            }\n        }";
+                data_obtained = [];
+                i = 0;
+
+              case 17:
+                if (!(i < proj_query.getExistingUsers[0].accepted.length)) {
+                  _context3.next = 27;
+                  break;
+                }
+
+                user_accepted_projects.push(proj_query.getExistingUsers[0].accepted[i].projectID);
+                projectID = proj_query.getExistingUsers[0].accepted[i].projectID;
+                _context3.next = 22;
+                return graphQLFetch(get_project_from_ID, {
+                  projectID: projectID
+                });
+
+              case 22:
+                proj_data = _context3.sent;
+                data_obtained.push(proj_data.getProjectDetailsFromProjectID[0]);
+
+              case 24:
+                i++;
+                _context3.next = 17;
+                break;
+
+              case 27:
+                console.log(data_obtained);
+                this.setState({
+                  userReq: result.data.getExistingUsers,
+                  data: data_obtained
+                });
+
+              case 29:
               case "end":
-                return _context.stop();
+                return _context3.stop();
             }
           }
-        }, _callee, this);
+        }, _callee3, this);
       }));
 
       function loadData() {
-        return _loadData.apply(this, arguments);
+        return _loadData2.apply(this, arguments);
       }
 
       return loadData;
@@ -1717,14 +1867,14 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
   }, {
     key: "addproject",
     value: function () {
-      var _addproject = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(field) {
+      var _addproject = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(field) {
         var query, response, l, newList;
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
                 query = "mutation addProjectDetails($field: ProjectData!) {\n                    addProjectDetails(field : $field)\n                {\n                    name\n                }\n        }";
-                _context2.next = 3;
+                _context4.next = 3;
                 return fetch('http://localhost:5000/graphql', {
                   method: 'POST',
                   headers: {
@@ -1739,7 +1889,7 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
                 });
 
               case 3:
-                response = _context2.sent;
+                response = _context4.sent;
                 l = this.state.data.length + 1;
                 newList = this.state.data.slice();
                 newList.push(field);
@@ -1750,13 +1900,13 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
 
               case 8:
               case "end":
-                return _context2.stop();
+                return _context4.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee4, this);
       }));
 
-      function addproject(_x2) {
+      function addproject(_x3) {
         return _addproject.apply(this, arguments);
       }
 
@@ -1765,14 +1915,14 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
   }, {
     key: "createUserReq",
     value: function () {
-      var _createUserReq = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(field) {
+      var _createUserReq = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(field) {
         var query, response;
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 query = "mutation addNewRequests($field: RequestData!){\n                    addNewRequests(field : $field)\n                {\n                    name\n                }\n        }";
-                _context3.next = 3;
+                _context5.next = 3;
                 return fetch('http://localhost:5000/graphql', {
                   method: 'POST',
                   headers: {
@@ -1787,17 +1937,17 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
                 });
 
               case 3:
-                response = _context3.sent;
+                response = _context5.sent;
 
               case 4:
               case "end":
-                return _context3.stop();
+                return _context5.stop();
             }
           }
-        }, _callee3);
+        }, _callee5);
       }));
 
-      function createUserReq(_x3) {
+      function createUserReq(_x4) {
         return _createUserReq.apply(this, arguments);
       }
 
@@ -1824,7 +1974,7 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
         addproject: this.addproject,
         data: this.state.data
       })), this.state.d == '3' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(My_Projects, {
-        data: this.props.data
+        data: this.state.data
       })), this.state.d == '4' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Adding_Members, {
         createUserReq: this.createUserReq,
         data: this.props.data
@@ -1866,6 +2016,9 @@ var DisplayTabs = /*#__PURE__*/function (_React$Component33) {
     key: "render",
     value: function render() {
       var _this22 = this;
+
+      console.log("In DisplayTabs");
+      console.log(this.props.projectID);
 
       var onClickStatus = function onClickStatus() {
         _this22.setState({
@@ -2002,21 +2155,29 @@ var DisplayTabs = /*#__PURE__*/function (_React$Component33) {
       }, "Scheduling"), /*#__PURE__*/React.createElement("br", null)), /*#__PURE__*/React.createElement("div", {
         className: "projectdiv"
       }, this.state.isStatusButtonPressed ? /*#__PURE__*/React.createElement(GenericDiv, {
-        comp_name: "Status"
+        comp_name: "Status",
+        projectID: this.props.projectID
       }) : "", this.state.isLiteratureSurveyButtonPressed ? /*#__PURE__*/React.createElement(GenericDiv, {
-        comp_name: "Literature Survey"
+        comp_name: "Literature Survey",
+        projectID: this.props.projectID
       }) : "", this.state.isProblemFormulationButtonPressed ? /*#__PURE__*/React.createElement(GenericDiv, {
-        comp_name: "Problem Formulation"
+        comp_name: "Problem Formulation",
+        projectID: this.props.projectID
       }) : "", this.state.isExperimentationButtonPressed ? /*#__PURE__*/React.createElement(GenericDiv, {
-        comp_name: "Experimentation"
+        comp_name: "Experimentation",
+        projectID: this.props.projectID
       }) : "", this.state.isSourceCodeButtonPressed ? /*#__PURE__*/React.createElement(GenericDiv, {
-        comp_name: "Source Code"
+        comp_name: "Source Code",
+        projectID: this.props.projectID
       }) : "", this.state.isPaperDraftButtonPressed ? /*#__PURE__*/React.createElement(GenericDiv, {
-        comp_name: "Paper Draft"
+        comp_name: "Paper Draft",
+        projectID: this.props.projectID
       }) : "", this.state.isPaperSubmissionButtonPressed ? /*#__PURE__*/React.createElement(GenericDiv, {
-        comp_name: "Paper Submission"
+        comp_name: "Paper Submission",
+        projectID: this.props.projectID
       }) : "", this.state.isSchedulingButtonPressed ? /*#__PURE__*/React.createElement(GenericDiv, {
-        comp_name: "Scheduling"
+        comp_name: "Scheduling",
+        projectID: this.props.projectID
       }) : "")));
     }
   }]);

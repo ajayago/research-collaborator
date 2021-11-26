@@ -701,9 +701,47 @@ class GenericDiv extends React.Component {
         this.state = { activeTabList: [false, false, false, false, false, false] };
         this.updateTabList = this.updateTabList.bind(this);
     }
-    updateTabList(tablist) {
+    async loadData(){
+        const query = `query getProjectDetailsInner($projectID: String!)
+        {
+            getProjectDetailsInner(projectID: $projectID)
+            {
+                projectID
+                activeTabList
+            }
+        }`
+        const projectID = this.props.projectID;
+        console.log("In GenericDiv");
+        console.log(projectID);
+        const response = await graphQLFetch(query, { projectID });
+        console.log(response);
+        const tablist = response.getProjectDetailsInner.activeTabList;
+        console.log(tablist);
+        this.setState({activeTabList: tablist});
+
+    }
+    componentDidMount() {
+        this.loadData()
+    }
+    async updateTabList(tablist) {
         console.log(tablist);
         this.setState({ activeTabList: tablist });
+        const query = `mutation updateActiveTabList($projectID : String!, $activeTabList: [Boolean])
+        {
+            updateActiveTabList(projectID : $projectID, activeTabList: $activeTabList)
+            {
+                projectID
+                activeTabList
+            }
+        }`;
+        const projectID = this.props.projectID;
+        const activeTabList = this.state.activeTabList;
+
+        const response = await fetch('http://localhost:5000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { projectID, activeTabList } })
+        });
     }
     render() {
         const comp_name = this.props.comp_name;
@@ -713,32 +751,32 @@ class GenericDiv extends React.Component {
         }
         var res = <div>Hi, you are at {comp_name}!</div>;
         if (comp_name === "Status") {
-            res = <StatusDiv updateTabList={this.updateTabList} activeTabList={this.state.activeTabList} />;
+            res = <StatusDiv updateTabList={this.updateTabList} activeTabList={this.state.activeTabList} projectID={this.props.projectID}/>;
         }
         if (comp_name === "Literature Survey") {
-            res = <LiteratureSurvey />;
+            res = <LiteratureSurvey projectID={this.props.projectID}/>;
         }
         if (comp_name === "Problem Formulation") {
-            res = <ProblemFormulation />;
+            res = <ProblemFormulation projectID={this.props.projectID}/>;
         }
         if (comp_name === "Experimentation") {
-            res = <Experimentation />;
+            res = <Experimentation projectID={this.props.projectID}/>;
         }
 
         if (comp_name === "Source Code") {
-            res = <Sourcecode />;
+            res = <Sourcecode projectID={this.props.projectID}/>;
         }
 
         if (comp_name === "Paper Draft") {
-            res = <PaperDraft />;
+            res = <PaperDraft projectID={this.props.projectID}/>;
         }
 
         if (comp_name === "Paper Submission") {
-            res = <PaperSub />;
+            res = <PaperSub projectID={this.props.projectID}/>;
         }
 
         if (comp_name === "Scheduling") {
-            res = <Scheduling />;
+            res = <Scheduling projectID={this.props.projectID}/>;
         }
 
 
@@ -852,12 +890,15 @@ class Temp_display extends React.Component {
         this.setState({ d: '2' });
     }
     render() {
+        const localdata = this.props.data;
+        console.log("In Temp_Display");
+        console.log(localdata['projectID']);
         return (
             <div>
                 {this.state.d == '1' &&
                     < div >
                         < React.Fragment >
-                            <DisplayTabs />
+                            <DisplayTabs projectID={localdata.projectID}/>
                         </React.Fragment >
                         <button className="button_navigation_half" onClick={this.handleSubmit}> Go Back </button>
                     </div>
@@ -882,13 +923,15 @@ class Projects_Display extends React.Component {
     }
     render() {
         const t = this.props.data;
+        console.log("In Projects_Display");
+        console.log(t);
         return (
             <div>
                 {this.state.d == '1' &&
                     <button className="project_class" onClick={this.handleSubmit}>
                         <div className="project_class">
                             <h3 className="card_header">{t.name}</h3>
-                            <p>Project Description: {t.project_desc}</p>
+                            <p>Project Description: {t.desc}</p>
                             <p>Project Member: {t.owner}</p>
                             <p>Project ID  : {t.projectID}</p>
                         </div>
@@ -917,6 +960,8 @@ class My_Projects extends React.Component {
         this.setState({ d: '2' });
     }
     render() {
+        console.log("In My_Projects");
+        console.log(this.props.data);
         const d = this.props.data.map(r => <Projects_Display data={r} />);
         return (
             <div>
@@ -1042,16 +1087,18 @@ class Dashboard extends React.Component {
                 username
                 pending
                 {
-                    name
-                    role
+                    projectID
+                }
+                accepted
+                {
                     projectID
                 }
             }
         }`;
 
-        const username = "e0674494@u.nus.edu";
+        // const username = "e0674494@u.nus.edu";
         //const response = await graphQLFetch(query, { username });
-
+        const username = activeuser;
         const response = await fetch('http://localhost:5000/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1059,9 +1106,32 @@ class Dashboard extends React.Component {
         });
 
         const body = await response.text();
-        const result = JSON.parse(body)
-        console.log(response);
-        this.setState({ userReq: result.data.getExistingUsers });
+        const result = JSON.parse(body);
+        // console.log(result.data.getExistingUsers);
+        // get list of project IDs for the user and assign to data state
+        const proj_query = await graphQLFetch(query, { username });
+        const user_accepted_projects = [];
+        console.log("User accepted projects");
+        const get_project_from_ID = `query getProjectDetailsFromProjectID($projectID : String!)
+        {
+            getProjectDetailsFromProjectID(projectID : $projectID)
+            {
+                name
+                desc
+                owner
+                projectID
+            }
+        }`;
+        var data_obtained = [];
+        for(var i = 0; i < proj_query.getExistingUsers[0].accepted.length; i++){
+            user_accepted_projects.push(proj_query.getExistingUsers[0].accepted[i].projectID);
+            const projectID = proj_query.getExistingUsers[0].accepted[i].projectID;
+            const proj_data = await graphQLFetch(get_project_from_ID, { projectID });
+            data_obtained.push(proj_data.getProjectDetailsFromProjectID[0]);
+        }
+        console.log(data_obtained);
+        this.setState({ userReq: result.data.getExistingUsers, data: data_obtained });
+        
     }
 
 
@@ -1130,7 +1200,7 @@ class Dashboard extends React.Component {
                 {
                     this.state.d == '3' &&
                     <div>
-                        <My_Projects data={this.props.data} />
+                        <My_Projects data={this.state.data} />
                     </div>
                 }
                 {
@@ -1165,10 +1235,11 @@ class DisplayTabs extends React.Component {
             isPaperSubmissionButtonPressed: false,
             isSchedulingButtonPressed: false,
             isDashboardButtonPressed: false
-
         };
     }
     render() {
+        console.log("In DisplayTabs");
+        console.log(this.props.projectID);
         const onClickStatus = () => {
             this.setState({
                 isStatusButtonPressed: true,
@@ -1305,14 +1376,14 @@ class DisplayTabs extends React.Component {
                         <br />
                     </div>
                     <div className="projectdiv">
-                        {this.state.isStatusButtonPressed ? <GenericDiv comp_name="Status" /> : ""}
-                        {this.state.isLiteratureSurveyButtonPressed ? <GenericDiv comp_name="Literature Survey" /> : ""}
-                        {this.state.isProblemFormulationButtonPressed ? <GenericDiv comp_name="Problem Formulation" /> : ""}
-                        {this.state.isExperimentationButtonPressed ? <GenericDiv comp_name="Experimentation" /> : ""}
-                        {this.state.isSourceCodeButtonPressed ? <GenericDiv comp_name="Source Code" /> : ""}
-                        {this.state.isPaperDraftButtonPressed ? <GenericDiv comp_name="Paper Draft" /> : ""}
-                        {this.state.isPaperSubmissionButtonPressed ? <GenericDiv comp_name="Paper Submission" /> : ""}
-                        {this.state.isSchedulingButtonPressed ? <GenericDiv comp_name="Scheduling" /> : ""}
+                        {this.state.isStatusButtonPressed ? <GenericDiv comp_name="Status" projectID={this.props.projectID}/> : ""}
+                        {this.state.isLiteratureSurveyButtonPressed ? <GenericDiv comp_name="Literature Survey" projectID={this.props.projectID}/> : ""}
+                        {this.state.isProblemFormulationButtonPressed ? <GenericDiv comp_name="Problem Formulation" projectID={this.props.projectID}/> : ""}
+                        {this.state.isExperimentationButtonPressed ? <GenericDiv comp_name="Experimentation" projectID={this.props.projectID}/> : ""}
+                        {this.state.isSourceCodeButtonPressed ? <GenericDiv comp_name="Source Code" projectID={this.props.projectID}/> : ""}
+                        {this.state.isPaperDraftButtonPressed ? <GenericDiv comp_name="Paper Draft" projectID={this.props.projectID}/> : ""}
+                        {this.state.isPaperSubmissionButtonPressed ? <GenericDiv comp_name="Paper Submission" projectID={this.props.projectID}/> : ""}
+                        {this.state.isSchedulingButtonPressed ? <GenericDiv comp_name="Scheduling" projectID={this.props.projectID}/> : ""}
 
                     </div>
                 </div>

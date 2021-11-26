@@ -40,13 +40,16 @@ const resolvers = {
         getOrganization,
         getExistingUsers,
         getAllOrganization,
-        getProjectDetails
+        getProjectDetails,
+        getProjectDetailsFromProjectID,
+        getProjectDetailsInner
     },
     Mutation: {
         addOrganization,
         addNewUser,
         addProjectDetails,
-        addNewRequests
+        addNewRequests,
+        updateActiveTabList
 
     },
     GraphQLDate
@@ -79,6 +82,31 @@ async function getProjectDetails(_, { username }) {
     console.log("list acquired");
     return lis;
 }
+
+async function getProjectDetailsFromProjectID(_, {projectID}){
+    // console.log(projectID);
+    const project_from_id = await db_proj.collection('projectDB').find({projectID: projectID}).toArray();
+    console.log("got the project details from project ID");
+    return project_from_id;
+}
+
+async function getProjectDetailsInner(_, {projectID}){
+    const project_details_from_id = await db_proj.collection('projectDetails').find({projectID: projectID}).toArray();
+    console.log(project_details_from_id[0]);
+    if (project_details_from_id.length > 0){
+        return project_details_from_id[0];
+    }
+    else{
+        return {projectID: projectID, activeTabList: [false, false, false, false, false, false]};
+    }
+}
+
+async function updateActiveTabList(_,{projectID, activeTabList}){
+    const df = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $set: { "activeTabList": activeTabList } });
+    const res = {projectID: projectID, activeTabList: activeTabList};
+    return res;
+}
+
 async function addProjectDetails(_, { field }) {
     console.log(field);
     try {
@@ -89,6 +117,12 @@ async function addProjectDetails(_, { field }) {
         alert("Key Taken");
     }
     const f = { name: field.name, owner: field.owner, projectID: field.projectID, desc: field.desc };
+    // add the new project to the user who created the project under accepted list
+    const users = await db.collection('users').find({ username: field.owner }).toArray();
+    console.log("Owner is");
+    console.log(users);
+    const df_temp = await db.collection('users').updateOne({ username: field.owner }, { $push: { "accepted": field } });
+    const addprojectdetails = await db_proj.collection('projectDetails').insertOne({projectID: field.projectID, activeTabList: [false, false, false, false, false, false]});
     return f
 }
 
