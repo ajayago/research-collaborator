@@ -1,37 +1,37 @@
 const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
 
 function jsonDateReviver(key, value) {
-  if (dateRegex.test(value)) return new Date(value);
-  return value;
+    if (dateRegex.test(value)) return new Date(value);
+    return value;
 }
 
 async function graphQLFetch(query, variables = {}) {
     try {
-      const response = await fetch("http://localhost:5000/graphql", {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify({ query, variables })
-      });
-      const body = await response.text();
-      const result = JSON.parse(body, jsonDateReviver);
-  
-      if (result.errors) {
-        const error = result.errors[0];
-        if (error.extensions.code == 'BAD_USER_INPUT') {
-          const details = error.extensions.exception.errors.join('\n ');
-          alert(`${error.message}:\n ${details}`);
-        } else {
-          alert(`${error.extensions.code}: ${error.message}`);
+        const response = await fetch("http://localhost:5000/graphql", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables })
+        });
+        const body = await response.text();
+        const result = JSON.parse(body, jsonDateReviver);
+
+        if (result.errors) {
+            const error = result.errors[0];
+            if (error.extensions.code == 'BAD_USER_INPUT') {
+                const details = error.extensions.exception.errors.join('\n ');
+                alert(`${error.message}:\n ${details}`);
+            } else {
+                alert(`${error.extensions.code}: ${error.message}`);
+            }
         }
-      }
-      return result.data;
+        return result.data;
     } catch (e) {
-      alert(`Error in sending data to server: ${e.message}`);
+        alert(`Error in sending data to server: ${e.message}`);
     }
 }
 
-class AddUser extends React.Component{
-    constructor(){
+class AddUser extends React.Component {
+    constructor() {
         super();
         this.state = {
             google_auth: false,
@@ -40,42 +40,43 @@ class AddUser extends React.Component{
         };
         this.change = this.change.bind(this);
     }
-    change(event){
+    change(event) {
         console.log(event.target.value);
-        if (event.target.value == "Yes"){
-            this.setState({google_auth: true, selected_value: "Yes", password: "xxxxxxxx"});
+        if (event.target.value == "Yes") {
+            this.setState({ google_auth: true, selected_value: "Yes", password: "xxxxxxxx" });
         }
-        else{
-            this.setState({google_auth: false, selected_value: "No"});
+        else {
+            this.setState({ google_auth: false, selected_value: "No" });
         }
     }
-    render(){
+    render() {
         const handleSubmit = (e) => {
             e.preventDefault();
             const form = document.forms.addUser;
             let pass;
-            if (this.state.google_auth){
+            if (this.state.google_auth) {
                 pass = this.state.password;
             }
-            else{
+            else {
                 pass = form.password.value;
             }
             const user = {
-                username: form.username.value, 
+                username: form.username.value,
                 password: pass,
                 org_short_name: form.org_short_name.value,
-                google_auth: this.state.google_auth
+                google_auth: this.state.google_auth,
+                pending: []
             }
             console.log(user);
             this.props.createUser(user);
             form.username.value = "";
-            if (!this.state.google_auth){
+            if (!this.state.google_auth) {
                 form.password.value = "";
             }
             form.org_short_name.value = "";
         }
-        
-        return(
+
+        return (
             <div className="column">
                 <form name="addUser" onSubmit={handleSubmit}>
                     <label>
@@ -93,12 +94,12 @@ class AddUser extends React.Component{
                         </select>
                     </label>
                     <br />
-                    {this.state.google_auth? null: 
-                    <label>
-                        Enter password
-                        <br />
-                        <input type="password" name="password" id="password" placeholder="Password" />
-                    </label>}
+                    {this.state.google_auth ? null :
+                        <label>
+                            Enter password
+                            <br />
+                            <input type="password" name="password" id="password" placeholder="Password" />
+                        </label>}
                     <br />
                     <label>
                         Select Organization
@@ -119,8 +120,8 @@ class AddUser extends React.Component{
     }
 }
 
-class DisplayUserCreationForm extends React.Component{
-    constructor(){
+class DisplayUserCreationForm extends React.Component {
+    constructor() {
         super();
         this.state = {
             organizations: [],
@@ -130,24 +131,24 @@ class DisplayUserCreationForm extends React.Component{
         this.getOrgs = this.getOrgs.bind(this);
     };
 
-    async getOrgs(){
+    async getOrgs() {
         const allorgs = `query getAllOrganization($org: String){
             getAllOrganization(org: $org) {
                 org_short_name
             }
         }`;
         const teststring = "";
-        const data = await graphQLFetch(allorgs, {teststring});
-        this.setState({organizations: data.getAllOrganization}); // to list all orgs for user to select from
+        const data = await graphQLFetch(allorgs, { teststring });
+        this.setState({ organizations: data.getAllOrganization }); // to list all orgs for user to select from
     }
 
-    async createUser(user){
-        if (!user.username){
-            this.setState({errormessage:"Please enter valid user name!"});
+    async createUser(user) {
+        if (!user.username) {
+            this.setState({ errormessage: "Please enter valid user name!" });
             return;
         }
-        if (!user.password){
-            this.setState({errormessage:"Please enter valid password!"});
+        if (!user.password) {
+            this.setState({ errormessage: "Please enter valid password!" });
             return;
         }
         const users_query = `query getExistingUsers($username: String!){
@@ -155,33 +156,33 @@ class DisplayUserCreationForm extends React.Component{
                 username
             }
         }`;
-        
+
         const username = user.username;
-        const user_data = await graphQLFetch(users_query, {username});
-        if (user_data.getExistingUsers.length > 0){
-            this.setState({errormessage:"User name already in use!"});
+        const user_data = await graphQLFetch(users_query, { username });
+        if (user_data.getExistingUsers.length > 0) {
+            this.setState({ errormessage: "User name already in use!" });
             return;
         }
-        const query =  `mutation addNewUser($user: UserInputs!){
+        const query = `mutation addNewUser($user: UserInputs!){
             addNewUser(user: $user) {
                 _id
             }
         }`;
-        const data = await graphQLFetch(query, {user});
-        this.setState({errormessage: "User Added!"});
+        const data = await graphQLFetch(query, { user });
+        this.setState({ errormessage: "User Added!" });
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.getOrgs();
     }
 
-    render(){
-        return(
-        <React.Fragment>
-            <AddUser createUser={this.createUser} orgs={this.state.organizations}/>
-            <br/>
-            <p>{this.state.errormessage ? this.state.errormessage : null}</p>
-        </React.Fragment>
+    render() {
+        return (
+            <React.Fragment>
+                <AddUser createUser={this.createUser} orgs={this.state.organizations} />
+                <br />
+                <p>{this.state.errormessage ? this.state.errormessage : null}</p>
+            </React.Fragment>
         );
     }
 }

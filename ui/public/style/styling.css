@@ -183,7 +183,7 @@ body{
     margin-top: 10px;
 }
 
-.project_name , .project_description, .user_email_id, .user_password, .org_name, .org_short_name, .org_id, .user_email_address
+.project_name , .project_description, .user_email_id, .user_password, .org_name, .org_short_name, .org_id, .user_email_address , .project_key
 {
     width: 50%;
     border-radius: 4px;
@@ -223,7 +223,7 @@ body{
 
 }
 
-.username , .user_role
+.username , .user_role , .project_key
 {
     width: 50%;
     border-radius: 4px;

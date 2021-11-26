@@ -13,28 +13,106 @@ input OrganizationInputs {
     org_short_name: String!
 }
 
+type pending_output_user
+{
+    name: String!
+    role: String!
+    projectID : String!
+}
+
 type User {
     _id: ID!
     username: String!
     password: String!
     org_short_name: String!
     google_auth: Boolean!
+    pending: [pending_output_user]!
+    
 }
+
+input pending_requests
+{
+    name: String
+    role: String
+}
+
+input collab_req
+{
+    name: String
+    role: String
+}
+
+
+
+type pending_output
+{
+    name: String
+    role: String
+}
+
+
+
+type collab_output
+{
+    name: String
+    role: String
+}
+
+
+input RequestData
+{
+    name: String!
+    role: String!
+    projectID: String!
+}
+
 
 input UserInputs {
     username: String!
     password: String!
     org_short_name: String!
     google_auth: Boolean = false
+    pending: [RequestData]
+}
+
+input ProjectData
+{
+    projectID: String! 
+    name: String! 
+    owner: String!
+    desc: String!
+    pending: [pending_requests]
+    collab:  [collab_req]
+}
+
+type ProjectRec
+{
+    projectID : String!
+    name: String!
+    owner: String!
+    desc: String!
+    
+}
+
+type OutputRequest
+{
+    name: String!
+    role: String!
+    projectID: String!
+
 }
 
 type Query {
     getOrganization(org_short_name: String!): [Organization!]!
     getExistingUsers(username: String!): [User!]!
     getAllOrganization(org: String=""): [Organization!]!
+    getProjectDetails(owner : String!): [ProjectRec!]!
 }
 
 type Mutation {
     addOrganization(org: OrganizationInputs!): Organization!
     addNewUser(user: UserInputs!): User!
+    addProjectDetails(field : ProjectData!): ProjectRec!
+    addNewRequests(field : RequestData!): OutputRequest!
+
 }

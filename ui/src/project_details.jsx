@@ -3,6 +3,39 @@ const SourceCodeList = [];
 const Displist = [];
 const activeuser = window.sessionStorage.getItem("username");
 console.log(activeuser);
+
+const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
+
+function jsonDateReviver(key, value) {
+    if (dateRegex.test(value)) return new Date(value);
+    return value;
+}
+
+async function graphQLFetch(query, variables = {}) {
+    try {
+        const response = await fetch("http://localhost:5000/graphql", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables })
+        });
+        const body = await response.text();
+        const result = JSON.parse(body, jsonDateReviver);
+
+        if (result.errors) {
+            const error = result.errors[0];
+            if (error.extensions.code == 'BAD_USER_INPUT') {
+                const details = error.extensions.exception.errors.join('\n ');
+                alert(`${error.message}:\n ${details}`);
+            } else {
+                alert(`${error.extensions.code}: ${error.message}`);
+            }
+        }
+        return result.data;
+    } catch (e) {
+        alert(`Error in sending data to server: ${e.message}`);
+    }
+}
+
 class DisplayHeader extends React.Component {
     render() {
         return (
@@ -379,6 +412,83 @@ class Sourcecode extends React.Component {
     }
 
 }
+class Adding_Members extends React.Component {
+    constructor() {
+        super();
+        this.state = { d: '1' };
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.goback = this.goback.bind(this);
+    }
+
+
+    handleSubmit(e) {
+        e.preventDefault();
+        const form = document.forms.add_user;
+
+
+
+        // alert("inside handler");
+
+        const field = {
+            name: form.user_id.value, role: form.user_role.value, projectID: form.project_id.value
+        };
+
+        this.props.createUserReq(field);
+        // alert("field designed");
+        form.user_id.value = "";
+        form.user_role.value = "";
+        form.project_id.value = "";
+
+    }
+    goback() {
+        this.setState({ d: '2' });
+    }
+
+
+
+    render() {
+        return (
+            <div>
+                {
+                    this.state.d == '1' &&
+                    <div>
+                        <form name="add_user" onSubmit={this.handleSubmit}>
+                            <div className="input">
+                                <label for="user_id">Enter User ID</label>
+                                <div>
+                                    <input type="text" className="project_name" id="user_id" name="user_id" placeholder="Enter ID"></input>
+                                </div>
+                            </div>
+                            <div className="input">
+                                <label for="user_role">Enter User Role</label>
+                                <div>
+                                    <input type="text" className="project_name" id="user_role" name="user_role" placeholder="Enter Role"></input>
+                                </div>
+                            </div>
+                            <div className="input">
+                                <label for="project_id">Enter Project Key</label>
+                                <div>
+                                    <input type="text" className="project_name" id="project_id" name="project_id" placeholder="Enter Key"></input>
+                                </div>
+                            </div>
+                            <button className="create_project_button">Add User</button>
+                        </form>
+                        <button className="create_project_button" onClick={this.goback}> Go to Dashboard</button>
+                    </div>
+
+                }
+                {
+
+                    this.state.d == '2' &&
+                    <div>
+                        <Dashboard data={this.props.data} />
+                    </div>
+
+                }
+            </div>
+        );
+    }
+}
 class PaperDraft extends React.Component {
     constructor() {
         super();
@@ -630,6 +740,10 @@ class GenericDiv extends React.Component {
         if (comp_name === "Scheduling") {
             res = <Scheduling />;
         }
+
+
+
+
         return (
             <React.Fragment>
                 {res}
@@ -649,17 +763,22 @@ class CreateProject extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         const form = document.forms.project_add;
+
+        /*
         const field = {
-            project_name: form.project_name.value, project_desc: form.project_desc.value,
-            user_name: form.user_name.value, user_role: form.user_role.value
-        }
+                    project_name: form.project_name.value, project_desc: form.project_desc.value,
+                user_name: form.user_name.value, user_role: form.user_role.value, projectID: form.project_key.value
+        };
+                */
+        const field = {
+            name: form.project_name.value, projectID: form.project_key.value, owner: activeuser,
+            desc: form.project_desc.value, pending: [], collab: []
+        };
 
         this.props.addproject(field);
         form.project_name.value = "";
         form.project_desc.value = "";
-        form.user_name.value = "";
-        form.user_role.value = "";
-
+        form.project_key.value = "";
     }
 
     goback() {
@@ -687,6 +806,15 @@ class CreateProject extends React.Component {
                                 </div>
                             </div>
 
+
+                            <div className="input">
+                                <label for="project_key">Enter 4 letter Project key</label>
+                                <div>
+                                    <input type="text" className="project_key" id="project_key" name="project_key" placeholder="Enter Project Key"></input>
+                                </div>
+                            </div>
+
+                            {/*  
                             <div className="add_user">
                                 <label className="users_label">Add Other Users to Project</label>
 
@@ -699,6 +827,8 @@ class CreateProject extends React.Component {
                                     <input type="text" id="user_role" className="user_role" placeholder="User Role" name="user_role"></input>
                                 </div>
                             </div>
+                            */}
+
 
                             <button className="create_project_button">Create Project</button>
                         </form>
@@ -757,10 +887,10 @@ class Projects_Display extends React.Component {
                 {this.state.d == '1' &&
                     <button className="project_class" onClick={this.handleSubmit}>
                         <div className="project_class">
-                            <h3 className="card_header">{t.project_name}</h3>
+                            <h3 className="card_header">{t.name}</h3>
                             <p>Project Description: {t.project_desc}</p>
-                            <p>Project Member: {t.user_name}</p>
-                            <p>Member Role : {t.user_role}</p>
+                            <p>Project Member: {t.owner}</p>
+                            <p>Project ID  : {t.projectID}</p>
                         </div>
                     </button>
                 }
@@ -797,7 +927,7 @@ class My_Projects extends React.Component {
                             {d}
                         </div>
 
-                        <button className="button_navigation_half" onClick={this.handleSubmit}>Go to Dashboard</button>
+                        <button className="create_project_button" onClick={this.handleSubmit}>Go to Dashboard</button>
                     </div>
                 }
                 {
@@ -811,14 +941,85 @@ class My_Projects extends React.Component {
 
     }
 }
+class CreateDiv extends React.Component {
+    render() {
+        const t = this.props.data;
+        const role = t.role;
+        const id = t.projectID;
+        return (
+            <div className="project_class" >
+                <div className="project_class">
+                    <h3 className="card_header">{t.name}</h3>
+                    <p>Project Role: {role}</p>
+                    <p>Project ID: {id}</p>
+                    <button>Accept</button>
+                    <button>Reject</button>
+                </div>
+            </div>
+        );
+    }
+}
+class RequestDiv extends React.Component {
+    render() {
+        const t = this.props.data;
+        const user = t.username;
+        const p = t.pending;
+        const temp_div = p.map(val => <CreateDiv data={val} />);
+        alert("data read");
+        alert(user);
+        return (
+            <div>
+                {temp_div}
+            </div>
+        );
+    }
+
+}
+class ViewRequests extends React.Component {
+    constructor() {
+        super();
+        this.state = { d: '1', values: [] };
+    }
+
+    render() {
+        const t = this.props.data;
+        const temp_div = t.map(val => <RequestDiv data={val} />);
+
+        return (
+            <div>
+                <h3>MyRequests</h3>
+                <div>
+                    {temp_div}
+                </div>
+            </div>
+        );
+    }
+}
+
 class Dashboard extends React.Component {
 
     constructor() {
         super();
-        this.state = { data: [], d: '1' };
+        this.state = { data: [], d: '1', userReq: [] };
         this.create = this.create.bind(this);
         this.displayproj = this.displayproj.bind(this);
         this.addproject = this.addproject.bind(this);
+        this.addMembers = this.addMembers.bind(this);
+        this.createUserReq = this.createUserReq.bind(this);
+        this.viewReq = this.viewReq.bind(this);
+    }
+
+
+
+
+    componentDidMount() {
+        this.loadData()
+    }
+
+    addMembers() {
+
+        this.setState({ dat: this.state.data, d: '4' });
+
     }
     create() {
         this.setState({ data: this.state.data, d: '2' });
@@ -828,11 +1029,81 @@ class Dashboard extends React.Component {
         this.setState({ data: this.state.data, d: '3' });
     }
 
-    addproject(field) {
+    viewReq() {
+        this.setState({ data: this.state.data, d: '5' });
+    }
+
+    async loadData() {
+
+        const query = `query getExistingUsers($username : String!)
+        {
+            getExistingUsers(username : $username)
+            {
+                username
+                pending
+                {
+                    name
+                    role
+                    projectID
+                }
+            }
+        }`;
+
+        const username = "e0674494@u.nus.edu";
+        //const response = await graphQLFetch(query, { username });
+
+        const response = await fetch('http://localhost:5000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { username } })
+        });
+
+        const body = await response.text();
+        const result = JSON.parse(body)
+        console.log(response);
+        this.setState({ userReq: result.data.getExistingUsers });
+    }
+
+
+    async addproject(field) {
+
+
+        const query = `mutation addProjectDetails($field: ProjectData!) {
+                    addProjectDetails(field : $field)
+                {
+                    name
+                }
+        }`;
+
+        const response = await fetch('http://localhost:5000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { field } })
+        });
+
+
+
         const l = this.state.data.length + 1;
         const newList = this.state.data.slice();
         newList.push(field);
         this.setState({ data: newList, d: '2' });
+
+    }
+
+    async createUserReq(field) {
+        const query = `mutation addNewRequests($field: RequestData!){
+                    addNewRequests(field : $field)
+                {
+                    name
+                }
+        }`;
+
+        const response = await fetch('http://localhost:5000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { field } })
+        });
+
     }
 
     render() {
@@ -843,6 +1114,9 @@ class Dashboard extends React.Component {
                     <div className="dashboard_buttons">
                         <button className="create_pro_button" onClick={this.create}>Create Project</button>
                         <button className="view_pro_button" onClick={this.displayproj}>View My Projects</button>
+                        <button className="view_pro_button" onClick={this.addMembers}>Add Members to Projects</button>
+                        <button className="view_pro_button" onClick={this.viewReq}>View Requests</button>
+                        {/* <button className="view_pro_button" onClicl = {this.}>View My Invitations</button> */}
                     </div>
                 }
 
@@ -857,6 +1131,18 @@ class Dashboard extends React.Component {
                     this.state.d == '3' &&
                     <div>
                         <My_Projects data={this.props.data} />
+                    </div>
+                }
+                {
+                    this.state.d == '4' &&
+                    <div>
+                        <Adding_Members createUserReq={this.createUserReq} data={this.props.data} />
+                    </div>
+                }
+                {
+                    this.state.d == '5' &&
+                    <div>
+                        <ViewRequests data={this.state.userReq} />
                     </div>
                 }
             </div >
@@ -879,6 +1165,7 @@ class DisplayTabs extends React.Component {
             isPaperSubmissionButtonPressed: false,
             isSchedulingButtonPressed: false,
             isDashboardButtonPressed: false
+
         };
     }
     render() {
@@ -893,6 +1180,7 @@ class DisplayTabs extends React.Component {
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: false
 
+
             });
         };
         const onClickLiteratureSurvey = () => {
@@ -905,6 +1193,7 @@ class DisplayTabs extends React.Component {
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: false
+
 
             });
         };
@@ -919,6 +1208,7 @@ class DisplayTabs extends React.Component {
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: false
 
+
             });
         };
         const onClickExperimentation = () => {
@@ -931,6 +1221,7 @@ class DisplayTabs extends React.Component {
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: false
+
 
             });
         };
@@ -945,6 +1236,7 @@ class DisplayTabs extends React.Component {
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: false
 
+
             });
         };
         const onClickPaperDraft = () => {
@@ -957,6 +1249,7 @@ class DisplayTabs extends React.Component {
                 isPaperDraftButtonPressed: true,
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: false
+
 
             });
         };
@@ -984,8 +1277,11 @@ class DisplayTabs extends React.Component {
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: true
 
+
             });
         };
+
+
 
         return (
             <React.Fragment>
