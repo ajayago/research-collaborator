@@ -35,12 +35,42 @@ async function graphQLFetch(query, variables = {}) {
         alert(`Error in sending data to server: ${e.message}`);
     }
 }
+// Add Google Sign In user if it doesn't already exist
+async function addGoogleUser(){
+    const getuser_query = `query getExistingUsers($username : String!)
+            {
+                getExistingUsers(username : $username)
+                {
+                    username
+                }
+            }`;
+    const username = activeuser;
+    const getuser_query_res = await graphQLFetch(getuser_query, { username });
+    console.log(getuser_query_res.getExistingUsers[0]);
+    if(getuser_query_res.getExistingUsers.length == 0){ // user does not exist
+        const adduser_query = `mutation addNewUser($user: UserInputs!){
+            addNewUser(user: $user) {
+                _id
+            }
+        }`;
+        const user = {
+            username: activeuser,
+            password: "xxxxxxxx",
+            org_short_name: "XXX",
+            google_auth: true,
+            pending: [],
+            accepted: []
+        }
+        const adduser_res = await graphQLFetch(adduser_query, { user });
+        console.log("Created Google login user");
+    }
+}
+addGoogleUser();
 
 class DisplayHeader extends React.Component {
     render() {
         return (
             <div className="header" style={{ height: "5%", fontSize: "20px" }}>Open Research Framework</div>
-            /* Need to add a button to link back to Project Dashboard */
         );
     }
 }
@@ -1447,7 +1477,7 @@ class RenderProjectDetailsPage extends React.Component {
                 {
                     this.state.d == '1' &&
                     <div>
-                        <DisplayHeader />
+                        {/* <DisplayHeader /> */}
                         <Dashboard data={this.state.data} />
                     </div>
                 }

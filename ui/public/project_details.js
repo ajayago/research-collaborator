@@ -42,7 +42,8 @@ function jsonDateReviver(key, value) {
 
 function graphQLFetch(_x) {
   return _graphQLFetch.apply(this, arguments);
-}
+} // Add Google Sign In user if it doesn't already exist
+
 
 function _graphQLFetch() {
   _graphQLFetch = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(query) {
@@ -108,6 +109,64 @@ function _graphQLFetch() {
   return _graphQLFetch.apply(this, arguments);
 }
 
+function addGoogleUser() {
+  return _addGoogleUser.apply(this, arguments);
+}
+
+function _addGoogleUser() {
+  _addGoogleUser = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+    var getuser_query, username, getuser_query_res, adduser_query, user, adduser_res;
+    return regeneratorRuntime.wrap(function _callee8$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            getuser_query = "query getExistingUsers($username : String!)\n            {\n                getExistingUsers(username : $username)\n                {\n                    username\n                }\n            }";
+            username = activeuser;
+            _context8.next = 4;
+            return graphQLFetch(getuser_query, {
+              username: username
+            });
+
+          case 4:
+            getuser_query_res = _context8.sent;
+            console.log(getuser_query_res.getExistingUsers[0]);
+
+            if (!(getuser_query_res.getExistingUsers.length == 0)) {
+              _context8.next = 13;
+              break;
+            }
+
+            // user does not exist
+            adduser_query = "mutation addNewUser($user: UserInputs!){\n            addNewUser(user: $user) {\n                _id\n            }\n        }";
+            user = {
+              username: activeuser,
+              password: "xxxxxxxx",
+              org_short_name: "XXX",
+              google_auth: true,
+              pending: [],
+              accepted: []
+            };
+            _context8.next = 11;
+            return graphQLFetch(adduser_query, {
+              user: user
+            });
+
+          case 11:
+            adduser_res = _context8.sent;
+            console.log("Created Google login user");
+
+          case 13:
+          case "end":
+            return _context8.stop();
+        }
+      }
+    }, _callee8);
+  }));
+  return _addGoogleUser.apply(this, arguments);
+}
+
+addGoogleUser();
+
 var DisplayHeader = /*#__PURE__*/function (_React$Component) {
   _inherits(DisplayHeader, _React$Component);
 
@@ -128,9 +187,7 @@ var DisplayHeader = /*#__PURE__*/function (_React$Component) {
           height: "5%",
           fontSize: "20px"
         }
-      }, "Open Research Framework")
-      /* Need to add a button to link back to Project Dashboard */
-      ;
+      }, "Open Research Framework");
     }
   }]);
 
@@ -2265,7 +2322,7 @@ var RenderProjectDetailsPage = /*#__PURE__*/function (_React$Component34) {
   _createClass(RenderProjectDetailsPage, [{
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(DisplayHeader, null), /*#__PURE__*/React.createElement(Dashboard, {
+      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Dashboard, {
         data: this.state.data
       })));
     }

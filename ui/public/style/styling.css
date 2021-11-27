@@ -295,3 +295,19 @@ body{
     width: 30%;
     margin: 2px;
 }
+
+.logoutbutton
+{
+    border-radius: 5px;
+    height: 100%;
+    width: auto;
+    background-color: darkslategrey;
+    color: snow;
+    float: right;
+}
+
+.logoutbutton:hover
+{
+    background-color: black;
+    color: snow;
+}
