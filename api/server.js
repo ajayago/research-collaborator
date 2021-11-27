@@ -52,7 +52,8 @@ const resolvers = {
         updateActiveTabList,
         updateLitSurvey,
         updateProblemStatement,
-        updateExperimentation
+        updateExperimentation,
+        updateComments
     },
     GraphQLDate
 };
@@ -126,6 +127,13 @@ async function updateExperimentation(_, {projectID, experimentation}){
     return res;
 }
 
+// comments update
+async function updateComments(_, {projectID, comments}){
+    const df = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $set: { "comments": comments } });
+    const res = await db_proj.collection('projectDetails').findOne({ _id: df.insertedId });
+    return res;
+}
+
 // Main info on the project
 async function addProjectDetails(_, { field }) {
     console.log(field);
@@ -147,7 +155,8 @@ async function addProjectDetails(_, { field }) {
         activeTabList: [false, false, false, false, false, false], 
         litsurveyarray: [{paper_title: "", publisher_name: "", doi: ""}],
         problemstatement: "",
-        experimentation: ""
+        experimentation: "",
+        comments: []
      });
     return f
 }

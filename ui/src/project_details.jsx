@@ -876,6 +876,90 @@ class Scheduling extends React.Component {
 
 }
 
+class AddComment extends React.Component {
+    render() {
+        const handleSubmit = (e) => {
+            e.preventDefault();
+            const form = document.forms.addcomment_form;
+            const content = form.comment.value;
+            console.log(content);
+            this.props.updateComments(content);
+            form.comment.value = "";
+        };
+        return (
+            <React.Fragment>
+                <p>Add Comment below</p>
+                <form name="addcomment_form" onSubmit={handleSubmit}>
+                    <input className="project_name" type="text" name="comment" />
+                    <button className="create_project_button">Add Comment</button>
+                </form>
+            </React.Fragment>
+        );
+    }
+}
+
+
+class Comments extends React.Component {
+    constructor(){
+        super();
+        this.state = {comments: []};
+        this.updateComments = this.updateComments.bind(this);
+    }
+    async loadData() {
+        const query = `query getProjectDetailsInner($projectID: String!)
+        {
+            getProjectDetailsInner(projectID: $projectID)
+            {
+                projectID
+                comments
+            }
+        }`
+        const projectID = this.props.projectID;
+        console.log("In Comments");
+        console.log(projectID);
+        const response = await graphQLFetch(query, { projectID });
+        console.log(response);
+        const comments = response.getProjectDetailsInner.comments;
+        this.setState({ comments: comments });
+
+    }
+    componentDidMount() {
+        this.loadData()
+    }
+    async updateComments(new_comment) {
+        const comments = this.state.comments;
+        const comment = `${activeuser}: ${new_comment}`;
+        comments.push(comment);
+        console.log(comment);
+        this.setState({ comments: comments });
+        const query = `mutation updateComments($projectID: String!, $comments: [String])
+        {
+            updateComments(projectID : $projectID, comments: $comments)
+            {
+                projectID
+            }
+        }`;
+        const projectID = this.props.projectID;
+        console.log(comments);
+        const response = await fetch('http://localhost:5000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { projectID, comments } })
+        });
+    }
+    render(){
+        const c = this.state.comments.map(i => <p>{i}</p>);
+        return (
+            <React.Fragment>
+                <div>
+                    {c}
+                </div>
+                <br />
+                <AddComment updateComments={this.updateComments} />
+            </React.Fragment>
+        );
+    }
+}
 
 class GenericDiv extends React.Component {
 
@@ -962,7 +1046,9 @@ class GenericDiv extends React.Component {
             res = <Scheduling projectID={this.props.projectID} />;
         }
 
-
+        if (comp_name === "Comments") {
+            res = <Comments projectID={this.props.projectID} />;
+        }
 
 
         return (
@@ -1463,7 +1549,8 @@ class DisplayTabs extends React.Component {
             isPaperDraftButtonPressed: false,
             isPaperSubmissionButtonPressed: false,
             isSchedulingButtonPressed: false,
-            isDashboardButtonPressed: false
+            isDashboardButtonPressed: false,
+            isCommentsButtonPressed: false
         };
     }
     render() {
@@ -1478,8 +1565,8 @@ class DisplayTabs extends React.Component {
                 isSourceCodeButtonPressed: false,
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
-                isSchedulingButtonPressed: false
-
+                isSchedulingButtonPressed: false,
+                isCommentsButtonPressed: false
 
             });
         };
@@ -1492,7 +1579,8 @@ class DisplayTabs extends React.Component {
                 isSourceCodeButtonPressed: false,
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
-                isSchedulingButtonPressed: false
+                isSchedulingButtonPressed: false,
+                isCommentsButtonPressed: false
 
 
             });
@@ -1506,7 +1594,8 @@ class DisplayTabs extends React.Component {
                 isSourceCodeButtonPressed: false,
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
-                isSchedulingButtonPressed: false
+                isSchedulingButtonPressed: false,
+                isCommentsButtonPressed: false
 
 
             });
@@ -1520,8 +1609,8 @@ class DisplayTabs extends React.Component {
                 isSourceCodeButtonPressed: false,
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
-                isSchedulingButtonPressed: false
-
+                isSchedulingButtonPressed: false,
+                isCommentsButtonPressed: false
 
             });
         };
@@ -1534,8 +1623,8 @@ class DisplayTabs extends React.Component {
                 isSourceCodeButtonPressed: true,
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
-                isSchedulingButtonPressed: false
-
+                isSchedulingButtonPressed: false,
+                isCommentsButtonPressed: false
 
             });
         };
@@ -1548,8 +1637,8 @@ class DisplayTabs extends React.Component {
                 isSourceCodeButtonPressed: false,
                 isPaperDraftButtonPressed: true,
                 isPaperSubmissionButtonPressed: false,
-                isSchedulingButtonPressed: false
-
+                isSchedulingButtonPressed: false,
+                isCommentsButtonPressed: false
 
             });
         };
@@ -1562,8 +1651,8 @@ class DisplayTabs extends React.Component {
                 isSourceCodeButtonPressed: false,
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: true,
-                isSchedulingButtonPressed: false
-
+                isSchedulingButtonPressed: false,
+                isCommentsButtonPressed: false
             });
         };
         const onClickScheduling = () => {
@@ -1575,12 +1664,25 @@ class DisplayTabs extends React.Component {
                 isSourceCodeButtonPressed: false,
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
-                isSchedulingButtonPressed: true
-
+                isSchedulingButtonPressed: true,
+                isCommentsButtonPressed: false
 
             });
         };
+        const onClickComments = () => {
+            this.setState({
+                isStatusButtonPressed: false,
+                isLiteratureSurveyButtonPressed: false,
+                isProblemFormulationButtonPressed: false,
+                isExperimentationButtonPressed: false,
+                isSourceCodeButtonPressed: false,
+                isPaperDraftButtonPressed: false,
+                isPaperSubmissionButtonPressed: false,
+                isSchedulingButtonPressed: false,
+                isCommentsButtonPressed: true
 
+            });
+        };
 
 
         return (
@@ -1604,6 +1706,8 @@ class DisplayTabs extends React.Component {
                         <br />
                         <button className="projectbutton" onClick={onClickScheduling}>Scheduling</button>
                         <br />
+                        <button className="projectbutton" onClick={onClickComments}>Comments</button>
+                        <br />
                     </div>
                     <div className="projectdiv">
                         {this.state.isStatusButtonPressed ? <GenericDiv comp_name="Status" projectID={this.props.projectID} /> : ""}
@@ -1614,7 +1718,7 @@ class DisplayTabs extends React.Component {
                         {this.state.isPaperDraftButtonPressed ? <GenericDiv comp_name="Paper Draft" projectID={this.props.projectID} /> : ""}
                         {this.state.isPaperSubmissionButtonPressed ? <GenericDiv comp_name="Paper Submission" projectID={this.props.projectID} /> : ""}
                         {this.state.isSchedulingButtonPressed ? <GenericDiv comp_name="Scheduling" projectID={this.props.projectID} /> : ""}
-
+                        {this.state.isCommentsButtonPressed ? <GenericDiv comp_name="Comments" projectID={this.props.projectID} /> : ""}
                     </div>
                 </div>
             </React.Fragment>
