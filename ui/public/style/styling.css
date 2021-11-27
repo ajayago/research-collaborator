@@ -50,6 +50,8 @@ body{
     width: 70%;
     float: left;
     padding: 2%;
+    overflow-y: scroll;
+    height: 300px
 }
 .button_navigation {
     width: 25%;
