@@ -1072,10 +1072,14 @@ class Temp_display extends React.Component {
     handleSubmit() {
         this.setState({ d: '2' });
     }
+    hideProjects(){
+        console.log("dummy function to pass as arg");
+    }
     render() {
         const localdata = this.props.data;
         console.log("In Temp_Display");
         console.log(localdata['projectID']);
+        const fromtemp = true;
         return (
             <div>
                 {this.state.d == '1' &&
@@ -1088,7 +1092,9 @@ class Temp_display extends React.Component {
                 }
                 {
                     this.state.d == '2' &&
-                    <Projects_Display data={this.props.data} />
+                    // <Projects_Display data={this.props.complete_list} />
+                    <My_Projects data={this.props.complete_list} fromtemp={true}/>
+                    // this.props.complete_list.map(r => <Projects_Display data={r} hideProjects={this.hideProjects} />)
                 }
             </div>
         );
@@ -1103,6 +1109,8 @@ class Projects_Display extends React.Component {
 
     handleSubmit() {
         this.setState({ d: '2' });
+        // to hide other projects, pass in selected projectID
+        this.props.hideProjects(this.props.data.projectID);
     }
     render() {
         const t = this.props.data;
@@ -1120,12 +1128,12 @@ class Projects_Display extends React.Component {
                         </div>
                     </button>
                 }
-                {
+                {/* {
                     this.state.d == '2' &&
                     <div>
                         <Temp_display data={this.props.data} />
                     </div>
-                }
+                } */}
             </div>
         );
     }
@@ -1135,33 +1143,63 @@ class Projects_Display extends React.Component {
 class My_Projects extends React.Component {
     constructor() {
         super();
-        this.state = { d: '1' };
+        this.state = { d: '1' , display: null};
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.hideProjects = this.hideProjects.bind(this);
     }
-
+    componentDidMount(){
+        const d = this.props.data.map(r => <Projects_Display data={r} hideProjects={this.hideProjects} />);
+        this.setState({display: d});
+    }
     handleSubmit() {
         this.setState({ d: '2' });
     }
+
+    hideProjects(projectID){
+        console.log("In hide project function");
+        console.log(projectID);
+        let disp;
+        for(var i = 0; i < this.props.data.length; i++){
+            if(this.props.data[i].projectID == projectID){
+                disp=<Temp_display data={this.props.data[i]} complete_list={this.props.data}/>;
+            }
+        }
+        this.setState({display: disp});
+    }
+
     render() {
         console.log("In My_Projects");
+        if(this.props.fromtemp == true){
+            console.log("from temp");
+            this.state.d = '3';
+        }
         //console.log(this.props.data);
-        const d = this.props.data.map(r => <Projects_Display data={r} />);
+        // const d = this.props.data.map(r => <Projects_Display data={r} hideProjects={this.hideProjects} />);
+        // this.setState({display: d});
         return (
             <div>
                 {this.state.d == '1' &&
                     <div>
                         <h1>My Projects</h1>
                         <div>
-                            {d}
+                            {this.state.display}
                         </div>
 
-                        <button className="create_project_button" onClick={this.handleSubmit}>Go to Dashboard</button>
+                        <button className="button_navigation_half" onClick={this.handleSubmit}>Go to Dashboard</button>
                     </div>
                 }
                 {
                     this.state.d == '2' &&
                     <div>
                         <Dashboard data={this.props.data} />
+                    </div>
+                }
+                {
+                    this.state.d == '3' &&
+                    <div>
+                        <div>
+                            {this.state.display}
+                        </div>
                     </div>
                 }
             </div >
@@ -1391,7 +1429,7 @@ class Dashboard extends React.Component {
                 {
                     this.state.d == '3' &&
                     <div>
-                        <My_Projects data={this.state.data} />
+                        <My_Projects data={this.state.data} fromtemp={false}/>
                     </div>
                 }
                 {
@@ -1547,6 +1585,7 @@ class DisplayTabs extends React.Component {
 
         return (
             <React.Fragment>
+                <h1>{this.props.projectID}</h1>
                 <div className="row">
                     <div className="button_navigation">
                         <button className="projectbutton" onClick={onClickStatus}>Status</button>

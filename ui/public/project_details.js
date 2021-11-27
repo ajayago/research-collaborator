@@ -1859,19 +1859,30 @@ var Temp_display = /*#__PURE__*/function (_React$Component25) {
       });
     }
   }, {
+    key: "hideProjects",
+    value: function hideProjects() {
+      console.log("dummy function to pass as arg");
+    }
+  }, {
     key: "render",
     value: function render() {
       var localdata = this.props.data;
       console.log("In Temp_Display");
       console.log(localdata['projectID']);
+      var fromtemp = true;
       return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(DisplayTabs, {
         projectID: localdata.projectID
       })), /*#__PURE__*/React.createElement("button", {
         className: "button_navigation_half",
         onClick: this.handleSubmit
-      }, " Go Back ")), this.state.d == '2' && /*#__PURE__*/React.createElement(Projects_Display, {
-        data: this.props.data
-      }));
+      }, " Go Back ")), this.state.d == '2' &&
+      /*#__PURE__*/
+      // <Projects_Display data={this.props.complete_list} />
+      React.createElement(My_Projects, {
+        data: this.props.complete_list,
+        fromtemp: true
+      }) // this.props.complete_list.map(r => <Projects_Display data={r} hideProjects={this.hideProjects} />)
+      );
     }
   }]);
 
@@ -1901,7 +1912,9 @@ var Projects_Display = /*#__PURE__*/function (_React$Component26) {
     value: function handleSubmit() {
       this.setState({
         d: '2'
-      });
+      }); // to hide other projects, pass in selected projectID
+
+      this.props.hideProjects(this.props.data.projectID);
     }
   }, {
     key: "render",
@@ -1916,9 +1929,7 @@ var Projects_Display = /*#__PURE__*/function (_React$Component26) {
         className: "project_class"
       }, /*#__PURE__*/React.createElement("h3", {
         className: "card_header"
-      }, t.name), /*#__PURE__*/React.createElement("p", null, "Project Description: ", t.desc), /*#__PURE__*/React.createElement("p", null, "Project Member: ", t.owner), /*#__PURE__*/React.createElement("p", null, "Project ID  : ", t.projectID))), this.state.d == '2' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Temp_display, {
-        data: this.props.data
-      })));
+      }, t.name), /*#__PURE__*/React.createElement("p", null, "Project Description: ", t.desc), /*#__PURE__*/React.createElement("p", null, "Project Member: ", t.owner), /*#__PURE__*/React.createElement("p", null, "Project ID  : ", t.projectID))));
     }
   }]);
 
@@ -1937,13 +1948,30 @@ var My_Projects = /*#__PURE__*/function (_React$Component27) {
 
     _this18 = _super27.call(this);
     _this18.state = {
-      d: '1'
+      d: '1',
+      display: null
     };
     _this18.handleSubmit = _this18.handleSubmit.bind(_assertThisInitialized(_this18));
+    _this18.hideProjects = _this18.hideProjects.bind(_assertThisInitialized(_this18));
     return _this18;
   }
 
   _createClass(My_Projects, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this19 = this;
+
+      var d = this.props.data.map(function (r) {
+        return /*#__PURE__*/React.createElement(Projects_Display, {
+          data: r,
+          hideProjects: _this19.hideProjects
+        });
+      });
+      this.setState({
+        display: d
+      });
+    }
+  }, {
     key: "handleSubmit",
     value: function handleSubmit() {
       this.setState({
@@ -1951,21 +1979,44 @@ var My_Projects = /*#__PURE__*/function (_React$Component27) {
       });
     }
   }, {
+    key: "hideProjects",
+    value: function hideProjects(projectID) {
+      console.log("In hide project function");
+      console.log(projectID);
+      var disp;
+
+      for (var i = 0; i < this.props.data.length; i++) {
+        if (this.props.data[i].projectID == projectID) {
+          disp = /*#__PURE__*/React.createElement(Temp_display, {
+            data: this.props.data[i],
+            complete_list: this.props.data
+          });
+        }
+      }
+
+      this.setState({
+        display: disp
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
-      console.log("In My_Projects"); //console.log(this.props.data);
+      console.log("In My_Projects");
 
-      var d = this.props.data.map(function (r) {
-        return /*#__PURE__*/React.createElement(Projects_Display, {
-          data: r
-        });
-      });
-      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", null, "My Projects"), /*#__PURE__*/React.createElement("div", null, d), /*#__PURE__*/React.createElement("button", {
-        className: "create_project_button",
+      if (this.props.fromtemp == true) {
+        console.log("from temp");
+        this.state.d = '3';
+      } //console.log(this.props.data);
+      // const d = this.props.data.map(r => <Projects_Display data={r} hideProjects={this.hideProjects} />);
+      // this.setState({display: d});
+
+
+      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", null, "My Projects"), /*#__PURE__*/React.createElement("div", null, this.state.display), /*#__PURE__*/React.createElement("button", {
+        className: "button_navigation_half",
         onClick: this.handleSubmit
       }, "Go to Dashboard")), this.state.d == '2' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Dashboard, {
         data: this.props.data
-      })));
+      })), this.state.d == '3' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", null, this.state.display)));
     }
   }]);
 
@@ -2042,16 +2093,16 @@ var ViewRequests = /*#__PURE__*/function (_React$Component30) {
   var _super30 = _createSuper(ViewRequests);
 
   function ViewRequests() {
-    var _this19;
+    var _this20;
 
     _classCallCheck(this, ViewRequests);
 
-    _this19 = _super30.call(this);
-    _this19.state = {
+    _this20 = _super30.call(this);
+    _this20.state = {
       d: '1',
       values: []
     };
-    return _this19;
+    return _this20;
   }
 
   _createClass(ViewRequests, [{
@@ -2078,23 +2129,23 @@ var Dashboard = /*#__PURE__*/function (_React$Component31) {
   var _super31 = _createSuper(Dashboard);
 
   function Dashboard() {
-    var _this20;
+    var _this21;
 
     _classCallCheck(this, Dashboard);
 
-    _this20 = _super31.call(this);
-    _this20.state = {
+    _this21 = _super31.call(this);
+    _this21.state = {
       data: [],
       d: '1',
       userReq: []
     };
-    _this20.create = _this20.create.bind(_assertThisInitialized(_this20));
-    _this20.displayproj = _this20.displayproj.bind(_assertThisInitialized(_this20));
-    _this20.addproject = _this20.addproject.bind(_assertThisInitialized(_this20));
-    _this20.addMembers = _this20.addMembers.bind(_assertThisInitialized(_this20));
-    _this20.createUserReq = _this20.createUserReq.bind(_assertThisInitialized(_this20));
-    _this20.viewReq = _this20.viewReq.bind(_assertThisInitialized(_this20));
-    return _this20;
+    _this21.create = _this21.create.bind(_assertThisInitialized(_this21));
+    _this21.displayproj = _this21.displayproj.bind(_assertThisInitialized(_this21));
+    _this21.addproject = _this21.addproject.bind(_assertThisInitialized(_this21));
+    _this21.addMembers = _this21.addMembers.bind(_assertThisInitialized(_this21));
+    _this21.createUserReq = _this21.createUserReq.bind(_assertThisInitialized(_this21));
+    _this21.viewReq = _this21.viewReq.bind(_assertThisInitialized(_this21));
+    return _this21;
   }
 
   _createClass(Dashboard, [{
@@ -2330,7 +2381,8 @@ var Dashboard = /*#__PURE__*/function (_React$Component31) {
         addproject: this.addproject,
         data: this.state.data
       })), this.state.d == '3' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(My_Projects, {
-        data: this.state.data
+        data: this.state.data,
+        fromtemp: false
       })), this.state.d == '4' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Adding_Members, {
         createUserReq: this.createUserReq,
         data: this.props.data
@@ -2349,12 +2401,12 @@ var DisplayTabs = /*#__PURE__*/function (_React$Component32) {
   var _super32 = _createSuper(DisplayTabs);
 
   function DisplayTabs() {
-    var _this21;
+    var _this22;
 
     _classCallCheck(this, DisplayTabs);
 
-    _this21 = _super32.call(this);
-    _this21.state = {
+    _this22 = _super32.call(this);
+    _this22.state = {
       isStatusButtonPressed: false,
       isLiteratureSurveyButtonPressed: false,
       isProblemFormulationButtonPressed: false,
@@ -2365,19 +2417,19 @@ var DisplayTabs = /*#__PURE__*/function (_React$Component32) {
       isSchedulingButtonPressed: false,
       isDashboardButtonPressed: false
     };
-    return _this21;
+    return _this22;
   }
 
   _createClass(DisplayTabs, [{
     key: "render",
     value: function render() {
-      var _this22 = this;
+      var _this23 = this;
 
       console.log("In DisplayTabs");
       console.log(this.props.projectID);
 
       var onClickStatus = function onClickStatus() {
-        _this22.setState({
+        _this23.setState({
           isStatusButtonPressed: true,
           isLiteratureSurveyButtonPressed: false,
           isProblemFormulationButtonPressed: false,
@@ -2390,7 +2442,7 @@ var DisplayTabs = /*#__PURE__*/function (_React$Component32) {
       };
 
       var onClickLiteratureSurvey = function onClickLiteratureSurvey() {
-        _this22.setState({
+        _this23.setState({
           isStatusButtonPressed: false,
           isLiteratureSurveyButtonPressed: true,
           isProblemFormulationButtonPressed: false,
@@ -2403,7 +2455,7 @@ var DisplayTabs = /*#__PURE__*/function (_React$Component32) {
       };
 
       var onClickProblemFormulation = function onClickProblemFormulation() {
-        _this22.setState({
+        _this23.setState({
           isStatusButtonPressed: false,
           isLiteratureSurveyButtonPressed: false,
           isProblemFormulationButtonPressed: true,
@@ -2416,7 +2468,7 @@ var DisplayTabs = /*#__PURE__*/function (_React$Component32) {
       };
 
       var onClickExperimentation = function onClickExperimentation() {
-        _this22.setState({
+        _this23.setState({
           isStatusButtonPressed: false,
           isLiteratureSurveyButtonPressed: false,
           isProblemFormulationButtonPressed: false,
@@ -2429,7 +2481,7 @@ var DisplayTabs = /*#__PURE__*/function (_React$Component32) {
       };
 
       var onClickSourceCode = function onClickSourceCode() {
-        _this22.setState({
+        _this23.setState({
           isStatusButtonPressed: false,
           isLiteratureSurveyButtonPressed: false,
           isProblemFormulationButtonPressed: false,
@@ -2442,7 +2494,7 @@ var DisplayTabs = /*#__PURE__*/function (_React$Component32) {
       };
 
       var onClickPaperDraft = function onClickPaperDraft() {
-        _this22.setState({
+        _this23.setState({
           isStatusButtonPressed: false,
           isLiteratureSurveyButtonPressed: false,
           isProblemFormulationButtonPressed: false,
@@ -2455,7 +2507,7 @@ var DisplayTabs = /*#__PURE__*/function (_React$Component32) {
       };
 
       var onClickPaperSubmission = function onClickPaperSubmission() {
-        _this22.setState({
+        _this23.setState({
           isStatusButtonPressed: false,
           isLiteratureSurveyButtonPressed: false,
           isProblemFormulationButtonPressed: false,
@@ -2468,7 +2520,7 @@ var DisplayTabs = /*#__PURE__*/function (_React$Component32) {
       };
 
       var onClickScheduling = function onClickScheduling() {
-        _this22.setState({
+        _this23.setState({
           isStatusButtonPressed: false,
           isLiteratureSurveyButtonPressed: false,
           isProblemFormulationButtonPressed: false,
@@ -2480,7 +2532,7 @@ var DisplayTabs = /*#__PURE__*/function (_React$Component32) {
         });
       };
 
-      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h1", null, this.props.projectID), /*#__PURE__*/React.createElement("div", {
         className: "row"
       }, /*#__PURE__*/React.createElement("div", {
         className: "button_navigation"
@@ -2547,16 +2599,16 @@ var RenderProjectDetailsPage = /*#__PURE__*/function (_React$Component33) {
   var _super33 = _createSuper(RenderProjectDetailsPage);
 
   function RenderProjectDetailsPage() {
-    var _this23;
+    var _this24;
 
     _classCallCheck(this, RenderProjectDetailsPage);
 
-    _this23 = _super33.call(this);
-    _this23.state = {
+    _this24 = _super33.call(this);
+    _this24.state = {
       data: [],
       d: '1'
     };
-    return _this23;
+    return _this24;
   }
 
   _createClass(RenderProjectDetailsPage, [{
