@@ -49,8 +49,10 @@ const resolvers = {
         addNewUser,
         addProjectDetails,
         addNewRequests,
-        updateActiveTabList
-
+        updateActiveTabList,
+        updateLitSurvey,
+        updateProblemStatement,
+        updateExperimentation
     },
     GraphQLDate
 };
@@ -96,17 +98,35 @@ async function getProjectDetailsInner(_, { projectID }) {
     if (project_details_from_id.length > 0) {
         return project_details_from_id[0];
     }
-    else {
-        return { projectID: projectID, activeTabList: [false, false, false, false, false, false] };
-    }
 }
 
+// Project specific updates
+// Project Status update
 async function updateActiveTabList(_, { projectID, activeTabList }) {
     const df = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $set: { "activeTabList": activeTabList } });
-    const res = { projectID: projectID, activeTabList: activeTabList };
+    const res = await db_proj.collection('projectDetails').findOne({ _id: df.insertedId });
+    return res;
+}
+// Lit surve updates
+async function updateLitSurvey(_, { projectID, litsurveyarray }){
+    const df = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $set: { "litsurveyarray": litsurveyarray } });
+    const res = await db_proj.collection('projectDetails').findOne({ _id: df.insertedId });
+    return res;
+}
+// problem statement updates
+async function updateProblemStatement(_, {projectID, problemstatement}){
+    const df = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $set: { "problemstatement": problemstatement } });
+    const res = await db_proj.collection('projectDetails').findOne({ _id: df.insertedId });
+    return res;
+}
+// experimentation updates
+async function updateExperimentation(_, {projectID, experimentation}){
+    const df = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $set: { "experimentation": experimentation } });
+    const res = await db_proj.collection('projectDetails').findOne({ _id: df.insertedId });
     return res;
 }
 
+// Main info on the project
 async function addProjectDetails(_, { field }) {
     console.log(field);
     try {
@@ -122,7 +142,13 @@ async function addProjectDetails(_, { field }) {
     console.log("Owner is");
     //console.log(users);
     const df_temp = await db.collection('users').updateOne({ username: field.owner }, { $push: { "accepted": field } });
-    const addprojectdetails = await db_proj.collection('projectDetails').insertOne({ projectID: field.projectID, activeTabList: [false, false, false, false, false, false] });
+    const addprojectdetails = await db_proj.collection('projectDetails').insertOne({ 
+        projectID: field.projectID, 
+        activeTabList: [false, false, false, false, false, false], 
+        litsurveyarray: [{paper_title: "", publisher_name: "", doi: ""}],
+        problemstatement: "",
+        experimentation: ""
+     });
     return f
 }
 

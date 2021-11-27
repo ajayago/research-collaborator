@@ -117,10 +117,27 @@ type OutputRequest
 
 }
 
+input LitSurveyItem
+{
+    paper_title: String!
+    publisher_name: String!
+    doi: String!
+}
+
+type LitSurveyItemOutput
+{
+    paper_title: String!
+    publisher_name: String!
+    doi: String!
+}
+
 type ProjectDetails
 {
     projectID: String!
     activeTabList: [Boolean!]!
+    litsurveyarray: [LitSurveyItemOutput]
+    problemstatement: String!
+    experimentation: String!
 }
 
 type Query {
@@ -138,4 +155,7 @@ type Mutation {
     addProjectDetails(field : ProjectData!): ProjectRec!
     addNewRequests(field : Requests!): OutputRequest!
     updateActiveTabList(projectID: String!, activeTabList: [Boolean]): ProjectDetails!
+    updateLitSurvey(projectID: String!, litsurveyarray: [LitSurveyItem]): ProjectDetails!
+    updateProblemStatement(projectID: String!, problemstatement: String!): ProjectDetails!
+    updateExperimentation(projectID: String!, experimentation: String!): ProjectDetails!
 }

@@ -46,21 +46,21 @@ function graphQLFetch(_x) {
 
 
 function _graphQLFetch() {
-  _graphQLFetch = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(query) {
+  _graphQLFetch = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(query) {
     var variables,
         response,
         body,
         result,
         error,
         details,
-        _args7 = arguments;
-    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+        _args13 = arguments;
+    return regeneratorRuntime.wrap(function _callee13$(_context13) {
       while (1) {
-        switch (_context7.prev = _context7.next) {
+        switch (_context13.prev = _context13.next) {
           case 0:
-            variables = _args7.length > 1 && _args7[1] !== undefined ? _args7[1] : {};
-            _context7.prev = 1;
-            _context7.next = 4;
+            variables = _args13.length > 1 && _args13[1] !== undefined ? _args13[1] : {};
+            _context13.prev = 1;
+            _context13.next = 4;
             return fetch("http://localhost:5000/graphql", {
               method: 'POST',
               headers: {
@@ -73,12 +73,12 @@ function _graphQLFetch() {
             });
 
           case 4:
-            response = _context7.sent;
-            _context7.next = 7;
+            response = _context13.sent;
+            _context13.next = 7;
             return response.text();
 
           case 7:
-            body = _context7.sent;
+            body = _context13.sent;
             result = JSON.parse(body, jsonDateReviver);
 
             if (result.errors) {
@@ -92,19 +92,19 @@ function _graphQLFetch() {
               }
             }
 
-            return _context7.abrupt("return", result.data);
+            return _context13.abrupt("return", result.data);
 
           case 13:
-            _context7.prev = 13;
-            _context7.t0 = _context7["catch"](1);
-            alert("Error in sending data to server: ".concat(_context7.t0.message));
+            _context13.prev = 13;
+            _context13.t0 = _context13["catch"](1);
+            alert("Error in sending data to server: ".concat(_context13.t0.message));
 
           case 16:
           case "end":
-            return _context7.stop();
+            return _context13.stop();
         }
       }
-    }, _callee7, null, [[1, 13]]);
+    }, _callee13, null, [[1, 13]]);
   }));
   return _graphQLFetch.apply(this, arguments);
 }
@@ -114,25 +114,25 @@ function addGoogleUser() {
 }
 
 function _addGoogleUser() {
-  _addGoogleUser = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+  _addGoogleUser = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
     var getuser_query, username, getuser_query_res, adduser_query, user, adduser_res;
-    return regeneratorRuntime.wrap(function _callee8$(_context8) {
+    return regeneratorRuntime.wrap(function _callee14$(_context14) {
       while (1) {
-        switch (_context8.prev = _context8.next) {
+        switch (_context14.prev = _context14.next) {
           case 0:
             getuser_query = "query getExistingUsers($username : String!)\n            {\n                getExistingUsers(username : $username)\n                {\n                    username\n                }\n            }";
             username = activeuser;
-            _context8.next = 4;
+            _context14.next = 4;
             return graphQLFetch(getuser_query, {
               username: username
             });
 
           case 4:
-            getuser_query_res = _context8.sent;
+            getuser_query_res = _context14.sent;
             console.log(getuser_query_res.getExistingUsers[0]);
 
             if (!(getuser_query_res.getExistingUsers.length == 0)) {
-              _context8.next = 13;
+              _context14.next = 13;
               break;
             }
 
@@ -146,63 +146,42 @@ function _addGoogleUser() {
               pending: [],
               accepted: []
             };
-            _context8.next = 11;
+            _context14.next = 11;
             return graphQLFetch(adduser_query, {
               user: user
             });
 
           case 11:
-            adduser_res = _context8.sent;
+            adduser_res = _context14.sent;
             console.log("Created Google login user");
 
           case 13:
           case "end":
-            return _context8.stop();
+            return _context14.stop();
         }
       }
-    }, _callee8);
+    }, _callee14);
   }));
   return _addGoogleUser.apply(this, arguments);
 }
 
-addGoogleUser();
+addGoogleUser(); // class DisplayHeader extends React.Component {
+//     render() {
+//         return (
+//             <div className="header" style={{ height: "5%", fontSize: "20px" }}>Open Research Framework</div>
+//         );
+//     }
+// }
 
-var DisplayHeader = /*#__PURE__*/function (_React$Component) {
-  _inherits(DisplayHeader, _React$Component);
+var StatusTab = /*#__PURE__*/function (_React$Component) {
+  _inherits(StatusTab, _React$Component);
 
-  var _super = _createSuper(DisplayHeader);
-
-  function DisplayHeader() {
-    _classCallCheck(this, DisplayHeader);
-
-    return _super.apply(this, arguments);
-  }
-
-  _createClass(DisplayHeader, [{
-    key: "render",
-    value: function render() {
-      return /*#__PURE__*/React.createElement("div", {
-        className: "header",
-        style: {
-          height: "5%",
-          fontSize: "20px"
-        }
-      }, "Open Research Framework");
-    }
-  }]);
-
-  return DisplayHeader;
-}(React.Component);
-
-var StatusTab = /*#__PURE__*/function (_React$Component2) {
-  _inherits(StatusTab, _React$Component2);
-
-  var _super2 = _createSuper(StatusTab);
+  var _super = _createSuper(StatusTab);
 
   function StatusTab() {
     _classCallCheck(this, StatusTab);
 
-    return _super2.apply(this, arguments);
+    return _super.apply(this, arguments);
   }
 
   _createClass(StatusTab, [{
@@ -221,17 +200,17 @@ var StatusTab = /*#__PURE__*/function (_React$Component2) {
   return StatusTab;
 }(React.Component);
 
-var StatusPopup = /*#__PURE__*/function (_React$Component3) {
-  _inherits(StatusPopup, _React$Component3);
+var StatusPopup = /*#__PURE__*/function (_React$Component2) {
+  _inherits(StatusPopup, _React$Component2);
 
-  var _super3 = _createSuper(StatusPopup);
+  var _super2 = _createSuper(StatusPopup);
 
   function StatusPopup() {
     var _this;
 
     _classCallCheck(this, StatusPopup);
 
-    _this = _super3.call(this);
+    _this = _super2.call(this);
 
     _defineProperty(_assertThisInitialized(_this), "onclose", function () {
       _this.props.toggle();
@@ -305,17 +284,17 @@ var StatusPopup = /*#__PURE__*/function (_React$Component3) {
   return StatusPopup;
 }(React.Component);
 
-var StatusDiv = /*#__PURE__*/function (_React$Component4) {
-  _inherits(StatusDiv, _React$Component4);
+var StatusDiv = /*#__PURE__*/function (_React$Component3) {
+  _inherits(StatusDiv, _React$Component3);
 
-  var _super4 = _createSuper(StatusDiv);
+  var _super3 = _createSuper(StatusDiv);
 
   function StatusDiv() {
     var _this2;
 
     _classCallCheck(this, StatusDiv);
 
-    _this2 = _super4.call(this);
+    _this2 = _super3.call(this);
     _this2.state = {
       togglePopup: false // activeTabList: [false, false, false, false, false, false]
 
@@ -366,15 +345,15 @@ var StatusDiv = /*#__PURE__*/function (_React$Component4) {
   return StatusDiv;
 }(React.Component);
 
-var LitSurveyPopup = /*#__PURE__*/function (_React$Component5) {
-  _inherits(LitSurveyPopup, _React$Component5);
+var LitSurveyPopup = /*#__PURE__*/function (_React$Component4) {
+  _inherits(LitSurveyPopup, _React$Component4);
 
-  var _super5 = _createSuper(LitSurveyPopup);
+  var _super4 = _createSuper(LitSurveyPopup);
 
   function LitSurveyPopup() {
     _classCallCheck(this, LitSurveyPopup);
 
-    return _super5.apply(this, arguments);
+    return _super4.apply(this, arguments);
   }
 
   _createClass(LitSurveyPopup, [{
@@ -435,15 +414,15 @@ var LitSurveyPopup = /*#__PURE__*/function (_React$Component5) {
   return LitSurveyPopup;
 }(React.Component);
 
-var LitSurveyItem = /*#__PURE__*/function (_React$Component6) {
-  _inherits(LitSurveyItem, _React$Component6);
+var LitSurveyItem = /*#__PURE__*/function (_React$Component5) {
+  _inherits(LitSurveyItem, _React$Component5);
 
-  var _super6 = _createSuper(LitSurveyItem);
+  var _super5 = _createSuper(LitSurveyItem);
 
   function LitSurveyItem() {
     _classCallCheck(this, LitSurveyItem);
 
-    return _super6.apply(this, arguments);
+    return _super5.apply(this, arguments);
   }
 
   _createClass(LitSurveyItem, [{
@@ -462,15 +441,15 @@ var LitSurveyItem = /*#__PURE__*/function (_React$Component6) {
   return LitSurveyItem;
 }(React.Component);
 
-var DisplayLitSurveyArray = /*#__PURE__*/function (_React$Component7) {
-  _inherits(DisplayLitSurveyArray, _React$Component7);
+var DisplayLitSurveyArray = /*#__PURE__*/function (_React$Component6) {
+  _inherits(DisplayLitSurveyArray, _React$Component6);
 
-  var _super7 = _createSuper(DisplayLitSurveyArray);
+  var _super6 = _createSuper(DisplayLitSurveyArray);
 
   function DisplayLitSurveyArray() {
     _classCallCheck(this, DisplayLitSurveyArray);
 
-    return _super7.apply(this, arguments);
+    return _super6.apply(this, arguments);
   }
 
   _createClass(DisplayLitSurveyArray, [{
@@ -488,17 +467,17 @@ var DisplayLitSurveyArray = /*#__PURE__*/function (_React$Component7) {
   return DisplayLitSurveyArray;
 }(React.Component);
 
-var LiteratureSurvey = /*#__PURE__*/function (_React$Component8) {
-  _inherits(LiteratureSurvey, _React$Component8);
+var LiteratureSurvey = /*#__PURE__*/function (_React$Component7) {
+  _inherits(LiteratureSurvey, _React$Component7);
 
-  var _super8 = _createSuper(LiteratureSurvey);
+  var _super7 = _createSuper(LiteratureSurvey);
 
   function LiteratureSurvey() {
     var _this4;
 
     _classCallCheck(this, LiteratureSurvey);
 
-    _this4 = _super8.call(this);
+    _this4 = _super7.call(this);
     _this4.state = {
       // togglePopup: false,
       litsurvey_array: initialLitSurvey
@@ -513,15 +492,103 @@ var LiteratureSurvey = /*#__PURE__*/function (_React$Component8) {
 
 
   _createClass(LiteratureSurvey, [{
-    key: "addLitSurveyItem",
-    value: function addLitSurveyItem(litsurvey_item) {
-      var litsurvey = this.state.litsurvey_array.slice();
-      litsurvey.push(litsurvey_item);
-      this.setState({
-        litsurvey_array: litsurvey
-      });
-      console.log(this.state.litsurvey_array);
+    key: "loadData",
+    value: function () {
+      var _loadData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var query, projectID, response, litsurveyarraylist;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                query = "query getProjectDetailsInner($projectID: String!)\n        {\n            getProjectDetailsInner(projectID: $projectID)\n            {\n                projectID\n                litsurveyarray\n                {\n                    paper_title\n                    publisher_name\n                    doi\n                }\n            }\n        }";
+                projectID = this.props.projectID;
+                console.log("In LiteratureSurvey");
+                console.log(projectID);
+                _context.next = 6;
+                return graphQLFetch(query, {
+                  projectID: projectID
+                });
+
+              case 6:
+                response = _context.sent;
+                console.log(response);
+                litsurveyarraylist = response.getProjectDetailsInner.litsurveyarray; // console.log(litsurveyarraylist);
+
+                this.setState({
+                  litsurvey_array: litsurveyarraylist
+                });
+
+              case 10:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function loadData() {
+        return _loadData.apply(this, arguments);
+      }
+
+      return loadData;
+    }()
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.loadData();
     }
+  }, {
+    key: "addLitSurveyItem",
+    value: function () {
+      var _addLitSurveyItem = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(litsurvey_item) {
+        var litsurvey, query, projectID, litsurveyarray, response;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                litsurvey = this.state.litsurvey_array.slice();
+                litsurvey.push(litsurvey_item);
+                this.setState({
+                  litsurvey_array: litsurvey
+                });
+                console.log(litsurvey);
+                query = "mutation updateLitSurvey($projectID: String!, $litsurveyarray: [LitSurveyItem])\n        {\n            updateLitSurvey(projectID : $projectID, litsurveyarray: $litsurveyarray)\n            {\n                projectID\n            }\n        }";
+                projectID = this.props.projectID; // const litsurveyarray = this.state.litsurvey_array;
+
+                litsurveyarray = litsurvey;
+                console.log(litsurveyarray);
+                _context2.next = 10;
+                return fetch('http://localhost:5000/graphql', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    query: query,
+                    variables: {
+                      projectID: projectID,
+                      litsurveyarray: litsurveyarray
+                    }
+                  })
+                });
+
+              case 10:
+                response = _context2.sent;
+
+              case 11:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function addLitSurveyItem(_x2) {
+        return _addLitSurveyItem.apply(this, arguments);
+      }
+
+      return addLitSurveyItem;
+    }()
   }, {
     key: "render",
     value: function render() {
@@ -536,15 +603,15 @@ var LiteratureSurvey = /*#__PURE__*/function (_React$Component8) {
   return LiteratureSurvey;
 }(React.Component);
 
-var EditProblem = /*#__PURE__*/function (_React$Component9) {
-  _inherits(EditProblem, _React$Component9);
+var EditProblem = /*#__PURE__*/function (_React$Component8) {
+  _inherits(EditProblem, _React$Component8);
 
-  var _super9 = _createSuper(EditProblem);
+  var _super8 = _createSuper(EditProblem);
 
   function EditProblem() {
     _classCallCheck(this, EditProblem);
 
-    return _super9.apply(this, arguments);
+    return _super8.apply(this, arguments);
   }
 
   _createClass(EditProblem, [{
@@ -578,17 +645,17 @@ var EditProblem = /*#__PURE__*/function (_React$Component9) {
   return EditProblem;
 }(React.Component);
 
-var ProblemFormulation = /*#__PURE__*/function (_React$Component10) {
-  _inherits(ProblemFormulation, _React$Component10);
+var ProblemFormulation = /*#__PURE__*/function (_React$Component9) {
+  _inherits(ProblemFormulation, _React$Component9);
 
-  var _super10 = _createSuper(ProblemFormulation);
+  var _super9 = _createSuper(ProblemFormulation);
 
   function ProblemFormulation() {
     var _this6;
 
     _classCallCheck(this, ProblemFormulation);
 
-    _this6 = _super10.call(this);
+    _this6 = _super9.call(this);
     _this6.state = {
       problem: ""
     };
@@ -597,12 +664,99 @@ var ProblemFormulation = /*#__PURE__*/function (_React$Component10) {
   }
 
   _createClass(ProblemFormulation, [{
-    key: "updateProblem",
-    value: function updateProblem(content) {
-      this.setState({
-        problem: content
-      });
+    key: "loadData",
+    value: function () {
+      var _loadData2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+        var query, projectID, response, problemstatement;
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                query = "query getProjectDetailsInner($projectID: String!)\n        {\n            getProjectDetailsInner(projectID: $projectID)\n            {\n                projectID\n                problemstatement\n            }\n        }";
+                projectID = this.props.projectID;
+                console.log("In ProblemFormulation");
+                console.log(projectID);
+                _context3.next = 6;
+                return graphQLFetch(query, {
+                  projectID: projectID
+                });
+
+              case 6:
+                response = _context3.sent;
+                console.log(response);
+                problemstatement = response.getProjectDetailsInner.problemstatement;
+                this.setState({
+                  problem: problemstatement
+                });
+
+              case 10:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function loadData() {
+        return _loadData2.apply(this, arguments);
+      }
+
+      return loadData;
+    }()
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.loadData();
     }
+  }, {
+    key: "updateProblem",
+    value: function () {
+      var _updateProblem = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(content) {
+        var query, projectID, problemstatement, response;
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                this.setState({
+                  problem: content
+                });
+                query = "mutation updateProblemStatement($projectID: String!, $problemstatement: String!)\n        {\n            updateProblemStatement(projectID : $projectID, problemstatement: $problemstatement)\n            {\n                projectID\n            }\n        }";
+                projectID = this.props.projectID; // const litsurveyarray = this.state.litsurvey_array;
+
+                problemstatement = content;
+                console.log(problemstatement);
+                _context4.next = 7;
+                return fetch('http://localhost:5000/graphql', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    query: query,
+                    variables: {
+                      projectID: projectID,
+                      problemstatement: problemstatement
+                    }
+                  })
+                });
+
+              case 7:
+                response = _context4.sent;
+
+              case 8:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function updateProblem(_x3) {
+        return _updateProblem.apply(this, arguments);
+      }
+
+      return updateProblem;
+    }()
   }, {
     key: "render",
     value: function render() {
@@ -620,15 +774,15 @@ var ProblemFormulation = /*#__PURE__*/function (_React$Component10) {
   return ProblemFormulation;
 }(React.Component);
 
-var UpdateSheetLink = /*#__PURE__*/function (_React$Component11) {
-  _inherits(UpdateSheetLink, _React$Component11);
+var UpdateSheetLink = /*#__PURE__*/function (_React$Component10) {
+  _inherits(UpdateSheetLink, _React$Component10);
 
-  var _super11 = _createSuper(UpdateSheetLink);
+  var _super10 = _createSuper(UpdateSheetLink);
 
   function UpdateSheetLink() {
     _classCallCheck(this, UpdateSheetLink);
 
-    return _super11.apply(this, arguments);
+    return _super10.apply(this, arguments);
   }
 
   _createClass(UpdateSheetLink, [{
@@ -662,17 +816,17 @@ var UpdateSheetLink = /*#__PURE__*/function (_React$Component11) {
   return UpdateSheetLink;
 }(React.Component);
 
-var Experimentation = /*#__PURE__*/function (_React$Component12) {
-  _inherits(Experimentation, _React$Component12);
+var Experimentation = /*#__PURE__*/function (_React$Component11) {
+  _inherits(Experimentation, _React$Component11);
 
-  var _super12 = _createSuper(Experimentation);
+  var _super11 = _createSuper(Experimentation);
 
   function Experimentation() {
     var _this8;
 
     _classCallCheck(this, Experimentation);
 
-    _this8 = _super12.call(this);
+    _this8 = _super11.call(this);
     _this8.state = {
       google_sheet: ""
     };
@@ -681,14 +835,100 @@ var Experimentation = /*#__PURE__*/function (_React$Component12) {
   }
 
   _createClass(Experimentation, [{
-    key: "updateSheetLink",
-    value: function updateSheetLink(link) {
-      var link_complete = link;
-      console.log(link_complete);
-      this.setState({
-        google_sheet: link_complete
-      });
+    key: "loadData",
+    value: function () {
+      var _loadData3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+        var query, projectID, response, google_sheet;
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                query = "query getProjectDetailsInner($projectID: String!)\n        {\n            getProjectDetailsInner(projectID: $projectID)\n            {\n                projectID\n                experimentation\n            }\n        }";
+                projectID = this.props.projectID;
+                console.log("In Experimentation");
+                console.log(projectID);
+                _context5.next = 6;
+                return graphQLFetch(query, {
+                  projectID: projectID
+                });
+
+              case 6:
+                response = _context5.sent;
+                console.log(response);
+                google_sheet = response.getProjectDetailsInner.experimentation;
+                this.setState({
+                  google_sheet: google_sheet
+                });
+
+              case 10:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this);
+      }));
+
+      function loadData() {
+        return _loadData3.apply(this, arguments);
+      }
+
+      return loadData;
+    }()
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.loadData();
     }
+  }, {
+    key: "updateSheetLink",
+    value: function () {
+      var _updateSheetLink = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(link) {
+        var link_complete, query, projectID, experimentation, response;
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                link_complete = link;
+                console.log(link_complete);
+                this.setState({
+                  google_sheet: link_complete
+                });
+                query = "mutation updateExperimentation($projectID: String!, $experimentation: String!)\n        {\n            updateExperimentation(projectID : $projectID, experimentation: $experimentation)\n            {\n                projectID\n            }\n        }";
+                projectID = this.props.projectID;
+                experimentation = link_complete;
+                console.log(experimentation);
+                _context6.next = 9;
+                return fetch('http://localhost:5000/graphql', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    query: query,
+                    variables: {
+                      projectID: projectID,
+                      experimentation: experimentation
+                    }
+                  })
+                });
+
+              case 9:
+                response = _context6.sent;
+
+              case 10:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, this);
+      }));
+
+      function updateSheetLink(_x4) {
+        return _updateSheetLink.apply(this, arguments);
+      }
+
+      return updateSheetLink;
+    }()
   }, {
     key: "render",
     value: function render() {
@@ -708,15 +948,15 @@ var Experimentation = /*#__PURE__*/function (_React$Component12) {
   return Experimentation;
 }(React.Component);
 
-var CreateRow = /*#__PURE__*/function (_React$Component13) {
-  _inherits(CreateRow, _React$Component13);
+var CreateRow = /*#__PURE__*/function (_React$Component12) {
+  _inherits(CreateRow, _React$Component12);
 
-  var _super13 = _createSuper(CreateRow);
+  var _super12 = _createSuper(CreateRow);
 
   function CreateRow() {
     _classCallCheck(this, CreateRow);
 
-    return _super13.apply(this, arguments);
+    return _super12.apply(this, arguments);
   }
 
   _createClass(CreateRow, [{
@@ -732,15 +972,15 @@ var CreateRow = /*#__PURE__*/function (_React$Component13) {
   return CreateRow;
 }(React.Component);
 
-var SourceTable = /*#__PURE__*/function (_React$Component14) {
-  _inherits(SourceTable, _React$Component14);
+var SourceTable = /*#__PURE__*/function (_React$Component13) {
+  _inherits(SourceTable, _React$Component13);
 
-  var _super14 = _createSuper(SourceTable);
+  var _super13 = _createSuper(SourceTable);
 
   function SourceTable() {
     _classCallCheck(this, SourceTable);
 
-    return _super14.apply(this, arguments);
+    return _super13.apply(this, arguments);
   }
 
   _createClass(SourceTable, [{
@@ -760,17 +1000,17 @@ var SourceTable = /*#__PURE__*/function (_React$Component14) {
   return SourceTable;
 }(React.Component);
 
-var Sourcecode = /*#__PURE__*/function (_React$Component15) {
-  _inherits(Sourcecode, _React$Component15);
+var Sourcecode = /*#__PURE__*/function (_React$Component14) {
+  _inherits(Sourcecode, _React$Component14);
 
-  var _super15 = _createSuper(Sourcecode);
+  var _super14 = _createSuper(Sourcecode);
 
   function Sourcecode() {
     var _this9;
 
     _classCallCheck(this, Sourcecode);
 
-    _this9 = _super15.call(this);
+    _this9 = _super14.call(this);
     _this9.SourceSubmit = _this9.SourceSubmit.bind(_assertThisInitialized(_this9));
     _this9.createField = _this9.createField.bind(_assertThisInitialized(_this9));
     _this9.state = {
@@ -835,17 +1075,17 @@ var Sourcecode = /*#__PURE__*/function (_React$Component15) {
   return Sourcecode;
 }(React.Component);
 
-var Adding_Members = /*#__PURE__*/function (_React$Component16) {
-  _inherits(Adding_Members, _React$Component16);
+var Adding_Members = /*#__PURE__*/function (_React$Component15) {
+  _inherits(Adding_Members, _React$Component15);
 
-  var _super16 = _createSuper(Adding_Members);
+  var _super15 = _createSuper(Adding_Members);
 
   function Adding_Members() {
     var _this10;
 
     _classCallCheck(this, Adding_Members);
 
-    _this10 = _super16.call(this);
+    _this10 = _super15.call(this);
     _this10.state = {
       d: '1'
     };
@@ -857,11 +1097,11 @@ var Adding_Members = /*#__PURE__*/function (_React$Component16) {
   _createClass(Adding_Members, [{
     key: "handleSubmit",
     value: function () {
-      var _handleSubmit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+      var _handleSubmit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(e) {
         var form, field, projectID, query, response, body, result;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context7.prev = _context7.next) {
               case 0:
                 e.preventDefault();
                 form = document.forms.add_user;
@@ -889,7 +1129,7 @@ var Adding_Members = /*#__PURE__*/function (_React$Component16) {
                 */
 
                 query = "query getProjectDetailsFromProjectID($projectID: String!)\n        {\n            getProjectDetailsFromProjectID(projectID : $projectID)\n            {\n                name\n            }\n        }";
-                _context.next = 9;
+                _context7.next = 9;
                 return fetch('http://localhost:5000/graphql', {
                   method: 'POST',
                   headers: {
@@ -904,12 +1144,12 @@ var Adding_Members = /*#__PURE__*/function (_React$Component16) {
                 });
 
               case 9:
-                response = _context.sent;
-                _context.next = 12;
+                response = _context7.sent;
+                _context7.next = 12;
                 return response.text();
 
               case 12:
-                body = _context.sent;
+                body = _context7.sent;
                 result = JSON.parse(body);
                 field.projectName = result.data.getProjectDetailsFromProjectID[0].name;
                 this.props.createUserReq(field); // alert("field designed");
@@ -920,13 +1160,13 @@ var Adding_Members = /*#__PURE__*/function (_React$Component16) {
 
               case 19:
               case "end":
-                return _context.stop();
+                return _context7.stop();
             }
           }
-        }, _callee, this);
+        }, _callee7, this);
       }));
 
-      function handleSubmit(_x2) {
+      function handleSubmit(_x5) {
         return _handleSubmit.apply(this, arguments);
       }
 
@@ -989,17 +1229,17 @@ var Adding_Members = /*#__PURE__*/function (_React$Component16) {
   return Adding_Members;
 }(React.Component);
 
-var PaperDraft = /*#__PURE__*/function (_React$Component17) {
-  _inherits(PaperDraft, _React$Component17);
+var PaperDraft = /*#__PURE__*/function (_React$Component16) {
+  _inherits(PaperDraft, _React$Component16);
 
-  var _super17 = _createSuper(PaperDraft);
+  var _super16 = _createSuper(PaperDraft);
 
   function PaperDraft() {
     var _this11;
 
     _classCallCheck(this, PaperDraft);
 
-    _this11 = _super17.call(this);
+    _this11 = _super16.call(this);
     _this11.state = {
       google_sheet: ""
     };
@@ -1035,15 +1275,15 @@ var PaperDraft = /*#__PURE__*/function (_React$Component17) {
   return PaperDraft;
 }(React.Component);
 
-var PaperDiv = /*#__PURE__*/function (_React$Component18) {
-  _inherits(PaperDiv, _React$Component18);
+var PaperDiv = /*#__PURE__*/function (_React$Component17) {
+  _inherits(PaperDiv, _React$Component17);
 
-  var _super18 = _createSuper(PaperDiv);
+  var _super17 = _createSuper(PaperDiv);
 
   function PaperDiv() {
     _classCallCheck(this, PaperDiv);
 
-    return _super18.apply(this, arguments);
+    return _super17.apply(this, arguments);
   }
 
   _createClass(PaperDiv, [{
@@ -1061,15 +1301,15 @@ var PaperDiv = /*#__PURE__*/function (_React$Component18) {
   return PaperDiv;
 }(React.Component);
 
-var DispPaper = /*#__PURE__*/function (_React$Component19) {
-  _inherits(DispPaper, _React$Component19);
+var DispPaper = /*#__PURE__*/function (_React$Component18) {
+  _inherits(DispPaper, _React$Component18);
 
-  var _super19 = _createSuper(DispPaper);
+  var _super18 = _createSuper(DispPaper);
 
   function DispPaper() {
     _classCallCheck(this, DispPaper);
 
-    return _super19.apply(this, arguments);
+    return _super18.apply(this, arguments);
   }
 
   _createClass(DispPaper, [{
@@ -1087,17 +1327,17 @@ var DispPaper = /*#__PURE__*/function (_React$Component19) {
   return DispPaper;
 }(React.Component);
 
-var PaperSub = /*#__PURE__*/function (_React$Component20) {
-  _inherits(PaperSub, _React$Component20);
+var PaperSub = /*#__PURE__*/function (_React$Component19) {
+  _inherits(PaperSub, _React$Component19);
 
-  var _super20 = _createSuper(PaperSub);
+  var _super19 = _createSuper(PaperSub);
 
   function PaperSub() {
     var _this12;
 
     _classCallCheck(this, PaperSub);
 
-    _this12 = _super20.call(this);
+    _this12 = _super19.call(this);
     _this12.paperSubmit = _this12.paperSubmit.bind(_assertThisInitialized(_this12));
     _this12.addField = _this12.addField.bind(_assertThisInitialized(_this12));
     _this12.state = {
@@ -1166,15 +1406,15 @@ var PaperSub = /*#__PURE__*/function (_React$Component20) {
   return PaperSub;
 }(React.Component);
 
-var ScheduleRow = /*#__PURE__*/function (_React$Component21) {
-  _inherits(ScheduleRow, _React$Component21);
+var ScheduleRow = /*#__PURE__*/function (_React$Component20) {
+  _inherits(ScheduleRow, _React$Component20);
 
-  var _super21 = _createSuper(ScheduleRow);
+  var _super20 = _createSuper(ScheduleRow);
 
   function ScheduleRow() {
     _classCallCheck(this, ScheduleRow);
 
-    return _super21.apply(this, arguments);
+    return _super20.apply(this, arguments);
   }
 
   _createClass(ScheduleRow, [{
@@ -1188,15 +1428,15 @@ var ScheduleRow = /*#__PURE__*/function (_React$Component21) {
   return ScheduleRow;
 }(React.Component);
 
-var ScheduleTable = /*#__PURE__*/function (_React$Component22) {
-  _inherits(ScheduleTable, _React$Component22);
+var ScheduleTable = /*#__PURE__*/function (_React$Component21) {
+  _inherits(ScheduleTable, _React$Component21);
 
-  var _super22 = _createSuper(ScheduleTable);
+  var _super21 = _createSuper(ScheduleTable);
 
   function ScheduleTable() {
     _classCallCheck(this, ScheduleTable);
 
-    return _super22.apply(this, arguments);
+    return _super21.apply(this, arguments);
   }
 
   _createClass(ScheduleTable, [{
@@ -1216,17 +1456,17 @@ var ScheduleTable = /*#__PURE__*/function (_React$Component22) {
   return ScheduleTable;
 }(React.Component);
 
-var Scheduling = /*#__PURE__*/function (_React$Component23) {
-  _inherits(Scheduling, _React$Component23);
+var Scheduling = /*#__PURE__*/function (_React$Component22) {
+  _inherits(Scheduling, _React$Component22);
 
-  var _super23 = _createSuper(Scheduling);
+  var _super22 = _createSuper(Scheduling);
 
   function Scheduling() {
     var _this13;
 
     _classCallCheck(this, Scheduling);
 
-    _this13 = _super23.call(this);
+    _this13 = _super22.call(this);
     _this13.schSubmit = _this13.schSubmit.bind(_assertThisInitialized(_this13));
     _this13.addTask = _this13.addTask.bind(_assertThisInitialized(_this13));
     _this13.state = {
@@ -1309,17 +1549,17 @@ var Scheduling = /*#__PURE__*/function (_React$Component23) {
   return Scheduling;
 }(React.Component);
 
-var GenericDiv = /*#__PURE__*/function (_React$Component24) {
-  _inherits(GenericDiv, _React$Component24);
+var GenericDiv = /*#__PURE__*/function (_React$Component23) {
+  _inherits(GenericDiv, _React$Component23);
 
-  var _super24 = _createSuper(GenericDiv);
+  var _super23 = _createSuper(GenericDiv);
 
   function GenericDiv() {
     var _this14;
 
     _classCallCheck(this, GenericDiv);
 
-    _this14 = _super24.call(this);
+    _this14 = _super23.call(this);
     _this14.state = {
       activeTabList: [false, false, false, false, false, false]
     };
@@ -1330,23 +1570,23 @@ var GenericDiv = /*#__PURE__*/function (_React$Component24) {
   _createClass(GenericDiv, [{
     key: "loadData",
     value: function () {
-      var _loadData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+      var _loadData4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
         var query, projectID, response, tablist;
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        return regeneratorRuntime.wrap(function _callee8$(_context8) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context8.prev = _context8.next) {
               case 0:
                 query = "query getProjectDetailsInner($projectID: String!)\n        {\n            getProjectDetailsInner(projectID: $projectID)\n            {\n                projectID\n                activeTabList\n            }\n        }";
                 projectID = this.props.projectID;
                 console.log("In GenericDiv");
                 console.log(projectID);
-                _context2.next = 6;
+                _context8.next = 6;
                 return graphQLFetch(query, {
                   projectID: projectID
                 });
 
               case 6:
-                response = _context2.sent;
+                response = _context8.sent;
                 console.log(response);
                 tablist = response.getProjectDetailsInner.activeTabList;
                 console.log(tablist);
@@ -1356,14 +1596,14 @@ var GenericDiv = /*#__PURE__*/function (_React$Component24) {
 
               case 11:
               case "end":
-                return _context2.stop();
+                return _context8.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee8, this);
       }));
 
       function loadData() {
-        return _loadData.apply(this, arguments);
+        return _loadData4.apply(this, arguments);
       }
 
       return loadData;
@@ -1376,11 +1616,11 @@ var GenericDiv = /*#__PURE__*/function (_React$Component24) {
   }, {
     key: "updateTabList",
     value: function () {
-      var _updateTabList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(tablist) {
+      var _updateTabList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(tablist) {
         var query, projectID, activeTabList, response;
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context9.prev = _context9.next) {
               case 0:
                 console.log(tablist);
                 this.setState({
@@ -1389,7 +1629,7 @@ var GenericDiv = /*#__PURE__*/function (_React$Component24) {
                 query = "mutation updateActiveTabList($projectID : String!, $activeTabList: [Boolean])\n        {\n            updateActiveTabList(projectID : $projectID, activeTabList: $activeTabList)\n            {\n                projectID\n                activeTabList\n            }\n        }";
                 projectID = this.props.projectID;
                 activeTabList = this.state.activeTabList;
-                _context3.next = 7;
+                _context9.next = 7;
                 return fetch('http://localhost:5000/graphql', {
                   method: 'POST',
                   headers: {
@@ -1405,17 +1645,17 @@ var GenericDiv = /*#__PURE__*/function (_React$Component24) {
                 });
 
               case 7:
-                response = _context3.sent;
+                response = _context9.sent;
 
               case 8:
               case "end":
-                return _context3.stop();
+                return _context9.stop();
             }
           }
-        }, _callee3, this);
+        }, _callee9, this);
       }));
 
-      function updateTabList(_x3) {
+      function updateTabList(_x6) {
         return _updateTabList.apply(this, arguments);
       }
 
@@ -1490,17 +1730,17 @@ var GenericDiv = /*#__PURE__*/function (_React$Component24) {
   return GenericDiv;
 }(React.Component);
 
-var CreateProject = /*#__PURE__*/function (_React$Component25) {
-  _inherits(CreateProject, _React$Component25);
+var CreateProject = /*#__PURE__*/function (_React$Component24) {
+  _inherits(CreateProject, _React$Component24);
 
-  var _super25 = _createSuper(CreateProject);
+  var _super24 = _createSuper(CreateProject);
 
   function CreateProject() {
     var _this15;
 
     _classCallCheck(this, CreateProject);
 
-    _this15 = _super25.call(this);
+    _this15 = _super24.call(this);
     _this15.handleSubmit = _this15.handleSubmit.bind(_assertThisInitialized(_this15));
     _this15.goback = _this15.goback.bind(_assertThisInitialized(_this15));
     _this15.state = {
@@ -1593,17 +1833,17 @@ var CreateProject = /*#__PURE__*/function (_React$Component25) {
   return CreateProject;
 }(React.Component);
 
-var Temp_display = /*#__PURE__*/function (_React$Component26) {
-  _inherits(Temp_display, _React$Component26);
+var Temp_display = /*#__PURE__*/function (_React$Component25) {
+  _inherits(Temp_display, _React$Component25);
 
-  var _super26 = _createSuper(Temp_display);
+  var _super25 = _createSuper(Temp_display);
 
   function Temp_display() {
     var _this16;
 
     _classCallCheck(this, Temp_display);
 
-    _this16 = _super26.call(this);
+    _this16 = _super25.call(this);
     _this16.state = {
       d: '1'
     };
@@ -1638,17 +1878,17 @@ var Temp_display = /*#__PURE__*/function (_React$Component26) {
   return Temp_display;
 }(React.Component);
 
-var Projects_Display = /*#__PURE__*/function (_React$Component27) {
-  _inherits(Projects_Display, _React$Component27);
+var Projects_Display = /*#__PURE__*/function (_React$Component26) {
+  _inherits(Projects_Display, _React$Component26);
 
-  var _super27 = _createSuper(Projects_Display);
+  var _super26 = _createSuper(Projects_Display);
 
   function Projects_Display() {
     var _this17;
 
     _classCallCheck(this, Projects_Display);
 
-    _this17 = _super27.call(this);
+    _this17 = _super26.call(this);
     _this17.state = {
       d: '1'
     };
@@ -1685,17 +1925,17 @@ var Projects_Display = /*#__PURE__*/function (_React$Component27) {
   return Projects_Display;
 }(React.Component);
 
-var My_Projects = /*#__PURE__*/function (_React$Component28) {
-  _inherits(My_Projects, _React$Component28);
+var My_Projects = /*#__PURE__*/function (_React$Component27) {
+  _inherits(My_Projects, _React$Component27);
 
-  var _super28 = _createSuper(My_Projects);
+  var _super27 = _createSuper(My_Projects);
 
   function My_Projects() {
     var _this18;
 
     _classCallCheck(this, My_Projects);
 
-    _this18 = _super28.call(this);
+    _this18 = _super27.call(this);
     _this18.state = {
       d: '1'
     };
@@ -1732,15 +1972,15 @@ var My_Projects = /*#__PURE__*/function (_React$Component28) {
   return My_Projects;
 }(React.Component);
 
-var CreateDiv = /*#__PURE__*/function (_React$Component29) {
-  _inherits(CreateDiv, _React$Component29);
+var CreateDiv = /*#__PURE__*/function (_React$Component28) {
+  _inherits(CreateDiv, _React$Component28);
 
-  var _super29 = _createSuper(CreateDiv);
+  var _super28 = _createSuper(CreateDiv);
 
   function CreateDiv() {
     _classCallCheck(this, CreateDiv);
 
-    return _super29.apply(this, arguments);
+    return _super28.apply(this, arguments);
   }
 
   _createClass(CreateDiv, [{
@@ -1765,15 +2005,15 @@ var CreateDiv = /*#__PURE__*/function (_React$Component29) {
   return CreateDiv;
 }(React.Component);
 
-var RequestDiv = /*#__PURE__*/function (_React$Component30) {
-  _inherits(RequestDiv, _React$Component30);
+var RequestDiv = /*#__PURE__*/function (_React$Component29) {
+  _inherits(RequestDiv, _React$Component29);
 
-  var _super30 = _createSuper(RequestDiv);
+  var _super29 = _createSuper(RequestDiv);
 
   function RequestDiv() {
     _classCallCheck(this, RequestDiv);
 
-    return _super30.apply(this, arguments);
+    return _super29.apply(this, arguments);
   }
 
   _createClass(RequestDiv, [{
@@ -1796,17 +2036,17 @@ var RequestDiv = /*#__PURE__*/function (_React$Component30) {
   return RequestDiv;
 }(React.Component);
 
-var ViewRequests = /*#__PURE__*/function (_React$Component31) {
-  _inherits(ViewRequests, _React$Component31);
+var ViewRequests = /*#__PURE__*/function (_React$Component30) {
+  _inherits(ViewRequests, _React$Component30);
 
-  var _super31 = _createSuper(ViewRequests);
+  var _super30 = _createSuper(ViewRequests);
 
   function ViewRequests() {
     var _this19;
 
     _classCallCheck(this, ViewRequests);
 
-    _this19 = _super31.call(this);
+    _this19 = _super30.call(this);
     _this19.state = {
       d: '1',
       values: []
@@ -1832,17 +2072,17 @@ var ViewRequests = /*#__PURE__*/function (_React$Component31) {
   return ViewRequests;
 }(React.Component);
 
-var Dashboard = /*#__PURE__*/function (_React$Component32) {
-  _inherits(Dashboard, _React$Component32);
+var Dashboard = /*#__PURE__*/function (_React$Component31) {
+  _inherits(Dashboard, _React$Component31);
 
-  var _super32 = _createSuper(Dashboard);
+  var _super31 = _createSuper(Dashboard);
 
   function Dashboard() {
     var _this20;
 
     _classCallCheck(this, Dashboard);
 
-    _this20 = _super32.call(this);
+    _this20 = _super31.call(this);
     _this20.state = {
       data: [],
       d: '1',
@@ -1897,17 +2137,17 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
   }, {
     key: "loadData",
     value: function () {
-      var _loadData2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      var _loadData5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
         var query, username, response, body, result, proj_query, user_accepted_projects, get_project_from_ID, data_obtained, i, projectID, proj_data;
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        return regeneratorRuntime.wrap(function _callee10$(_context10) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context10.prev = _context10.next) {
               case 0:
                 query = "query getExistingUsers($username : String!)\n        {\n            getExistingUsers(username : $username)\n            {\n                username\n                pending\n                {\n                    name\n                    role\n                    projectID\n                    reqfrom\n                    projectName\n                \n                }\n                accepted\n                {\n                    projectID\n                }\n            }\n        }"; //const username = "e0674494@u.nus.edu";
                 //const response = await graphQLFetch(query, { username });
 
                 username = activeuser;
-                _context4.next = 4;
+                _context10.next = 4;
                 return fetch('http://localhost:5000/graphql', {
                   method: 'POST',
                   headers: {
@@ -1922,22 +2162,22 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
                 });
 
               case 4:
-                response = _context4.sent;
-                _context4.next = 7;
+                response = _context10.sent;
+                _context10.next = 7;
                 return response.text();
 
               case 7:
-                body = _context4.sent;
+                body = _context10.sent;
                 result = JSON.parse(body); // console.log(result.data.getExistingUsers);
                 // get list of project IDs for the user and assign to data state
 
-                _context4.next = 11;
+                _context10.next = 11;
                 return graphQLFetch(query, {
                   username: username
                 });
 
               case 11:
-                proj_query = _context4.sent;
+                proj_query = _context10.sent;
                 user_accepted_projects = [];
                 console.log("User accepted projects");
                 get_project_from_ID = "query getProjectDetailsFromProjectID($projectID : String!)\n        {\n            getProjectDetailsFromProjectID(projectID : $projectID)\n            {\n                name\n                desc\n                owner\n                projectID\n            }\n        }";
@@ -1946,24 +2186,24 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
 
               case 17:
                 if (!(i < proj_query.getExistingUsers[0].accepted.length)) {
-                  _context4.next = 27;
+                  _context10.next = 27;
                   break;
                 }
 
                 user_accepted_projects.push(proj_query.getExistingUsers[0].accepted[i].projectID);
                 projectID = proj_query.getExistingUsers[0].accepted[i].projectID;
-                _context4.next = 22;
+                _context10.next = 22;
                 return graphQLFetch(get_project_from_ID, {
                   projectID: projectID
                 });
 
               case 22:
-                proj_data = _context4.sent;
+                proj_data = _context10.sent;
                 data_obtained.push(proj_data.getProjectDetailsFromProjectID[0]);
 
               case 24:
                 i++;
-                _context4.next = 17;
+                _context10.next = 17;
                 break;
 
               case 27:
@@ -1975,14 +2215,14 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
 
               case 29:
               case "end":
-                return _context4.stop();
+                return _context10.stop();
             }
           }
-        }, _callee4, this);
+        }, _callee10, this);
       }));
 
       function loadData() {
-        return _loadData2.apply(this, arguments);
+        return _loadData5.apply(this, arguments);
       }
 
       return loadData;
@@ -1990,14 +2230,14 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
   }, {
     key: "addproject",
     value: function () {
-      var _addproject = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(field) {
+      var _addproject = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(field) {
         var query, response;
-        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        return regeneratorRuntime.wrap(function _callee11$(_context11) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context11.prev = _context11.next) {
               case 0:
                 query = "mutation addProjectDetails($field: ProjectData!) {\n                    addProjectDetails(field : $field)\n                {\n                    name\n                }\n        }";
-                _context5.next = 3;
+                _context11.next = 3;
                 return fetch('http://localhost:5000/graphql', {
                   method: 'POST',
                   headers: {
@@ -2012,17 +2252,17 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
                 });
 
               case 3:
-                response = _context5.sent;
+                response = _context11.sent;
 
               case 4:
               case "end":
-                return _context5.stop();
+                return _context11.stop();
             }
           }
-        }, _callee5);
+        }, _callee11);
       }));
 
-      function addproject(_x4) {
+      function addproject(_x7) {
         return _addproject.apply(this, arguments);
       }
 
@@ -2031,14 +2271,14 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
   }, {
     key: "createUserReq",
     value: function () {
-      var _createUserReq = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(field) {
+      var _createUserReq = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(field) {
         var query, response;
-        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        return regeneratorRuntime.wrap(function _callee12$(_context12) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context12.prev = _context12.next) {
               case 0:
                 query = "mutation addNewRequests($field: Requests!){\n                    addNewRequests(field : $field)\n                {\n                    name\n                }\n        }";
-                _context6.next = 3;
+                _context12.next = 3;
                 return fetch('http://localhost:5000/graphql', {
                   method: 'POST',
                   headers: {
@@ -2053,17 +2293,17 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
                 });
 
               case 3:
-                response = _context6.sent;
+                response = _context12.sent;
 
               case 4:
               case "end":
-                return _context6.stop();
+                return _context12.stop();
             }
           }
-        }, _callee6);
+        }, _callee12);
       }));
 
-      function createUserReq(_x5) {
+      function createUserReq(_x8) {
         return _createUserReq.apply(this, arguments);
       }
 
@@ -2103,17 +2343,17 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
   return Dashboard;
 }(React.Component);
 
-var DisplayTabs = /*#__PURE__*/function (_React$Component33) {
-  _inherits(DisplayTabs, _React$Component33);
+var DisplayTabs = /*#__PURE__*/function (_React$Component32) {
+  _inherits(DisplayTabs, _React$Component32);
 
-  var _super33 = _createSuper(DisplayTabs);
+  var _super32 = _createSuper(DisplayTabs);
 
   function DisplayTabs() {
     var _this21;
 
     _classCallCheck(this, DisplayTabs);
 
-    _this21 = _super33.call(this);
+    _this21 = _super32.call(this);
     _this21.state = {
       isStatusButtonPressed: false,
       isLiteratureSurveyButtonPressed: false,
@@ -2301,17 +2541,17 @@ var DisplayTabs = /*#__PURE__*/function (_React$Component33) {
   return DisplayTabs;
 }(React.Component);
 
-var RenderProjectDetailsPage = /*#__PURE__*/function (_React$Component34) {
-  _inherits(RenderProjectDetailsPage, _React$Component34);
+var RenderProjectDetailsPage = /*#__PURE__*/function (_React$Component33) {
+  _inherits(RenderProjectDetailsPage, _React$Component33);
 
-  var _super34 = _createSuper(RenderProjectDetailsPage);
+  var _super33 = _createSuper(RenderProjectDetailsPage);
 
   function RenderProjectDetailsPage() {
     var _this23;
 
     _classCallCheck(this, RenderProjectDetailsPage);
 
-    _this23 = _super34.call(this);
+    _this23 = _super33.call(this);
     _this23.state = {
       data: [],
       d: '1'

@@ -67,13 +67,14 @@ async function addGoogleUser(){
 }
 addGoogleUser();
 
-class DisplayHeader extends React.Component {
-    render() {
-        return (
-            <div className="header" style={{ height: "5%", fontSize: "20px" }}>Open Research Framework</div>
-        );
-    }
-}
+// class DisplayHeader extends React.Component {
+//     render() {
+//         return (
+//             <div className="header" style={{ height: "5%", fontSize: "20px" }}>Open Research Framework</div>
+//         );
+//     }
+// }
+
 class StatusTab extends React.Component {
     render() {
         const content = this.props.tab_name;
@@ -247,11 +248,54 @@ class LiteratureSurvey extends React.Component {
     // showLitSurveyPopup(){
     //     this.setState({togglePopup: !this.state.togglePopup});
     // }
-    addLitSurveyItem(litsurvey_item) {
+    async loadData() {
+        const query = `query getProjectDetailsInner($projectID: String!)
+        {
+            getProjectDetailsInner(projectID: $projectID)
+            {
+                projectID
+                litsurveyarray
+                {
+                    paper_title
+                    publisher_name
+                    doi
+                }
+            }
+        }`
+        const projectID = this.props.projectID;
+        console.log("In LiteratureSurvey");
+        console.log(projectID);
+        const response = await graphQLFetch(query, { projectID });
+        console.log(response);
+        const litsurveyarraylist = response.getProjectDetailsInner.litsurveyarray;
+        // console.log(litsurveyarraylist);
+        this.setState({ litsurvey_array: litsurveyarraylist });
+
+    }
+    componentDidMount() {
+        this.loadData()
+    }
+    async addLitSurveyItem(litsurvey_item) {
         const litsurvey = this.state.litsurvey_array.slice();
         litsurvey.push(litsurvey_item);
         this.setState({ litsurvey_array: litsurvey });
-        console.log(this.state.litsurvey_array);
+        console.log(litsurvey);
+        const query = `mutation updateLitSurvey($projectID: String!, $litsurveyarray: [LitSurveyItem])
+        {
+            updateLitSurvey(projectID : $projectID, litsurveyarray: $litsurveyarray)
+            {
+                projectID
+            }
+        }`;
+        const projectID = this.props.projectID;
+        // const litsurveyarray = this.state.litsurvey_array;
+        const litsurveyarray = litsurvey;
+        console.log(litsurveyarray);
+        const response = await fetch('http://localhost:5000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { projectID, litsurveyarray } })
+        });
     }
     render() {
         return (
@@ -292,8 +336,45 @@ class ProblemFormulation extends React.Component {
         this.state = { problem: "" };
         this.updateProblem = this.updateProblem.bind(this);
     }
-    updateProblem(content) {
+    async loadData() {
+        const query = `query getProjectDetailsInner($projectID: String!)
+        {
+            getProjectDetailsInner(projectID: $projectID)
+            {
+                projectID
+                problemstatement
+            }
+        }`
+        const projectID = this.props.projectID;
+        console.log("In ProblemFormulation");
+        console.log(projectID);
+        const response = await graphQLFetch(query, { projectID });
+        console.log(response);
+        const problemstatement = response.getProjectDetailsInner.problemstatement;
+        this.setState({ problem: problemstatement });
+
+    }
+    componentDidMount() {
+        this.loadData()
+    }
+    async updateProblem(content) {
         this.setState({ problem: content });
+        const query = `mutation updateProblemStatement($projectID: String!, $problemstatement: String!)
+        {
+            updateProblemStatement(projectID : $projectID, problemstatement: $problemstatement)
+            {
+                projectID
+            }
+        }`;
+        const projectID = this.props.projectID;
+        // const litsurveyarray = this.state.litsurvey_array;
+        const problemstatement = content;
+        console.log(problemstatement);
+        const response = await fetch('http://localhost:5000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { projectID, problemstatement } })
+        });
     }
     render() {
         return (
@@ -335,10 +416,46 @@ class Experimentation extends React.Component {
         this.state = { google_sheet: "" };
         this.updateSheetLink = this.updateSheetLink.bind(this);
     }
-    updateSheetLink(link) {
+    async loadData() {
+        const query = `query getProjectDetailsInner($projectID: String!)
+        {
+            getProjectDetailsInner(projectID: $projectID)
+            {
+                projectID
+                experimentation
+            }
+        }`
+        const projectID = this.props.projectID;
+        console.log("In Experimentation");
+        console.log(projectID);
+        const response = await graphQLFetch(query, { projectID });
+        console.log(response);
+        const google_sheet = response.getProjectDetailsInner.experimentation;
+        this.setState({ google_sheet: google_sheet });
+
+    }
+    componentDidMount() {
+        this.loadData()
+    }
+    async updateSheetLink(link) {
         const link_complete = link;
         console.log(link_complete);
         this.setState({ google_sheet: link_complete });
+        const query = `mutation updateExperimentation($projectID: String!, $experimentation: String!)
+        {
+            updateExperimentation(projectID : $projectID, experimentation: $experimentation)
+            {
+                projectID
+            }
+        }`;
+        const projectID = this.props.projectID;
+        const experimentation = link_complete;
+        console.log(experimentation);
+        const response = await fetch('http://localhost:5000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { projectID, experimentation } })
+        });
     }
     render() {
         return (
