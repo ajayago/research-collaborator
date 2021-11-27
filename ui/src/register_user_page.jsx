@@ -65,7 +65,8 @@ class AddUser extends React.Component {
                 password: pass,
                 org_short_name: form.org_short_name.value,
                 google_auth: this.state.google_auth,
-                pending: []
+                pending: [],
+                accepted: []
             }
             console.log(user);
             this.props.createUser(user);

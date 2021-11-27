@@ -45,21 +45,21 @@ function graphQLFetch(_x) {
 }
 
 function _graphQLFetch() {
-  _graphQLFetch = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(query) {
+  _graphQLFetch = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(query) {
     var variables,
         response,
         body,
         result,
         error,
         details,
-        _args6 = arguments;
-    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        _args7 = arguments;
+    return regeneratorRuntime.wrap(function _callee7$(_context7) {
       while (1) {
-        switch (_context6.prev = _context6.next) {
+        switch (_context7.prev = _context7.next) {
           case 0:
-            variables = _args6.length > 1 && _args6[1] !== undefined ? _args6[1] : {};
-            _context6.prev = 1;
-            _context6.next = 4;
+            variables = _args7.length > 1 && _args7[1] !== undefined ? _args7[1] : {};
+            _context7.prev = 1;
+            _context7.next = 4;
             return fetch("http://localhost:5000/graphql", {
               method: 'POST',
               headers: {
@@ -72,12 +72,12 @@ function _graphQLFetch() {
             });
 
           case 4:
-            response = _context6.sent;
-            _context6.next = 7;
+            response = _context7.sent;
+            _context7.next = 7;
             return response.text();
 
           case 7:
-            body = _context6.sent;
+            body = _context7.sent;
             result = JSON.parse(body, jsonDateReviver);
 
             if (result.errors) {
@@ -91,19 +91,19 @@ function _graphQLFetch() {
               }
             }
 
-            return _context6.abrupt("return", result.data);
+            return _context7.abrupt("return", result.data);
 
           case 13:
-            _context6.prev = 13;
-            _context6.t0 = _context6["catch"](1);
-            alert("Error in sending data to server: ".concat(_context6.t0.message));
+            _context7.prev = 13;
+            _context7.t0 = _context7["catch"](1);
+            alert("Error in sending data to server: ".concat(_context7.t0.message));
 
           case 16:
           case "end":
-            return _context6.stop();
+            return _context7.stop();
         }
       }
-    }, _callee6, null, [[1, 13]]);
+    }, _callee7, null, [[1, 13]]);
   }));
   return _graphQLFetch.apply(this, arguments);
 }
@@ -799,21 +799,82 @@ var Adding_Members = /*#__PURE__*/function (_React$Component16) {
 
   _createClass(Adding_Members, [{
     key: "handleSubmit",
-    value: function handleSubmit(e) {
-      e.preventDefault();
-      var form = document.forms.add_user; // alert("inside handler");
+    value: function () {
+      var _handleSubmit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+        var form, field, projectID, query, response, body, result;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                e.preventDefault();
+                form = document.forms.add_user;
+                alert("inside handler");
+                field = {
+                  name: form.user_id.value,
+                  role: form.user_role.value,
+                  projectID: form.project_id.value,
+                  reqfrom: activeuser,
+                  projectName: "Machine Learning"
+                };
+                projectID = String(field.projectID);
+                alert(projectID);
+                /*
+                const get_project_from_ID = `query getProjectDetailsFromProjectID($projectID : String!)
+                {
+                    getProjectDetailsFromProjectID(projectID : $projectID)
+                    {
+                        name
+                        desc
+                        owner
+                        projectID
+                    }
+                }`;
+                */
 
-      var field = {
-        name: form.user_id.value,
-        role: form.user_role.value,
-        projectID: form.project_id.value
-      };
-      this.props.createUserReq(field); // alert("field designed");
+                query = "query getProjectDetailsFromProjectID($projectID: String!)\n        {\n            getProjectDetailsFromProjectID(projectID : $projectID)\n            {\n                name\n            }\n        }";
+                _context.next = 9;
+                return fetch('http://localhost:5000/graphql', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    query: query,
+                    variables: {
+                      projectID: projectID
+                    }
+                  })
+                });
 
-      form.user_id.value = "";
-      form.user_role.value = "";
-      form.project_id.value = "";
-    }
+              case 9:
+                response = _context.sent;
+                _context.next = 12;
+                return response.text();
+
+              case 12:
+                body = _context.sent;
+                result = JSON.parse(body);
+                field.projectName = result.data.getProjectDetailsFromProjectID[0].name;
+                this.props.createUserReq(field); // alert("field designed");
+
+                form.user_id.value = "";
+                form.user_role.value = "";
+                form.project_id.value = "";
+
+              case 19:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function handleSubmit(_x2) {
+        return _handleSubmit.apply(this, arguments);
+      }
+
+      return handleSubmit;
+    }()
   }, {
     key: "goback",
     value: function goback() {
@@ -1212,23 +1273,23 @@ var GenericDiv = /*#__PURE__*/function (_React$Component24) {
   _createClass(GenericDiv, [{
     key: "loadData",
     value: function () {
-      var _loadData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var _loadData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
         var query, projectID, response, tablist;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 query = "query getProjectDetailsInner($projectID: String!)\n        {\n            getProjectDetailsInner(projectID: $projectID)\n            {\n                projectID\n                activeTabList\n            }\n        }";
                 projectID = this.props.projectID;
                 console.log("In GenericDiv");
                 console.log(projectID);
-                _context.next = 6;
+                _context2.next = 6;
                 return graphQLFetch(query, {
                   projectID: projectID
                 });
 
               case 6:
-                response = _context.sent;
+                response = _context2.sent;
                 console.log(response);
                 tablist = response.getProjectDetailsInner.activeTabList;
                 console.log(tablist);
@@ -1238,10 +1299,10 @@ var GenericDiv = /*#__PURE__*/function (_React$Component24) {
 
               case 11:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee, this);
+        }, _callee2, this);
       }));
 
       function loadData() {
@@ -1258,11 +1319,11 @@ var GenericDiv = /*#__PURE__*/function (_React$Component24) {
   }, {
     key: "updateTabList",
     value: function () {
-      var _updateTabList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(tablist) {
+      var _updateTabList = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(tablist) {
         var query, projectID, activeTabList, response;
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
                 console.log(tablist);
                 this.setState({
@@ -1271,7 +1332,7 @@ var GenericDiv = /*#__PURE__*/function (_React$Component24) {
                 query = "mutation updateActiveTabList($projectID : String!, $activeTabList: [Boolean])\n        {\n            updateActiveTabList(projectID : $projectID, activeTabList: $activeTabList)\n            {\n                projectID\n                activeTabList\n            }\n        }";
                 projectID = this.props.projectID;
                 activeTabList = this.state.activeTabList;
-                _context2.next = 7;
+                _context3.next = 7;
                 return fetch('http://localhost:5000/graphql', {
                   method: 'POST',
                   headers: {
@@ -1287,17 +1348,17 @@ var GenericDiv = /*#__PURE__*/function (_React$Component24) {
                 });
 
               case 7:
-                response = _context2.sent;
+                response = _context3.sent;
 
               case 8:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee3, this);
       }));
 
-      function updateTabList(_x2) {
+      function updateTabList(_x3) {
         return _updateTabList.apply(this, arguments);
       }
 
@@ -1595,8 +1656,8 @@ var My_Projects = /*#__PURE__*/function (_React$Component28) {
   }, {
     key: "render",
     value: function render() {
-      console.log("In My_Projects");
-      console.log(this.props.data);
+      console.log("In My_Projects"); //console.log(this.props.data);
+
       var d = this.props.data.map(function (r) {
         return /*#__PURE__*/React.createElement(Projects_Display, {
           data: r
@@ -1631,13 +1692,16 @@ var CreateDiv = /*#__PURE__*/function (_React$Component29) {
       var t = this.props.data;
       var role = t.role;
       var id = t.projectID;
+      var reqfrom = t.reqfrom;
+      var projName = t.projectName;
+      console.log(t);
       return /*#__PURE__*/React.createElement("div", {
         className: "project_class"
       }, /*#__PURE__*/React.createElement("div", {
         className: "project_class"
       }, /*#__PURE__*/React.createElement("h3", {
         className: "card_header"
-      }, t.name), /*#__PURE__*/React.createElement("p", null, "Project Role: ", role), /*#__PURE__*/React.createElement("p", null, "Project ID: ", id), /*#__PURE__*/React.createElement("button", null, "Accept"), /*#__PURE__*/React.createElement("button", null, "Reject")));
+      }, projName), /*#__PURE__*/React.createElement("p", null, "Project Name: ", projName), /*#__PURE__*/React.createElement("p", null, "Project Role: ", role), /*#__PURE__*/React.createElement("p", null, "Project ID: ", id), /*#__PURE__*/React.createElement("p", null, "Invite from: ", reqfrom, " "), /*#__PURE__*/React.createElement("button", null, "Accept"), /*#__PURE__*/React.createElement("button", null, "Reject")));
     }
   }]);
 
@@ -1697,6 +1761,8 @@ var ViewRequests = /*#__PURE__*/function (_React$Component31) {
     key: "render",
     value: function render() {
       var t = this.props.data;
+      alert("in view requests");
+      console.log(t);
       var temp_div = t.map(function (val) {
         return /*#__PURE__*/React.createElement(RequestDiv, {
           data: val
@@ -1774,17 +1840,17 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
   }, {
     key: "loadData",
     value: function () {
-      var _loadData2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      var _loadData2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
         var query, username, response, body, result, proj_query, user_accepted_projects, get_project_from_ID, data_obtained, i, projectID, proj_data;
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
-                query = "query getExistingUsers($username : String!)\n        {\n            getExistingUsers(username : $username)\n            {\n                username\n                pending\n                {\n                    projectID\n                }\n                accepted\n                {\n                    projectID\n                }\n            }\n        }"; // const username = "e0674494@u.nus.edu";
+                query = "query getExistingUsers($username : String!)\n        {\n            getExistingUsers(username : $username)\n            {\n                username\n                pending\n                {\n                    name\n                    role\n                    projectID\n                    reqfrom\n                    projectName\n                \n                }\n                accepted\n                {\n                    projectID\n                }\n            }\n        }"; //const username = "e0674494@u.nus.edu";
                 //const response = await graphQLFetch(query, { username });
 
                 username = activeuser;
-                _context3.next = 4;
+                _context4.next = 4;
                 return fetch('http://localhost:5000/graphql', {
                   method: 'POST',
                   headers: {
@@ -1799,22 +1865,22 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
                 });
 
               case 4:
-                response = _context3.sent;
-                _context3.next = 7;
+                response = _context4.sent;
+                _context4.next = 7;
                 return response.text();
 
               case 7:
-                body = _context3.sent;
+                body = _context4.sent;
                 result = JSON.parse(body); // console.log(result.data.getExistingUsers);
                 // get list of project IDs for the user and assign to data state
 
-                _context3.next = 11;
+                _context4.next = 11;
                 return graphQLFetch(query, {
                   username: username
                 });
 
               case 11:
-                proj_query = _context3.sent;
+                proj_query = _context4.sent;
                 user_accepted_projects = [];
                 console.log("User accepted projects");
                 get_project_from_ID = "query getProjectDetailsFromProjectID($projectID : String!)\n        {\n            getProjectDetailsFromProjectID(projectID : $projectID)\n            {\n                name\n                desc\n                owner\n                projectID\n            }\n        }";
@@ -1823,24 +1889,24 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
 
               case 17:
                 if (!(i < proj_query.getExistingUsers[0].accepted.length)) {
-                  _context3.next = 27;
+                  _context4.next = 27;
                   break;
                 }
 
                 user_accepted_projects.push(proj_query.getExistingUsers[0].accepted[i].projectID);
                 projectID = proj_query.getExistingUsers[0].accepted[i].projectID;
-                _context3.next = 22;
+                _context4.next = 22;
                 return graphQLFetch(get_project_from_ID, {
                   projectID: projectID
                 });
 
               case 22:
-                proj_data = _context3.sent;
+                proj_data = _context4.sent;
                 data_obtained.push(proj_data.getProjectDetailsFromProjectID[0]);
 
               case 24:
                 i++;
-                _context3.next = 17;
+                _context4.next = 17;
                 break;
 
               case 27:
@@ -1852,10 +1918,10 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
 
               case 29:
               case "end":
-                return _context3.stop();
+                return _context4.stop();
             }
           }
-        }, _callee3, this);
+        }, _callee4, this);
       }));
 
       function loadData() {
@@ -1867,61 +1933,13 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
   }, {
     key: "addproject",
     value: function () {
-      var _addproject = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(field) {
-        var query, response, l, newList;
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                query = "mutation addProjectDetails($field: ProjectData!) {\n                    addProjectDetails(field : $field)\n                {\n                    name\n                }\n        }";
-                _context4.next = 3;
-                return fetch('http://localhost:5000/graphql', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                    query: query,
-                    variables: {
-                      field: field
-                    }
-                  })
-                });
-
-              case 3:
-                response = _context4.sent;
-                l = this.state.data.length + 1;
-                newList = this.state.data.slice();
-                newList.push(field);
-                this.setState({
-                  data: newList,
-                  d: '2'
-                });
-
-              case 8:
-              case "end":
-                return _context4.stop();
-            }
-          }
-        }, _callee4, this);
-      }));
-
-      function addproject(_x3) {
-        return _addproject.apply(this, arguments);
-      }
-
-      return addproject;
-    }()
-  }, {
-    key: "createUserReq",
-    value: function () {
-      var _createUserReq = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(field) {
+      var _addproject = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(field) {
         var query, response;
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
-                query = "mutation addNewRequests($field: RequestData!){\n                    addNewRequests(field : $field)\n                {\n                    name\n                }\n        }";
+                query = "mutation addProjectDetails($field: ProjectData!) {\n                    addProjectDetails(field : $field)\n                {\n                    name\n                }\n        }";
                 _context5.next = 3;
                 return fetch('http://localhost:5000/graphql', {
                   method: 'POST',
@@ -1947,7 +1965,48 @@ var Dashboard = /*#__PURE__*/function (_React$Component32) {
         }, _callee5);
       }));
 
-      function createUserReq(_x4) {
+      function addproject(_x4) {
+        return _addproject.apply(this, arguments);
+      }
+
+      return addproject;
+    }()
+  }, {
+    key: "createUserReq",
+    value: function () {
+      var _createUserReq = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(field) {
+        var query, response;
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                query = "mutation addNewRequests($field: Requests!){\n                    addNewRequests(field : $field)\n                {\n                    name\n                }\n        }";
+                _context6.next = 3;
+                return fetch('http://localhost:5000/graphql', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    query: query,
+                    variables: {
+                      field: field
+                    }
+                  })
+                });
+
+              case 3:
+                response = _context6.sent;
+
+              case 4:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6);
+      }));
+
+      function createUserReq(_x5) {
         return _createUserReq.apply(this, arguments);
       }
 

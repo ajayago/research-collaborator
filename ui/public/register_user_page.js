@@ -160,7 +160,8 @@ var AddUser = /*#__PURE__*/function (_React$Component) {
           password: pass,
           org_short_name: form.org_short_name.value,
           google_auth: _this2.state.google_auth,
-          pending: []
+          pending: [],
+          accepted: []
         };
         console.log(user);
 

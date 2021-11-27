@@ -18,6 +18,9 @@ type pending_output_user
     name: String!
     role: String!
     projectID : String!
+    reqfrom: String!
+    projectName: String!
+
 }
 
 type User {
@@ -59,6 +62,14 @@ type collab_output
     role: String
 }
 
+input Requests
+{
+    name: String!
+    role: String!
+    projectID: String!
+    reqfrom: String!
+    projectName: String!
+}
 
 input RequestData
 {
@@ -74,6 +85,7 @@ input UserInputs {
     org_short_name: String!
     google_auth: Boolean = false
     pending: [RequestData]
+    accepted: [RequestData]
 }
 
 input ProjectData
@@ -100,6 +112,8 @@ type OutputRequest
     name: String!
     role: String!
     projectID: String!
+    reqfrom: String!
+    projectName: String!
 
 }
 
@@ -122,6 +136,6 @@ type Mutation {
     addOrganization(org: OrganizationInputs!): Organization!
     addNewUser(user: UserInputs!): User!
     addProjectDetails(field : ProjectData!): ProjectRec!
-    addNewRequests(field : RequestData!): OutputRequest!
+    addNewRequests(field : Requests!): OutputRequest!
     updateActiveTabList(projectID: String!, activeTabList: [Boolean]): ProjectDetails!
 }

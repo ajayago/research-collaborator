@@ -83,27 +83,27 @@ async function getProjectDetails(_, { username }) {
     return lis;
 }
 
-async function getProjectDetailsFromProjectID(_, {projectID}){
+async function getProjectDetailsFromProjectID(_, { projectID }) {
     // console.log(projectID);
-    const project_from_id = await db_proj.collection('projectDB').find({projectID: projectID}).toArray();
+    const project_from_id = await db_proj.collection('projectDB').find({ projectID: projectID }).toArray();
     console.log("got the project details from project ID");
     return project_from_id;
 }
 
-async function getProjectDetailsInner(_, {projectID}){
-    const project_details_from_id = await db_proj.collection('projectDetails').find({projectID: projectID}).toArray();
+async function getProjectDetailsInner(_, { projectID }) {
+    const project_details_from_id = await db_proj.collection('projectDetails').find({ projectID: projectID }).toArray();
     console.log(project_details_from_id[0]);
-    if (project_details_from_id.length > 0){
+    if (project_details_from_id.length > 0) {
         return project_details_from_id[0];
     }
-    else{
-        return {projectID: projectID, activeTabList: [false, false, false, false, false, false]};
+    else {
+        return { projectID: projectID, activeTabList: [false, false, false, false, false, false] };
     }
 }
 
-async function updateActiveTabList(_,{projectID, activeTabList}){
+async function updateActiveTabList(_, { projectID, activeTabList }) {
     const df = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $set: { "activeTabList": activeTabList } });
-    const res = {projectID: projectID, activeTabList: activeTabList};
+    const res = { projectID: projectID, activeTabList: activeTabList };
     return res;
 }
 
@@ -120,9 +120,9 @@ async function addProjectDetails(_, { field }) {
     // add the new project to the user who created the project under accepted list
     const users = await db.collection('users').find({ username: field.owner }).toArray();
     console.log("Owner is");
-    console.log(users);
+    //console.log(users);
     const df_temp = await db.collection('users').updateOne({ username: field.owner }, { $push: { "accepted": field } });
-    const addprojectdetails = await db_proj.collection('projectDetails').insertOne({projectID: field.projectID, activeTabList: [false, false, false, false, false, false]});
+    const addprojectdetails = await db_proj.collection('projectDetails').insertOne({ projectID: field.projectID, activeTabList: [false, false, false, false, false, false] });
     return f
 }
 
@@ -160,7 +160,7 @@ async function addNewRequests(_, { field }) {
     const user_name = field.name;
     // const f = await db.collection('projectDB').find({ projectID: ID });
     // console.log(f);
-    console.log(ID);
+    //console.log(ID);
     console.log("New User Request Added");
     // console.log(field);
     const df = await db_proj.collection('projectDB').updateOne({ projectID: ID }, { $push: { "pending": field } });
