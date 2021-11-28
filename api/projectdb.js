@@ -44,6 +44,10 @@ async function testWithAsync() {
 
         const final_del1 = await collection.deleteMany({});
 
+        const final_delete = await db.dropDatabase();
+        const final_delete1 = await db_user.dropDatabase();
+
+
     }
 
 

@@ -53,7 +53,13 @@ const resolvers = {
         updateLitSurvey,
         updateProblemStatement,
         updateExperimentation,
-        updateComments
+        updateComments,
+        UpdatePendingProject,
+        UpdatePendingProjectReject,
+        updateSourceCode,
+        updateSubmissions,
+        updateSheet,
+        updateSchedule
     },
     GraphQLDate
 };
@@ -109,31 +115,56 @@ async function updateActiveTabList(_, { projectID, activeTabList }) {
     return res;
 }
 // Lit surve updates
-async function updateLitSurvey(_, { projectID, litsurveyarray }){
+async function updateLitSurvey(_, { projectID, litsurveyarray }) {
     const df = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $set: { "litsurveyarray": litsurveyarray } });
     const res = await db_proj.collection('projectDetails').findOne({ _id: df.insertedId });
     return res;
 }
 // problem statement updates
-async function updateProblemStatement(_, {projectID, problemstatement}){
+async function updateProblemStatement(_, { projectID, problemstatement }) {
     const df = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $set: { "problemstatement": problemstatement } });
     const res = await db_proj.collection('projectDetails').findOne({ _id: df.insertedId });
     return res;
 }
 // experimentation updates
-async function updateExperimentation(_, {projectID, experimentation}){
+async function updateExperimentation(_, { projectID, experimentation }) {
     const df = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $set: { "experimentation": experimentation } });
     const res = await db_proj.collection('projectDetails').findOne({ _id: df.insertedId });
     return res;
 }
 
 // comments update
-async function updateComments(_, {projectID, comments}){
+async function updateComments(_, { projectID, comments }) {
     const df = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $set: { "comments": comments } });
     const res = await db_proj.collection('projectDetails').findOne({ _id: df.insertedId });
     return res;
 }
+// source code upate
+async function updateSourceCode(_, { projectID, field }) {
+    const addsource = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $push: { sourcecode: field } });
+    const res = await db_proj.collection('projectDetails').find({ projectID: projectID });
+    return res
+}
+//submission update
+async function updateSubmissions(_, { projectID, field }) {
+    const addsource = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $push: { submission: field } });
+    const res = await db_proj.collection('projectDetails').find({ projectID: projectID });
+    return res
 
+}
+//sheet update
+async function updateSheet(_, { projectID, field }) {
+    const addsource = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $set: { PaperDraft: field } });
+    const res = await db_proj.collection('projectDetails').find({ projectID: projectID });
+    return res
+}
+
+// schedule update
+async function updateSchedule(_, { projectID, field }) {
+    const addsource = await db_proj.collection('projectDetails').updateOne({ projectID: projectID }, { $push: { schedule: field } });
+    const res = await db_proj.collection('projectDetails').find({ projectID: projectID });
+    return res
+}
 // Main info on the project
 async function addProjectDetails(_, { field }) {
     console.log(field);
@@ -145,19 +176,25 @@ async function addProjectDetails(_, { field }) {
         alert("Key Taken");
     }
     const f = { name: field.name, owner: field.owner, projectID: field.projectID, desc: field.desc };
+
+
     // add the new project to the user who created the project under accepted list
     const users = await db.collection('users').find({ username: field.owner }).toArray();
     console.log("Owner is");
     //console.log(users);
-    const df_temp = await db.collection('users').updateOne({ username: field.owner }, { $push: { "accepted": field } });
-    const addprojectdetails = await db_proj.collection('projectDetails').insertOne({ 
-        projectID: field.projectID, 
-        activeTabList: [false, false, false, false, false, false], 
-        litsurveyarray: [{paper_title: "", publisher_name: "", doi: ""}],
+    const df_temp = await db.collection('users').updateOne({ username: field.owner }, { $push: { "accepted": f } });
+    const addprojectdetails = await db_proj.collection('projectDetails').insertOne({
+        projectID: field.projectID,
+        activeTabList: [false, false, false, false, false, false],
+        litsurveyarray: [{ paper_title: "", publisher_name: "", doi: "" }],
         problemstatement: "",
         experimentation: "",
-        comments: []
-     });
+        comments: [],
+        PaperDraft: "",
+        sourcecode: [],
+        submission: [],
+        schedule: []
+    });
     return f
 }
 
@@ -204,6 +241,31 @@ async function addNewRequests(_, { field }) {
     return field
 }
 
+
+async function UpdatePendingProject(_, { field }) {
+
+    console.log(field);
+    await db.collection('users').updateOne({ username: field.name }, { $pull: { pending: field } });
+    await db.collection('users').updateOne({ username: field.name }, { $push: { accepted: field } });
+
+    await db_proj.collection('projectDB').updateOne({ projectID: field.projectID }, { $pull: { pending: field } });
+    await db_proj.collection('projectDB').updateOne({ projectID: field.projectID }, { $push: { accepted: field } });
+
+    const df_users = await db.collection('users').find({ username: field.name }).toArray();
+    const df_p = await db_proj.collection('projectDB').find({ projectID: field.projectID }).toArray();
+
+    //console.log(df_users[0]);
+    //console.log("Proj DB");
+    //console.log(df_p[0]);
+
+    return field
+}
+
+async function UpdatePendingProjectReject(_, { field }) {
+    await db.collection('users').updateOne({ username: field.name }, { $pull: { pending: field } });
+    await db_proj.collection('projectDB').updateOne({ projectID: field.projectID }, { $pull: { pending: field } });
+    return field
+}
 // async function deleteCustomer(_, { _id }){
 //     const customers = await db.collection('customers').find({}).toArray();
 //     for(var c = 0; c < customers.length; c++){

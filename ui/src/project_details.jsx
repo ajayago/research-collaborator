@@ -36,7 +36,7 @@ async function graphQLFetch(query, variables = {}) {
     }
 }
 // Add Google Sign In user if it doesn't already exist
-async function addGoogleUser(){
+async function addGoogleUser() {
     const getuser_query = `query getExistingUsers($username : String!)
             {
                 getExistingUsers(username : $username)
@@ -47,7 +47,7 @@ async function addGoogleUser(){
     const username = activeuser;
     const getuser_query_res = await graphQLFetch(getuser_query, { username });
     console.log(getuser_query_res.getExistingUsers[0]);
-    if(getuser_query_res.getExistingUsers.length == 0){ // user does not exist
+    if (getuser_query_res.getExistingUsers.length == 0) { // user does not exist
         const adduser_query = `mutation addNewUser($user: UserInputs!){
             addNewUser(user: $user) {
                 _id
@@ -263,22 +263,28 @@ class LiteratureSurvey extends React.Component {
             }
         }`
         const projectID = this.props.projectID;
+        console.log(projectID);
         console.log("In LiteratureSurvey");
         console.log(projectID);
         const response = await graphQLFetch(query, { projectID });
-        console.log(response);
+        console.log("before response");
+        console.log(response.getProjectDetailsInner.litsurveyarray);
+        console.log("after response");
         const litsurveyarraylist = response.getProjectDetailsInner.litsurveyarray;
         // console.log(litsurveyarraylist);
         this.setState({ litsurvey_array: litsurveyarraylist });
 
     }
     componentDidMount() {
-        this.loadData()
+
+        this.loadData();
+        console.log(this.state.litsurvey_array);
     }
     async addLitSurveyItem(litsurvey_item) {
         const litsurvey = this.state.litsurvey_array.slice();
         litsurvey.push(litsurvey_item);
         this.setState({ litsurvey_array: litsurvey });
+
         console.log(litsurvey);
         const query = `mutation updateLitSurvey($projectID: String!, $litsurveyarray: [LitSurveyItem])
         {
@@ -475,9 +481,9 @@ class CreateRow extends React.Component {
         const t = this.props.r;
         return (
             <tr>
-                <td>{t.id}</td>
-                <td><a href={t.link}>{t.link}</a></td>
-                <td>{t.des}</td>
+                <td>{t.sno}</td>
+                <td><a href={t.codelink}>{t.codelink}</a></td>
+                <td>{t.codedes}</td>
             </tr>
         );
     }
@@ -511,24 +517,77 @@ class Sourcecode extends React.Component {
         super();
         this.SourceSubmit = this.SourceSubmit.bind(this);
         this.createField = this.createField.bind(this);
+        this.loadData = this.loadData.bind(this);
         this.state = { data: [] };
     }
 
+    componentDidMount() {
+        this.loadData();
+    }
+
+    async loadData() {
+
+
+
+        const query = `query getProjectDetailsInner($projectID: String!)
+        {
+            getProjectDetailsInner(projectID: $projectID)
+            {
+                sourcecode
+                {
+                    codelink
+                    codedes
+                    sno
+                }
+            }
+        }`;
+
+        const projectID = this.props.projectID;
+        console.log("In sourcecode");
+        console.log(projectID);
+        const response = await graphQLFetch(query, { projectID });
+        console.log(response);
+        const val = response.getProjectDetailsInner.sourcecode;
+        console.log(val);
+
+        this.setState({ data: val });
+
+    }
     SourceSubmit(e) {
         e.preventDefault();
         const form = document.forms.sourceadd;
-        const field = { link: form.sourcelink.value, des: form.sourcedes.value };
+        const l = this.state.data.length;
+        const field = { sno: String(l + 1), codelink: form.sourcelink.value, codedes: form.sourcedes.value };
         this.createField(field);
         form.sourcelink.value = "";
         form.sourcedes.value = "";
     }
 
-    createField(field) {
+    async createField(field) {
+
+        const query = `mutation updateSourceCode($projectID : String! , $field : source! )
+        {
+            updateSourceCode(projectID : $projectID , field : $field)
+            {
+                projectID
+            }
+        }`;
+
+        const projectID = this.props.projectID;
+        const response = await fetch('http://localhost:5000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { projectID, field } })
+        });
+
+        this.loadData();
+        /*
         const l = this.state.data.length + 1;
         field.id = l;
         const newList = this.state.data.slice();
         newList.push(field);
         this.setState({ data: newList });
+        */
     }
     render() {
         return (
@@ -576,7 +635,7 @@ class Adding_Members extends React.Component {
 
         const field = {
             name: form.user_id.value, role: form.user_role.value, projectID: form.project_id.value,
-            reqfrom: activeuser, projectName: "Machine Learning"
+            reqfrom: activeuser, projectName: "Machine Learning", desc: ""
         };
 
         const projectID = String(field.projectID);
@@ -600,6 +659,7 @@ class Adding_Members extends React.Component {
             getProjectDetailsFromProjectID(projectID : $projectID)
             {
                 name
+                desc
             }
         }`;
 
@@ -614,6 +674,7 @@ class Adding_Members extends React.Component {
         const result = JSON.parse(body);
 
         field.projectName = result.data.getProjectDetailsFromProjectID[0].name;
+        field.desc = result.data.getProjectDetailsFromProjectID[0].desc;
 
 
         this.props.createUserReq(field);
@@ -677,11 +738,44 @@ class PaperDraft extends React.Component {
         super();
         this.state = { google_sheet: "" };
         this.updateSheetLink = this.updateSheetLink.bind(this);
+        this.loadData = this.loadData.bind(this);
     }
-    updateSheetLink(link) {
-        const link_complete = link;
-        console.log(link_complete);
-        this.setState({ google_sheet: link_complete });
+    componentDidMount() {
+        this.loadData();
+    }
+    async loadData() {
+        const query = `query getProjectDetailsInner($projectID: String!)
+        {
+            getProjectDetailsInner(projectID: $projectID)
+            {
+                PaperDraft
+            }
+        }`;
+
+        const projectID = this.props.projectID;
+        const response = await graphQLFetch(query, { projectID });
+        const val = response.getProjectDetailsInner.PaperDraft;
+        this.setState({ google_sheet: val });
+    }
+
+
+    async updateSheetLink(link) {
+        const field = String(link);
+        const query = `mutation updateSheet($projectID : String! , $field : String! )
+        {
+            updateSheet(projectID : $projectID , field : $field)
+            {
+                projectID
+            }
+        }`;
+
+        const projectID = this.props.projectID;
+        const response = await fetch('http://localhost:5000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { projectID, field } })
+        });
+        this.loadData();
     }
     render() {
         return (
@@ -707,7 +801,7 @@ class PaperDiv extends React.Component {
                     <h2>Requirements</h2>
                     <p>{t.reqr}</p>
                 </div>
-                <h3>Deadline : {t.last_date}</h3>
+                {<h3>Deadline : {t.last_date}</h3>}
             </div>
 
         );
@@ -726,25 +820,73 @@ class PaperSub extends React.Component {
         super();
         this.paperSubmit = this.paperSubmit.bind(this);
         this.addField = this.addField.bind(this);
+        this.loadData = this.loadData.bind(this);
         this.state = { val: [] };
     }
+    componentDidMount() {
+        this.loadData();
+    }
 
+    async loadData() {
+        console.log("in papersub")
+        const query = `query getProjectDetailsInner($projectID : String!)
+        {
+            getProjectDetailsInner(projectID : $projectID)
+            {
+                submission
+                {
+                    name
+                    reqr
+                    last_date
+                }
+            }
+        }`;
+
+        const projectID = this.props.projectID;
+        const response = await graphQLFetch(query, { projectID });
+
+        const data = response.getProjectDetailsInner.submission;
+        console.log(data);
+        this.setState({ val: data });
+    }
     paperSubmit(e) {
         e.preventDefault();
         const form = document.forms.addPaper;
-        const field = { name: form.conf.value, reqr: form.reqr.value, last_date: form.date_val.value };
+        const l = this.state.val.length + 1;
+        const field = { id: String(l), name: form.conf.value, reqr: form.reqr.value, last_date: String(new Date(form.date_val.value)) };
+        console.log(field.last_date);
         this.addField(field);
         form.conf.value = "";
         form.reqr.value = "";
         form.date_val.value = "";
     }
 
-    addField(field) {
+    async addField(field) {
+
+        const query = `mutation updateSubmissions($projectID : String! , $field : subs!)
+        {
+            updateSubmissions(projectID: $projectID , field: $field)
+            {
+                projectID
+            }
+        }`;
+
+        const projectID = this.props.projectID;
+        const response = await fetch('http://localhost:5000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { projectID, field } })
+        });
+
+        this.loadData();
+
+        /*
         const l = this.state.val.length + 1;
         field.id = l;
         const newList = this.state.val.slice();
         newList.push(field);
         this.setState({ val: newList });
+        */
     }
     render() {
         return (
@@ -819,12 +961,42 @@ class Scheduling extends React.Component {
         this.schSubmit = this.schSubmit.bind(this);
         this.addTask = this.addTask.bind(this);
         this.state = { data: [] };
+        this.loadData = this.loadData.bind(this);
     }
+    componentDidMount() {
+        this.loadData();
+    }
+    async loadData() {
 
+        const query = `query getProjectDetailsInner($projectID : String!)
+        {
+            getProjectDetailsInner(projectID : $projectID)
+            {
+                schedule
+                {
+                    name
+                    start
+                    end 
+                    user
+                    id
+                    timeleft
+                }
+            }
+        }`;
+
+        const projectID = this.props.projectID;
+        const response = await graphQLFetch(query, { projectID });
+
+        const val = response.getProjectDetailsInner.schedule;
+        this.setState({ data: val });
+    }
     schSubmit(e) {
         e.preventDefault();
         const form = document.forms.addSch;
-        const field = { name: form.task.value, start: form.from_date.value, end: form.to_date.value, user: form.user_text.value };
+        const field = {
+            name: form.task.value, start: String(new Date(form.from_date.value)),
+            end: String(new Date(form.to_date.value)), user: form.user_text.value
+        };
         this.addTask(field);
         form.task.value = "";
         form.from_date.value = "";
@@ -832,14 +1004,35 @@ class Scheduling extends React.Component {
         form.user_text.value = "";
     }
 
-    addTask(field) {
+    async addTask(field) {
         const l = this.state.data.length + 1;
-        field.id = l;
+        field.id = String(l);
         const x = new Date(field.end) - new Date(field.start);
-        field.timeleft = Number(x) / (3600 * 24 * 1000);
+        field.timeleft = String(Number(x) / (3600 * 24 * 1000));
+
+        const query = `mutation updateSchedule($projectID : String! , $field : schedule_type!)
+        {
+            updateSchedule(projectID: $projectID , field: $field)
+            {
+                projectID
+            }
+        }`;
+
+        const projectID = this.props.projectID;
+        const response = await fetch('http://localhost:5000/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { projectID, field } })
+        });
+
+        this.loadData();
+
+
+        /*
         const newList = this.state.data.slice();
         newList.push(field);
         this.setState({ data: newList });
+        */
     }
     render() {
         return (
@@ -900,9 +1093,9 @@ class AddComment extends React.Component {
 
 
 class Comments extends React.Component {
-    constructor(){
+    constructor() {
         super();
-        this.state = {comments: []};
+        this.state = { comments: [] };
         this.updateComments = this.updateComments.bind(this);
     }
     async loadData() {
@@ -947,7 +1140,7 @@ class Comments extends React.Component {
             body: JSON.stringify({ query, variables: { projectID, comments } })
         });
     }
-    render(){
+    render() {
         const c = this.state.comments.map(i => <p>{i}</p>);
         return (
             <React.Fragment>
@@ -1079,7 +1272,7 @@ class CreateProject extends React.Component {
                 */
         const field = {
             name: form.project_name.value, projectID: form.project_key.value, owner: activeuser,
-            desc: form.project_desc.value, pending: [], collab: []
+            desc: form.project_desc.value, pending: [], accepted: []
         };
 
         this.props.addproject(field);
@@ -1158,7 +1351,7 @@ class Temp_display extends React.Component {
     handleSubmit() {
         this.setState({ d: '2' });
     }
-    hideProjects(){
+    hideProjects() {
         console.log("dummy function to pass as arg");
     }
     render() {
@@ -1179,7 +1372,7 @@ class Temp_display extends React.Component {
                 {
                     this.state.d == '2' &&
                     // <Projects_Display data={this.props.complete_list} />
-                    <My_Projects data={this.props.complete_list} fromtemp={true}/>
+                    <My_Projects data={this.props.complete_list} fromtemp={true} />
                     // this.props.complete_list.map(r => <Projects_Display data={r} hideProjects={this.hideProjects} />)
                 }
             </div>
@@ -1209,7 +1402,7 @@ class Projects_Display extends React.Component {
                         <div className="project_class">
                             <h3 className="card_header">{t.name}</h3>
                             <p>Project Description: {t.desc}</p>
-                            <p>Project Member: {t.owner}</p>
+                            <p>Project Creator: {t.owner}</p>
                             <p>Project ID  : {t.projectID}</p>
                         </div>
                     </button>
@@ -1229,33 +1422,33 @@ class Projects_Display extends React.Component {
 class My_Projects extends React.Component {
     constructor() {
         super();
-        this.state = { d: '1' , display: null};
+        this.state = { d: '1', display: null };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.hideProjects = this.hideProjects.bind(this);
     }
-    componentDidMount(){
+    componentDidMount() {
         const d = this.props.data.map(r => <Projects_Display data={r} hideProjects={this.hideProjects} />);
-        this.setState({display: d});
+        this.setState({ display: d });
     }
     handleSubmit() {
         this.setState({ d: '2' });
     }
 
-    hideProjects(projectID){
+    hideProjects(projectID) {
         console.log("In hide project function");
         console.log(projectID);
         let disp;
-        for(var i = 0; i < this.props.data.length; i++){
-            if(this.props.data[i].projectID == projectID){
-                disp=<Temp_display data={this.props.data[i]} complete_list={this.props.data}/>;
+        for (var i = 0; i < this.props.data.length; i++) {
+            if (this.props.data[i].projectID == projectID) {
+                disp = <Temp_display data={this.props.data[i]} complete_list={this.props.data} />;
             }
         }
-        this.setState({display: disp});
+        this.setState({ display: disp });
     }
 
     render() {
         console.log("In My_Projects");
-        if(this.props.fromtemp == true){
+        if (this.props.fromtemp == true) {
             console.log("from temp");
             this.state.d = '3';
         }
@@ -1294,24 +1487,111 @@ class My_Projects extends React.Component {
     }
 }
 class CreateDiv extends React.Component {
+    constructor() {
+        super();
+        this.state = { d: '1', val: [] }
+        this.handleAccept = this.handleAccept.bind(this);
+        this.handleReject = this.handleReject.bind(this);
+        this.loadData = this.loadData.bind(this);
+    }
+    componentDidMount() {
+        this.loadData();
+    }
+
+    loadData() {
+        this.setState({ val: this.props.data });
+    }
+    async handleAccept() {
+        // alert("in accept");
+        // alert(this.state.val.projectName);
+        const t = this.props.data;
+
+        alert(activeuser);
+        const field = {
+            name: activeuser,
+            role: t.role,
+            projectID: t.projectID,
+            reqfrom: t.reqfrom,
+            projectName: t.projectName,
+            desc: t.desc
+        }
+
+
+
+        const query = `mutation UpdatePendingProject($field: pending_input_user!)
+        {
+            UpdatePendingProject(field : $field)
+            {
+                name
+            }
+        }`;
+
+        const response = await fetch("http://localhost:5000/graphql", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { field } })
+        });
+
+        this.setState({ d: '2' });
+    }
+
+    async handleReject() {
+        alert("in reject");
+        const t = this.props.data;
+
+        const field = {
+            name: activeuser,
+            role: t.role,
+            projectID: t.projectID,
+            reqfrom: t.reqfrom,
+            projectName: t.projectName,
+            desc: t.desc
+        }
+
+        const query = `mutation UpdatePendingProjectReject($field: pending_input_user!)
+        {
+            UpdatePendingProjectReject(field: $field)
+            {
+                name
+            }  
+        }`;
+
+
+        const response = await fetch("http://localhost:5000/graphql", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables: { field } })
+        });
+        this.setState({ d: '2' });
+    }
     render() {
         const t = this.props.data;
         const role = t.role;
         const id = t.projectID;
         const reqfrom = t.reqfrom;
         const projName = t.projectName;
-        console.log(t);
+        const projDesc = t.desc;
+        //console.log(t);
         return (
-            <div className="project_class" >
-                <div className="project_class">
-                    <h3 className="card_header">{projName}</h3>
-                    <p>Project Name: {projName}</p>
-                    <p>Project Role: {role}</p>
-                    <p>Project ID: {id}</p>
-                    <p>Invite from: {reqfrom} </p>
-                    <button>Accept</button>
-                    <button>Reject</button>
-                </div>
+            <div>
+                {this.state.d == '1' &&
+                    <div className="project_class" >
+                        <div className="project_class">
+                            <h3 className="card_header">{projName}</h3>
+                            <p>Project Name: {projName}</p>
+                            <p>Project Role: {role}</p>
+                            <p>Project ID: {id}</p>
+                            <p>Project Desc: {projDesc}</p>
+                            <p>Invite from: {reqfrom} </p>
+                            <button onClick={this.handleAccept}>Accept</button>
+                            <button onClick={this.handleReject}>Reject</button>
+                        </div>
+                    </div>
+                }
+                {
+                    this.state.d == '2' &&
+                    <div></div>
+                }
             </div>
         );
     }
@@ -1321,9 +1601,9 @@ class RequestDiv extends React.Component {
         const t = this.props.data;
         const user = t.username;
         const p = t.pending;
-        const temp_div = p.map(val => <CreateDiv data={val} />);
-        alert("data read");
-        alert(user);
+        const temp_div = p.map(val => <CreateDiv data={val} add_f={this.props.add_f} />);
+        // alert("data read");
+        // alert(user);
         return (
             <div>
                 {temp_div}
@@ -1336,20 +1616,37 @@ class ViewRequests extends React.Component {
     constructor() {
         super();
         this.state = { d: '1', values: [] };
+        this.handle = this.handle.bind(this);
     }
 
+    handle() {
+        this.setState({ d: '2' });
+    }
     render() {
         const t = this.props.data;
-        alert("in view requests");
-        console.log(t);
-        const temp_div = t.map(val => <RequestDiv data={val} />);
+        // alert("in view requests");
+        // console.log(t);
+        const temp_div = t.map(val => <RequestDiv data={val} add_f={this.props.f} />);
 
         return (
             <div>
-                <h3>MyRequests</h3>
-                <div>
-                    {temp_div}
-                </div>
+                {
+                    this.state.d == '1' &&
+                    < div >
+                        <h3>MyRequests</h3>
+                        <div>
+                            {temp_div}
+                        </div>
+
+                        <button className="create_project_button" onClick={this.handle}> Go To Dashboard</button>
+                    </div >
+                }
+                {
+                    this.state.d == '2' &&
+                    <div>
+                        <Dashboard />
+                    </div>
+                }
             </div>
         );
     }
@@ -1366,6 +1663,7 @@ class Dashboard extends React.Component {
         this.addMembers = this.addMembers.bind(this);
         this.createUserReq = this.createUserReq.bind(this);
         this.viewReq = this.viewReq.bind(this);
+        this.addToAccepted = this.addToAccepted.bind(this);
     }
 
     componentDidMount() {
@@ -1391,17 +1689,18 @@ class Dashboard extends React.Component {
     async loadData() {
 
         const query = `query getExistingUsers($username : String!)
-        {
-            getExistingUsers(username : $username)
-            {
-                username
+                {
+                    getExistingUsers(username : $username)
+                {
+                    username
                 pending
                 {
                     name
                     role
-                    projectID
-                    reqfrom
-                    projectName
+                projectID
+                desc
+                reqfrom
+                projectName
                 
                 }
                 accepted
@@ -1412,7 +1711,7 @@ class Dashboard extends React.Component {
         }`;
 
         //const username = "e0674494@u.nus.edu";
-        //const response = await graphQLFetch(query, { username });
+        //const response = await graphQLFetch(query, {username});
         const username = activeuser;
         const response = await fetch('http://localhost:5000/graphql', {
             method: 'POST',
@@ -1428,10 +1727,10 @@ class Dashboard extends React.Component {
         const user_accepted_projects = [];
         console.log("User accepted projects");
         const get_project_from_ID = `query getProjectDetailsFromProjectID($projectID : String!)
-        {
-            getProjectDetailsFromProjectID(projectID : $projectID)
-            {
-                name
+                {
+                    getProjectDetailsFromProjectID(projectID : $projectID)
+                {
+                    name
                 desc
                 owner
                 projectID
@@ -1471,10 +1770,14 @@ class Dashboard extends React.Component {
         const l = this.state.data.length + 1;
         const newList = this.state.data.slice();
         newList.push(field);
-        this.setState({ data: newList, d: '2' });
-        */
+        this.setState({data: newList, d: '2' });
+                */
     }
+    async addToAccepted(field) {
 
+        alert("in add to Accepted");
+
+    }
     async createUserReq(field) {
         const query = `mutation addNewRequests($field: Requests!){
                     addNewRequests(field : $field)
@@ -1515,7 +1818,7 @@ class Dashboard extends React.Component {
                 {
                     this.state.d == '3' &&
                     <div>
-                        <My_Projects data={this.state.data} fromtemp={false}/>
+                        <My_Projects data={this.state.data} fromtemp={false} />
                     </div>
                 }
                 {
@@ -1527,7 +1830,7 @@ class Dashboard extends React.Component {
                 {
                     this.state.d == '5' &&
                     <div>
-                        <ViewRequests data={this.state.userReq} />
+                        <ViewRequests data={this.state.userReq} f={this.addToAccepted} />
                     </div>
                 }
             </div >

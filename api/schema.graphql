@@ -13,6 +13,8 @@ input OrganizationInputs {
     org_short_name: String!
 }
 
+
+
 type pending_output_user
 {
     name: String!
@@ -20,7 +22,18 @@ type pending_output_user
     projectID : String!
     reqfrom: String!
     projectName: String!
+    desc: String!
 
+}
+
+input pending_input_user
+{
+    name: String!
+    role: String!
+    projectID : String!
+    reqfrom: String!
+    projectName: String!
+    desc: String!
 }
 
 type User {
@@ -69,6 +82,7 @@ input Requests
     projectID: String!
     reqfrom: String!
     projectName: String!
+    desc: String!
 }
 
 input RequestData
@@ -76,6 +90,7 @@ input RequestData
     name: String!
     role: String!
     projectID: String!
+    desc: String!
 }
 
 
@@ -95,7 +110,7 @@ input ProjectData
     owner: String!
     desc: String!
     pending: [pending_requests]
-    collab:  [collab_req]
+    accepted:  [collab_req]
 }
 
 type ProjectRec
@@ -130,7 +145,51 @@ type LitSurveyItemOutput
     publisher_name: String!
     doi: String!
 }
+input source
+{
+    codelink: String!
+    codedes : String!
+    sno: String!
+}
+type sourcecode 
+{
+    sno: String!
+    codelink: String!
+    codedes : String!
+}
+type submission
+{
+    id: String!
+    name: String!
+    reqr: String!
+    last_date: String!
+}
+input subs
+{
+    id: String!
+    name: String!
+    reqr: String!
+    last_date: String!
+}
 
+input schedule_type
+{
+        id: String!
+        name: String!
+        start: String!
+        end: String! 
+        user: String!
+        timeleft: String!
+}
+type schedule_type_output
+{
+    id: String!
+    name: String!
+    start: String!
+    end: String! 
+    user: String!
+    timeleft: String!
+}
 type ProjectDetails
 {
     projectID: String!
@@ -138,7 +197,11 @@ type ProjectDetails
     litsurveyarray: [LitSurveyItemOutput]
     problemstatement: String!
     experimentation: String!
-    comments: [String]
+    comments: [String],
+    PaperDraft: String!,
+    sourcecode: [sourcecode],
+    submission: [submission],
+    schedule: [schedule_type_output]
 }
 
 type Query {
@@ -148,6 +211,7 @@ type Query {
     getProjectDetails(owner : String!): [ProjectRec!]!
     getProjectDetailsFromProjectID(projectID: String!): [ProjectRec!]!
     getProjectDetailsInner(projectID: String!): ProjectDetails!
+
 }
 
 type Mutation {
@@ -160,4 +224,11 @@ type Mutation {
     updateProblemStatement(projectID: String!, problemstatement: String!): ProjectDetails!
     updateExperimentation(projectID: String!, experimentation: String!): ProjectDetails!
     updateComments(projectID: String!, comments: [String]): ProjectDetails!
+    updateSourceCode(projectID: String!, field: source!): ProjectDetails!
+    updateSubmissions(projectID: String!, field: subs!): ProjectDetails!
+    updateSheet(projectID : String! , field : String!): ProjectDetails!
+    updateSchedule(projectID : String! , field : schedule_type!):ProjectDetails!
+    UpdatePendingProject(field : pending_input_user!): pending_output_user! 
+    UpdatePendingProjectReject(field : pending_input_user!): pending_output_user! 
+    
 }
