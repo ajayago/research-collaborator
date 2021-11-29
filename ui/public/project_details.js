@@ -28,11 +28,31 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 var initialLitSurvey = [];
 var SourceCodeList = [];
 var Displist = [];
 var activeuser = window.sessionStorage.getItem("username");
 console.log(activeuser);
+var entryType = performance.getEntriesByType("resource");
+console.log(entryType);
+
+var _performance$getEntri = performance.getEntriesByType("navigation"),
+    _performance$getEntri2 = _slicedToArray(_performance$getEntri, 1),
+    entry = _performance$getEntri2[0];
+
+console.table(entry.toJSON());
 var dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
 
 function jsonDateReviver(key, value) {
@@ -515,7 +535,10 @@ var LiteratureSurvey = /*#__PURE__*/function (_React$Component7) {
                 console.log("before response");
                 console.log(response.getProjectDetailsInner.litsurveyarray);
                 console.log("after response");
-                litsurveyarraylist = response.getProjectDetailsInner.litsurveyarray; // console.log(litsurveyarraylist);
+                litsurveyarraylist = response.getProjectDetailsInner.litsurveyarray; // for (var k = 1; k < response.getProjectDetailsInner.litsurveyarray.length; k++){
+                //     litsurveyarraylist.push(response.getProjectDetailsInner.litsurveyarray[k]);
+                // };
+                // console.log(litsurveyarraylist);
 
                 this.setState({
                   litsurvey_array: litsurveyarraylist
@@ -2314,6 +2337,7 @@ var GenericDiv = /*#__PURE__*/function (_React$Component28) {
     value: function render() {
       var comp_name = this.props.comp_name;
       var google_doc = false;
+      var loadtime;
 
       if (comp_name === "Paper Draft") {
         var google_doc = true;
@@ -2342,6 +2366,9 @@ var GenericDiv = /*#__PURE__*/function (_React$Component28) {
       }
 
       if (comp_name === "Experimentation") {
+        loadtime = performance.getEntriesByType("resource");
+        console.log("Time to load project experimentation");
+        console.log(loadtime);
         res = /*#__PURE__*/React.createElement(Experimentation, {
           projectID: this.props.projectID
         });
@@ -2527,6 +2554,15 @@ var Temp_display = /*#__PURE__*/function (_React$Component30) {
     key: "render",
     value: function render() {
       var localdata = this.props.data;
+
+      var _performance$getEntri3 = performance.getEntriesByType("navigation"),
+          _performance$getEntri4 = _slicedToArray(_performance$getEntri3, 1),
+          entry = _performance$getEntri4[0];
+
+      console.log("Project load time");
+      console.table(entry.toJSON());
+      var entryType = performance.getEntriesByType("resource");
+      console.log(entryType);
       console.log("In Temp_Display");
       console.log(localdata['projectID']);
       var fromtemp = true;
@@ -3514,7 +3550,7 @@ var RenderProjectDetailsPage = /*#__PURE__*/function (_React$Component38) {
   _createClass(RenderProjectDetailsPage, [{
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Dashboard, {
+      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", null, "Hi ", activeuser, "!"), /*#__PURE__*/React.createElement(Dashboard, {
         data: this.state.data
       })));
     }

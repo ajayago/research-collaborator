@@ -3,6 +3,10 @@ const SourceCodeList = [];
 const Displist = [];
 const activeuser = window.sessionStorage.getItem("username");
 console.log(activeuser);
+var entryType = performance.getEntriesByType("resource");
+console.log(entryType);
+const [entry] = performance.getEntriesByType("navigation");
+console.table(entry.toJSON());
 
 const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
 
@@ -271,6 +275,9 @@ class LiteratureSurvey extends React.Component {
         console.log(response.getProjectDetailsInner.litsurveyarray);
         console.log("after response");
         const litsurveyarraylist = response.getProjectDetailsInner.litsurveyarray;
+        // for (var k = 1; k < response.getProjectDetailsInner.litsurveyarray.length; k++){
+        //     litsurveyarraylist.push(response.getProjectDetailsInner.litsurveyarray[k]);
+        // };
         // console.log(litsurveyarraylist);
         this.setState({ litsurvey_array: litsurveyarraylist });
 
@@ -1307,6 +1314,7 @@ class GenericDiv extends React.Component {
     render() {
         const comp_name = this.props.comp_name;
         var google_doc = false;
+        let loadtime;
         if (comp_name === "Paper Draft") {
             var google_doc = true;
         }
@@ -1321,6 +1329,9 @@ class GenericDiv extends React.Component {
             res = <ProblemFormulation projectID={this.props.projectID} />;
         }
         if (comp_name === "Experimentation") {
+            loadtime = performance.getEntriesByType("resource");
+            console.log("Time to load project experimentation");
+            console.log(loadtime);
             res = <Experimentation projectID={this.props.projectID} />;
         }
 
@@ -1460,6 +1471,11 @@ class Temp_display extends React.Component {
     }
     render() {
         const localdata = this.props.data;
+        const [entry] = performance.getEntriesByType("navigation");
+        console.log("Project load time");
+        console.table(entry.toJSON());
+        var entryType = performance.getEntriesByType("resource");
+        console.log(entryType);
         console.log("In Temp_Display");
         console.log(localdata['projectID']);
         const fromtemp = true;
@@ -2174,6 +2190,7 @@ class RenderProjectDetailsPage extends React.Component {
                     this.state.d == '1' &&
                     <div>
                         {/* <DisplayHeader /> */}
+                        <p>Hi {activeuser}!</p>
                         <Dashboard data={this.state.data} />
                     </div>
                 }

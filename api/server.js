@@ -101,7 +101,11 @@ async function getProjectDetailsFromProjectID(_, { projectID }) {
 }
 
 async function getProjectDetailsInner(_, { projectID }) {
+    const starttime = Date.now();
     const project_details_from_id = await db_proj.collection('projectDetails').find({ projectID: projectID }).toArray();
+    const endtime = Date.now();
+    console.log("DB fetch time");
+    console.log(endtime - starttime);
     console.log(project_details_from_id[0]);
     if (project_details_from_id.length > 0) {
         return project_details_from_id[0];
@@ -197,7 +201,8 @@ async function addProjectDetails(_, { field }) {
     const addprojectdetails = await db_proj.collection('projectDetails').insertOne({
         projectID: field.projectID,
         activeTabList: [false, false, false, false, false, false],
-        litsurveyarray: [{ paper_title: "", publisher_name: "", doi: "" }],
+        // litsurveyarray: [{ paper_title: "", publisher_name: "", doi: "" }],
+        litsurveyarray: [],
         problemstatement: "",
         experimentation: "",
         comments: [],
