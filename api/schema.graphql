@@ -204,6 +204,14 @@ type ProjectDetails
     schedule: [schedule_type_output]
 }
 
+type project_members
+{
+    projectID : String!
+    owner: String!
+    pending: [pending_output_user]!
+    accepted: [pending_output_user]!
+}
+
 type Query {
     getOrganization(org_short_name: String!): [Organization!]!
     getExistingUsers(username: String!): [User!]!
@@ -211,6 +219,7 @@ type Query {
     getProjectDetails(owner : String!): [ProjectRec!]!
     getProjectDetailsFromProjectID(projectID: String!): [ProjectRec!]!
     getProjectDetailsInner(projectID: String!): ProjectDetails!
+    getProjectMembers(projectID : String!): project_members
 
 }
 

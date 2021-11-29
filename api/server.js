@@ -42,7 +42,8 @@ const resolvers = {
         getAllOrganization,
         getProjectDetails,
         getProjectDetailsFromProjectID,
-        getProjectDetailsInner
+        getProjectDetailsInner,
+        getProjectMembers
     },
     Mutation: {
         addOrganization,
@@ -105,6 +106,16 @@ async function getProjectDetailsInner(_, { projectID }) {
     if (project_details_from_id.length > 0) {
         return project_details_from_id[0];
     }
+}
+
+//get project members
+
+async function getProjectMembers(_, { projectID }) {
+    const res = await db_proj.collection('projectDB').find({ projectID: projectID }).toArray();
+    const f = { projectID: res[0].projectID, owner: res[0].owner, pending: res[0].pending, accepted: res[0].accepted };
+    console.log("members");
+    console.log(f);
+    return f
 }
 
 // Project specific updates

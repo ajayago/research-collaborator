@@ -1154,11 +1154,112 @@ class Comments extends React.Component {
     }
 }
 
+class Member_row extends React.Component {
+    render() {
+
+        const t = this.props.data;
+        return (
+            <tr>
+                {/* <td>{t.id}</td> */}
+                <td>{t.name}</td>
+                <td>{t.role}</td>
+            </tr>
+        );
+    }
+}
+
+class Member_table extends React.Component {
+    render() {
+        const arr = this.props.a.map(r => <Member_row data={r} />);
+        return (
+            <div>
+                <table className="sourcetable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {arr}
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
+
+}
+class DispMembers extends React.Component {
+    constructor() {
+        super();
+        this.state = { p: [], a: [], owner: "" };
+        this.loadData = this.loadData.bind(this);
+    }
+    componentDidMount() {
+
+        this.loadData();
+    }
+    async loadData() {
+        console.log("In my members");
+        const projectID = this.props.projectID;
+        console.log(projectID);
+
+
+        const query = `query getProjectMembers($projectID : String!)
+        {
+            getProjectMembers(projectID : $projectID)
+            {
+                projectID
+                owner
+                pending
+                {
+                    role
+                    name
+                }
+                accepted
+                {
+                    name
+                    role
+                }
+            }
+        }`;
+
+
+        const response = await graphQLFetch(query, { projectID });
+        console.log(response);
+
+        const val = response.getProjectMembers;
+
+        this.setState({ p: val.pending, a: val.accepted, owner: val.owner });
+    }
+    render() {
+        return (
+            <div>
+                <h1>Creator: {this.state.owner}</h1>
+
+                <h2>Accepted Members</h2>
+                <div>
+                    <Member_table a={this.state.a} />
+                </div>
+
+                <div>
+                    <h2>Members who have to accept</h2>
+                    <Member_table a={this.state.p} />
+                </div>
+
+
+            </div>
+
+        );
+    }
+
+}
+
 class GenericDiv extends React.Component {
 
     constructor() {
         super();
-        this.state = { activeTabList: [false, false, false, false, false, false] };
+        this.state = { activeTabList: [false, false, false, false, false, false, false] };
         this.updateTabList = this.updateTabList.bind(this);
     }
     async loadData() {
@@ -1243,6 +1344,9 @@ class GenericDiv extends React.Component {
             res = <Comments projectID={this.props.projectID} />;
         }
 
+        if (comp_name === "ViewMembers") {
+            res = <DispMembers projectID={this.props.projectID} />;
+        }
 
         return (
             <React.Fragment>
@@ -1853,7 +1957,8 @@ class DisplayTabs extends React.Component {
             isPaperSubmissionButtonPressed: false,
             isSchedulingButtonPressed: false,
             isDashboardButtonPressed: false,
-            isCommentsButtonPressed: false
+            isCommentsButtonPressed: false,
+            isViewMembersButtonPressed: false
         };
     }
     render() {
@@ -1869,7 +1974,8 @@ class DisplayTabs extends React.Component {
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: false,
-                isCommentsButtonPressed: false
+                isCommentsButtonPressed: false,
+                isViewMembersButtonPressed: false
 
             });
         };
@@ -1883,7 +1989,8 @@ class DisplayTabs extends React.Component {
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: false,
-                isCommentsButtonPressed: false
+                isCommentsButtonPressed: false,
+                isViewMembersButtonPressed: false
 
 
             });
@@ -1898,7 +2005,8 @@ class DisplayTabs extends React.Component {
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: false,
-                isCommentsButtonPressed: false
+                isCommentsButtonPressed: false,
+                isViewMembersButtonPressed: false
 
 
             });
@@ -1913,7 +2021,8 @@ class DisplayTabs extends React.Component {
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: false,
-                isCommentsButtonPressed: false
+                isCommentsButtonPressed: false,
+                isViewMembersButtonPressed: false
 
             });
         };
@@ -1927,7 +2036,8 @@ class DisplayTabs extends React.Component {
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: false,
-                isCommentsButtonPressed: false
+                isCommentsButtonPressed: false,
+                isViewMembersButtonPressed: false
 
             });
         };
@@ -1941,7 +2051,8 @@ class DisplayTabs extends React.Component {
                 isPaperDraftButtonPressed: true,
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: false,
-                isCommentsButtonPressed: false
+                isCommentsButtonPressed: false,
+                isViewMembersButtonPressed: false
 
             });
         };
@@ -1955,7 +2066,8 @@ class DisplayTabs extends React.Component {
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: true,
                 isSchedulingButtonPressed: false,
-                isCommentsButtonPressed: false
+                isCommentsButtonPressed: false,
+                isViewMembersButtonPressed: false
             });
         };
         const onClickScheduling = () => {
@@ -1968,7 +2080,8 @@ class DisplayTabs extends React.Component {
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: true,
-                isCommentsButtonPressed: false
+                isCommentsButtonPressed: false,
+                isViewMembersButtonPressed: false
 
             });
         };
@@ -1982,11 +2095,27 @@ class DisplayTabs extends React.Component {
                 isPaperDraftButtonPressed: false,
                 isPaperSubmissionButtonPressed: false,
                 isSchedulingButtonPressed: false,
-                isCommentsButtonPressed: true
+                isCommentsButtonPressed: true,
+                isViewMembersButtonPressed: false
 
             });
         };
 
+        const onClickView = () => {
+            this.setState({
+                isStatusButtonPressed: false,
+                isLiteratureSurveyButtonPressed: false,
+                isProblemFormulationButtonPressed: false,
+                isExperimentationButtonPressed: false,
+                isSourceCodeButtonPressed: false,
+                isPaperDraftButtonPressed: false,
+                isPaperSubmissionButtonPressed: false,
+                isSchedulingButtonPressed: false,
+                isCommentsButtonPressed: false,
+                isViewMembersButtonPressed: true
+
+            });
+        };
 
         return (
             <React.Fragment>
@@ -2011,6 +2140,8 @@ class DisplayTabs extends React.Component {
                         <br />
                         <button className="projectbutton" onClick={onClickComments}>Comments</button>
                         <br />
+                        <button className="projectbutton" onClick={onClickView}>View Members</button>
+                        <br />
                     </div>
                     <div className="projectdiv">
                         {this.state.isStatusButtonPressed ? <GenericDiv comp_name="Status" projectID={this.props.projectID} /> : ""}
@@ -2022,6 +2153,8 @@ class DisplayTabs extends React.Component {
                         {this.state.isPaperSubmissionButtonPressed ? <GenericDiv comp_name="Paper Submission" projectID={this.props.projectID} /> : ""}
                         {this.state.isSchedulingButtonPressed ? <GenericDiv comp_name="Scheduling" projectID={this.props.projectID} /> : ""}
                         {this.state.isCommentsButtonPressed ? <GenericDiv comp_name="Comments" projectID={this.props.projectID} /> : ""}
+                        {this.state.isViewMembersButtonPressed ? <GenericDiv comp_name="ViewMembers" projectID={this.props.projectID} /> : ""}
+
                     </div>
                 </div>
             </React.Fragment>
