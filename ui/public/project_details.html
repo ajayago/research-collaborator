@@ -1,37 +1,49 @@
 <!DOCTYPE HTML>
 <html>
-    <head>
-        <title>Project Details Page</title>
-        <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
-        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-        <script src="https://unpkg.com/@babel/polyfill@7/dist/polyfill.min.js"></script>
-        <meta name="google-signin-scope" content="profile email">
-	    <script src="https://apis.google.com/js/platform.js" async defer></script>
-	    <meta name="google-signin-client_id"
-		    content="333083862926-v8qsrp8pm7fj86vvihs1ie7q8hf4dqde.apps.googleusercontent.com">
-        <link rel="stylesheet" href="style/styling.css">
-    </head>
-    <body>
-        <div class="header">
-            <h1>Open Research Framework</h1>
-            <button class="logoutbutton" onclick="signOut()">Logout</button>
-        </div>
-        <script>
-            function signOut() {
-              var auth2 = gapi.auth2.getAuthInstance();
-              auth2.signOut().then(function () {
+
+<head>
+    <title>Project Details Page</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/polyfill@7/dist/polyfill.min.js"></script>
+    <meta name="google-signin-scope" content="profile email">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id"
+        content="333083862926-v8qsrp8pm7fj86vvihs1ie7q8hf4dqde.apps.googleusercontent.com">
+    <link rel="stylesheet" href="style/styling.css">
+</head>
+<style>
+    body {
+        background-image: url("https://us.123rf.com/450wm/vska/vska1607/vska160700070/60629304-light-gray-grunge-technology-vector-background-retro-research-futuristic-style.jpg?ver=6");
+        /* "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmVzZWFyY2h8ZW58MHx8MHx8&w=1000&q=80"); */
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+    }
+</style>
+
+<body>
+    <div class="header">
+        <h1>Open Research Framework</h1>
+        <button class="logoutbutton" onclick="signOut()">Logout</button>
+    </div>
+    <script>
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
                 console.log('User signed out.');
-              });
-              window.open("./index.html", "_self");
-            }
-            function onLoad() {
-                gapi.load('auth2', function() {
+            });
+            window.open("./index.html", "_self");
+        }
+        function onLoad() {
+            gapi.load('auth2', function () {
                 gapi.auth2.init();
-                });
-            }
-        </script>
-        <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
-        <div id="project_details"></div>
-        <script src="/project_details.js"></script>
-    </body>
+            });
+        }
+    </script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <div id="project_details"></div>
+    <script src="/project_details.js"></script>
+</body>
+
 </html>

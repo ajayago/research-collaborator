@@ -58,7 +58,8 @@ var dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
 function jsonDateReviver(key, value) {
   if (dateRegex.test(value)) return new Date(value);
   return value;
-}
+} // Main graphlq function to pull/push/update data
+
 
 function graphQLFetch(_x) {
   return _graphQLFetch.apply(this, arguments);
@@ -192,6 +193,7 @@ addGoogleUser(); // class DisplayHeader extends React.Component {
 //         );
 //     }
 // }
+//Enables user to set project status
 
 var StatusTab = /*#__PURE__*/function (_React$Component) {
   _inherits(StatusTab, _React$Component);
@@ -218,7 +220,9 @@ var StatusTab = /*#__PURE__*/function (_React$Component) {
   }]);
 
   return StatusTab;
-}(React.Component);
+}(React.Component); // staarting of project classes
+//Pop up for setting status
+
 
 var StatusPopup = /*#__PURE__*/function (_React$Component2) {
   _inherits(StatusPopup, _React$Component2);
@@ -363,7 +367,8 @@ var StatusDiv = /*#__PURE__*/function (_React$Component3) {
   }]);
 
   return StatusDiv;
-}(React.Component);
+}(React.Component); //form for literature survey feature - creates new literature survey item
+
 
 var LitSurveyPopup = /*#__PURE__*/function (_React$Component4) {
   _inherits(LitSurveyPopup, _React$Component4);
@@ -628,7 +633,8 @@ var LiteratureSurvey = /*#__PURE__*/function (_React$Component7) {
   }]);
 
   return LiteratureSurvey;
-}(React.Component);
+}(React.Component); //Update the problem statement for the respective project
+
 
 var EditProblem = /*#__PURE__*/function (_React$Component8) {
   _inherits(EditProblem, _React$Component8);
@@ -799,7 +805,8 @@ var ProblemFormulation = /*#__PURE__*/function (_React$Component9) {
   }]);
 
   return ProblemFormulation;
-}(React.Component);
+}(React.Component); //Change sheet link for usage 
+
 
 var UpdateSheetLink = /*#__PURE__*/function (_React$Component10) {
   _inherits(UpdateSheetLink, _React$Component10);
@@ -973,7 +980,8 @@ var Experimentation = /*#__PURE__*/function (_React$Component11) {
   }]);
 
   return Experimentation;
-}(React.Component);
+}(React.Component); //Create Row generates row for source table
+
 
 var CreateRow = /*#__PURE__*/function (_React$Component12) {
   _inherits(CreateRow, _React$Component12);
@@ -997,7 +1005,8 @@ var CreateRow = /*#__PURE__*/function (_React$Component12) {
   }]);
 
   return CreateRow;
-}(React.Component);
+}(React.Component); //SourceTable generates source table
+
 
 var SourceTable = /*#__PURE__*/function (_React$Component13) {
   _inherits(SourceTable, _React$Component13);
@@ -1025,7 +1034,8 @@ var SourceTable = /*#__PURE__*/function (_React$Component13) {
   }]);
 
   return SourceTable;
-}(React.Component);
+}(React.Component); // calls sourcetable
+
 
 var Sourcecode = /*#__PURE__*/function (_React$Component14) {
   _inherits(Sourcecode, _React$Component14);
@@ -1189,7 +1199,8 @@ var Sourcecode = /*#__PURE__*/function (_React$Component14) {
   }]);
 
   return Sourcecode;
-}(React.Component);
+}(React.Component); // Class for sending requests to user. 
+
 
 var Adding_Members = /*#__PURE__*/function (_React$Component15) {
   _inherits(Adding_Members, _React$Component15);
@@ -1214,14 +1225,14 @@ var Adding_Members = /*#__PURE__*/function (_React$Component15) {
     key: "handleSubmit",
     value: function () {
       var _handleSubmit = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(e) {
-        var form, field, projectID, query, response, body, result;
+        var form, field, projectID, flag, query, response, body, result;
         return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
               case 0:
                 e.preventDefault();
-                form = document.forms.add_user;
-                alert("inside handler");
+                form = document.forms.add_user; //alert("inside handler");
+
                 field = {
                   name: form.user_id.value,
                   role: form.user_role.value,
@@ -1230,8 +1241,8 @@ var Adding_Members = /*#__PURE__*/function (_React$Component15) {
                   projectName: "Machine Learning",
                   desc: ""
                 };
-                projectID = String(field.projectID);
-                alert(projectID);
+                projectID = String(field.projectID); //alert(projectID);
+
                 /*
                 const get_project_from_ID = `query getProjectDetailsFromProjectID($projectID : String!)
                 {
@@ -1245,8 +1256,9 @@ var Adding_Members = /*#__PURE__*/function (_React$Component15) {
                 }`;
                 */
 
-                query = "query getProjectDetailsFromProjectID($projectID: String!)\n        {\n            getProjectDetailsFromProjectID(projectID : $projectID)\n            {\n                name\n                desc\n            }\n        }";
-                _context9.next = 9;
+                flag = 0;
+                query = "query getProjectDetailsFromProjectID($projectID: String!)\n        {\n            getProjectDetailsFromProjectID(projectID : $projectID)\n            {\n                name\n                desc\n                owner\n            }\n        }";
+                _context9.next = 8;
                 return fetch('http://localhost:5000/graphql', {
                   method: 'POST',
                   headers: {
@@ -1260,23 +1272,49 @@ var Adding_Members = /*#__PURE__*/function (_React$Component15) {
                   })
                 });
 
-              case 9:
+              case 8:
                 response = _context9.sent;
-                _context9.next = 12;
+                _context9.next = 11;
                 return response.text();
 
-              case 12:
+              case 11:
                 body = _context9.sent;
                 result = JSON.parse(body);
-                field.projectName = result.data.getProjectDetailsFromProjectID[0].name;
-                field.desc = result.data.getProjectDetailsFromProjectID[0].desc;
-                this.props.createUserReq(field); // alert("field designed");
+                console.log("in try");
+                console.log(result);
 
-                form.user_id.value = "";
-                form.user_role.value = "";
-                form.project_id.value = "";
+                if (result.data.getProjectDetailsFromProjectID.length == 0) {
+                  flag = 1;
+                  alert("Invalid Project Key");
+                }
 
-              case 20:
+                console.log("in else statemebt"); //console.log(result.data.getProjectDetailsFromProjectID[0].owner);
+
+                if (flag == 0) {
+                  if (result.data.getProjectDetailsFromProjectID.length > 0) {
+                    // checks if project key is correct
+                    if (result.data.getProjectDetailsFromProjectID[0].owner != activeuser) {
+                      // allows user to only add his/her projects
+                      alert("Insufficent Priviliges");
+                    } else {
+                      field.projectName = result.data.getProjectDetailsFromProjectID[0].name;
+                      field.desc = result.data.getProjectDetailsFromProjectID[0].desc;
+                      this.props.createUserReq(field); // alert("field designed");
+
+                      form.user_id.value = "";
+                      form.user_role.value = "";
+                      form.project_id.value = "";
+                    }
+                  } else {
+                    alert("Invalid Project Key , retry");
+                  }
+                } else {
+                  form.user_id.value = "";
+                  form.user_role.value = "";
+                  form.project_id.value = "";
+                }
+
+              case 18:
               case "end":
                 return _context9.stop();
             }
@@ -1345,7 +1383,8 @@ var Adding_Members = /*#__PURE__*/function (_React$Component15) {
   }]);
 
   return Adding_Members;
-}(React.Component);
+}(React.Component); //Updating link to paper draft
+
 
 var PaperDraft = /*#__PURE__*/function (_React$Component16) {
   _inherits(PaperDraft, _React$Component16);
@@ -1496,7 +1535,8 @@ var PaperDiv = /*#__PURE__*/function (_React$Component17) {
   }]);
 
   return PaperDiv;
-}(React.Component);
+}(React.Component); //Displays the paper 
+
 
 var DispPaper = /*#__PURE__*/function (_React$Component18) {
   _inherits(DispPaper, _React$Component18);
@@ -1522,7 +1562,8 @@ var DispPaper = /*#__PURE__*/function (_React$Component18) {
   }]);
 
   return DispPaper;
-}(React.Component);
+}(React.Component); //PaperSub maintains the submissions for each project
+
 
 var PaperSub = /*#__PURE__*/function (_React$Component19) {
   _inherits(PaperSub, _React$Component19);
@@ -1689,7 +1730,8 @@ var PaperSub = /*#__PURE__*/function (_React$Component19) {
   }]);
 
   return PaperSub;
-}(React.Component);
+}(React.Component); //ScheduleRow generates rows for ScheudleTable
+
 
 var ScheduleRow = /*#__PURE__*/function (_React$Component20) {
   _inherits(ScheduleRow, _React$Component20);
@@ -1711,7 +1753,8 @@ var ScheduleRow = /*#__PURE__*/function (_React$Component20) {
   }]);
 
   return ScheduleRow;
-}(React.Component);
+}(React.Component); //ScheduleTable generates rows for ScheudleTable
+
 
 var ScheduleTable = /*#__PURE__*/function (_React$Component21) {
   _inherits(ScheduleTable, _React$Component21);
@@ -1739,7 +1782,8 @@ var ScheduleTable = /*#__PURE__*/function (_React$Component21) {
   }]);
 
   return ScheduleTable;
-}(React.Component);
+}(React.Component); // Maintains the tasks for each user
+
 
 var Scheduling = /*#__PURE__*/function (_React$Component22) {
   _inherits(Scheduling, _React$Component22);
@@ -1915,7 +1959,8 @@ var Scheduling = /*#__PURE__*/function (_React$Component22) {
   }]);
 
   return Scheduling;
-}(React.Component);
+}(React.Component); // Chat version for adding comments
+
 
 var AddComment = /*#__PURE__*/function (_React$Component23) {
   _inherits(AddComment, _React$Component23);
@@ -1958,7 +2003,8 @@ var AddComment = /*#__PURE__*/function (_React$Component23) {
   }]);
 
   return AddComment;
-}(React.Component);
+}(React.Component); //invokes AddComment to display
+
 
 var Comments = /*#__PURE__*/function (_React$Component24) {
   _inherits(Comments, _React$Component24);
@@ -2087,7 +2133,8 @@ var Comments = /*#__PURE__*/function (_React$Component24) {
   }]);
 
   return Comments;
-}(React.Component);
+}(React.Component); //creates rows for displaying memebers part of the project
+
 
 var Member_row = /*#__PURE__*/function (_React$Component25) {
   _inherits(Member_row, _React$Component25);
@@ -2109,7 +2156,8 @@ var Member_row = /*#__PURE__*/function (_React$Component25) {
   }]);
 
   return Member_row;
-}(React.Component);
+}(React.Component); //creates table for displaying memebers part of the project
+
 
 var Member_table = /*#__PURE__*/function (_React$Component26) {
   _inherits(Member_table, _React$Component26);
@@ -2218,7 +2266,8 @@ var DispMembers = /*#__PURE__*/function (_React$Component27) {
   }]);
 
   return DispMembers;
-}(React.Component);
+}(React.Component); //Wrapper to switch between tabs of the project
+
 
 var GenericDiv = /*#__PURE__*/function (_React$Component28) {
   _inherits(GenericDiv, _React$Component28);
@@ -2415,7 +2464,8 @@ var GenericDiv = /*#__PURE__*/function (_React$Component28) {
   }]);
 
   return GenericDiv;
-}(React.Component);
+}(React.Component); //To create a new prject- renders a form and pushes to database
+
 
 var CreateProject = /*#__PURE__*/function (_React$Component29) {
   _inherits(CreateProject, _React$Component29);
@@ -2583,7 +2633,8 @@ var Temp_display = /*#__PURE__*/function (_React$Component30) {
   }]);
 
   return Temp_display;
-}(React.Component);
+}(React.Component); //Displays the projects of a user in View My projects screen on the dashboard
+
 
 var Projects_Display = /*#__PURE__*/function (_React$Component31) {
   _inherits(Projects_Display, _React$Component31);
@@ -2717,7 +2768,8 @@ var My_Projects = /*#__PURE__*/function (_React$Component32) {
   }]);
 
   return My_Projects;
-}(React.Component);
+}(React.Component); //create div element for requests pending
+
 
 var CreateDiv = /*#__PURE__*/function (_React$Component33) {
   _inherits(CreateDiv, _React$Component33);
@@ -2764,7 +2816,6 @@ var CreateDiv = /*#__PURE__*/function (_React$Component33) {
                 // alert("in accept");
                 // alert(this.state.val.projectName);
                 t = this.props.data;
-                alert(activeuser);
                 field = {
                   name: activeuser,
                   role: t.role,
@@ -2774,7 +2825,7 @@ var CreateDiv = /*#__PURE__*/function (_React$Component33) {
                   desc: t.desc
                 };
                 query = "mutation UpdatePendingProject($field: pending_input_user!)\n        {\n            UpdatePendingProject(field : $field)\n            {\n                name\n            }\n        }";
-                _context21.next = 6;
+                _context21.next = 5;
                 return fetch("http://localhost:5000/graphql", {
                   method: 'POST',
                   headers: {
@@ -2788,13 +2839,13 @@ var CreateDiv = /*#__PURE__*/function (_React$Component33) {
                   })
                 });
 
-              case 6:
+              case 5:
                 response = _context21.sent;
                 this.setState({
                   d: '2'
                 });
 
-              case 8:
+              case 7:
               case "end":
                 return _context21.stop();
             }
@@ -2817,7 +2868,6 @@ var CreateDiv = /*#__PURE__*/function (_React$Component33) {
           while (1) {
             switch (_context22.prev = _context22.next) {
               case 0:
-                alert("in reject");
                 t = this.props.data;
                 field = {
                   name: activeuser,
@@ -2828,7 +2878,7 @@ var CreateDiv = /*#__PURE__*/function (_React$Component33) {
                   desc: t.desc
                 };
                 query = "mutation UpdatePendingProjectReject($field: pending_input_user!)\n        {\n            UpdatePendingProjectReject(field: $field)\n            {\n                name\n            }  \n        }";
-                _context22.next = 6;
+                _context22.next = 5;
                 return fetch("http://localhost:5000/graphql", {
                   method: 'POST',
                   headers: {
@@ -2842,13 +2892,13 @@ var CreateDiv = /*#__PURE__*/function (_React$Component33) {
                   })
                 });
 
-              case 6:
+              case 5:
                 response = _context22.sent;
                 this.setState({
                   d: '2'
                 });
 
-              case 8:
+              case 7:
               case "end":
                 return _context22.stop();
             }
@@ -2887,7 +2937,8 @@ var CreateDiv = /*#__PURE__*/function (_React$Component33) {
   }]);
 
   return CreateDiv;
-}(React.Component);
+}(React.Component); //generate requests
+
 
 var RequestDiv = /*#__PURE__*/function (_React$Component34) {
   _inherits(RequestDiv, _React$Component34);
@@ -2921,7 +2972,8 @@ var RequestDiv = /*#__PURE__*/function (_React$Component34) {
   }]);
 
   return RequestDiv;
-}(React.Component);
+}(React.Component); // View respective request that a user recieves 
+
 
 var ViewRequests = /*#__PURE__*/function (_React$Component35) {
   _inherits(ViewRequests, _React$Component35);
@@ -2971,7 +3023,8 @@ var ViewRequests = /*#__PURE__*/function (_React$Component35) {
   }]);
 
   return ViewRequests;
-}(React.Component);
+}(React.Component); // Main Dashboard 
+
 
 var Dashboard = /*#__PURE__*/function (_React$Component36) {
   _inherits(Dashboard, _React$Component36);
@@ -3133,30 +3186,51 @@ var Dashboard = /*#__PURE__*/function (_React$Component36) {
     key: "addproject",
     value: function () {
       var _addproject = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24(field) {
-        var query, response;
+        var query, projectID, user_data, _query, response;
+
         return regeneratorRuntime.wrap(function _callee24$(_context24) {
           while (1) {
             switch (_context24.prev = _context24.next) {
               case 0:
-                query = "mutation addProjectDetails($field: ProjectData!) {\n                    addProjectDetails(field : $field)\n                {\n                    name\n                }\n        }";
-                _context24.next = 3;
+                query = "query getProjectDetailsFromProjectID($projectID : String!)\n        {\n            getProjectDetailsFromProjectID(projectID : $projectID)\n            {\n                projectID\n            }\n        }";
+                projectID = field.projectID;
+                _context24.next = 4;
+                return graphQLFetch(query, {
+                  projectID: projectID
+                });
+
+              case 4:
+                user_data = _context24.sent;
+
+                if (!(user_data.getProjectDetailsFromProjectID.length > 0)) {
+                  _context24.next = 9;
+                  break;
+                }
+
+                alert("Prokect Key Taken , choose another Key");
+                _context24.next = 13;
+                break;
+
+              case 9:
+                _query = "mutation addProjectDetails($field: ProjectData!) {\n                    addProjectDetails(field : $field)\n                {\n                    name\n                }\n        }";
+                _context24.next = 12;
                 return fetch('http://localhost:5000/graphql', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
-                    query: query,
+                    query: _query,
                     variables: {
                       field: field
                     }
                   })
                 });
 
-              case 3:
+              case 12:
                 response = _context24.sent;
 
-              case 4:
+              case 13:
               case "end":
                 return _context24.stop();
             }
@@ -3198,13 +3272,33 @@ var Dashboard = /*#__PURE__*/function (_React$Component36) {
     key: "createUserReq",
     value: function () {
       var _createUserReq = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee26(field) {
-        var query, response;
+        var users_query, username, user_data, query, response;
         return regeneratorRuntime.wrap(function _callee26$(_context26) {
           while (1) {
             switch (_context26.prev = _context26.next) {
               case 0:
-                query = "mutation addNewRequests($field: Requests!){\n                    addNewRequests(field : $field)\n                {\n                    name\n                }\n        }";
-                _context26.next = 3;
+                users_query = "query getExistingUsers($username: String!){\n            getExistingUsers(username: $username) {\n                username\n            }\n        }";
+                username = field.name;
+                _context26.next = 4;
+                return graphQLFetch(users_query, {
+                  username: username
+                });
+
+              case 4:
+                user_data = _context26.sent;
+
+                if (!(user_data.getExistingUsers.length == 0)) {
+                  _context26.next = 9;
+                  break;
+                }
+
+                alert("User doesn't Exist , kindly retry");
+                _context26.next = 13;
+                break;
+
+              case 9:
+                query = "mutation addNewRequests($field: Requests!){\n                    addNewRequests(field : $field)\n                {\n                    name\n                }\n                }";
+                _context26.next = 12;
                 return fetch('http://localhost:5000/graphql', {
                   method: 'POST',
                   headers: {
@@ -3218,10 +3312,10 @@ var Dashboard = /*#__PURE__*/function (_React$Component36) {
                   })
                 });
 
-              case 3:
+              case 12:
                 response = _context26.sent;
 
-              case 4:
+              case 13:
               case "end":
                 return _context26.stop();
             }
@@ -3269,7 +3363,8 @@ var Dashboard = /*#__PURE__*/function (_React$Component36) {
   }]);
 
   return Dashboard;
-}(React.Component);
+}(React.Component); //Wrapper for calling genericdiv
+
 
 var DisplayTabs = /*#__PURE__*/function (_React$Component37) {
   _inherits(DisplayTabs, _React$Component37);
@@ -3527,7 +3622,8 @@ var DisplayTabs = /*#__PURE__*/function (_React$Component37) {
   }]);
 
   return DisplayTabs;
-}(React.Component);
+}(React.Component); //Main Display
+
 
 var RenderProjectDetailsPage = /*#__PURE__*/function (_React$Component38) {
   _inherits(RenderProjectDetailsPage, _React$Component38);
@@ -3550,7 +3646,7 @@ var RenderProjectDetailsPage = /*#__PURE__*/function (_React$Component38) {
   _createClass(RenderProjectDetailsPage, [{
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", null, "Hi ", activeuser, "!"), /*#__PURE__*/React.createElement(Dashboard, {
+      return /*#__PURE__*/React.createElement("div", null, this.state.d == '1' && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h4", null, "Hi ", activeuser, "!"), /*#__PURE__*/React.createElement(Dashboard, {
         data: this.state.data
       })));
     }

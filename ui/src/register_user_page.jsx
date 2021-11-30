@@ -145,11 +145,11 @@ class DisplayUserCreationForm extends React.Component {
 
     async createUser(user) {
         if (!user.username) {
-            this.setState({ errormessage: "Please enter valid user name!" });
+            this.setState({ errormessage: "Please enter valid user name!" }); //check for ID
             return;
         }
         if (!user.password) {
-            this.setState({ errormessage: "Please enter valid password!" });
+            this.setState({ errormessage: "Please enter valid password!" }); //check for password
             return;
         }
         const users_query = `query getExistingUsers($username: String!){
@@ -160,7 +160,7 @@ class DisplayUserCreationForm extends React.Component {
 
         const username = user.username;
         const user_data = await graphQLFetch(users_query, { username });
-        if (user_data.getExistingUsers.length > 0) {
+        if (user_data.getExistingUsers.length > 0) { // check if user already exists
             this.setState({ errormessage: "User name already in use!" });
             return;
         }

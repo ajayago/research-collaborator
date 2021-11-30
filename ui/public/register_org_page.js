@@ -191,7 +191,8 @@ var DisplayOrgCreationForm = /*#__PURE__*/function (_React$Component2) {
 
                 this.setState({
                   errormessage: "Please enter valid organization name!"
-                });
+                }); //check for valid org
+
                 return _context.abrupt("return");
 
               case 3:
@@ -223,6 +224,7 @@ var DisplayOrgCreationForm = /*#__PURE__*/function (_React$Component2) {
                   break;
                 }
 
+                // check if org is already present
                 console.log("here!!");
                 this.setState({
                   errormessage: "Short name already in use!"

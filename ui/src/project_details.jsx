@@ -15,6 +15,7 @@ function jsonDateReviver(key, value) {
     return value;
 }
 
+// Main graphlq function to pull/push/update data
 async function graphQLFetch(query, variables = {}) {
     try {
         const response = await fetch("http://localhost:5000/graphql", {
@@ -79,6 +80,7 @@ addGoogleUser();
 //     }
 // }
 
+//Enables user to set project status
 class StatusTab extends React.Component {
     render() {
         const content = this.props.tab_name;
@@ -92,6 +94,9 @@ class StatusTab extends React.Component {
         );
     }
 }
+
+// staarting of project classes
+//Pop up for setting status
 class StatusPopup extends React.Component {
     constructor() {
         super();
@@ -135,6 +140,8 @@ class StatusPopup extends React.Component {
         );
     }
 }
+
+
 class StatusDiv extends React.Component {
     constructor() {
         super();
@@ -172,6 +179,7 @@ class StatusDiv extends React.Component {
     }
 }
 
+//form for literature survey feature - creates new literature survey item
 class LitSurveyPopup extends React.Component {
     render() {
         const handleSubmit = (e) => {
@@ -322,6 +330,7 @@ class LiteratureSurvey extends React.Component {
     }
 }
 
+//Update the problem statement for the respective project
 class EditProblem extends React.Component {
     render() {
         const handleSubmit = (e) => {
@@ -403,6 +412,7 @@ class ProblemFormulation extends React.Component {
     }
 }
 
+//Change sheet link for usage 
 class UpdateSheetLink extends React.Component {
     render() {
         const handleSubmit = (e) => {
@@ -423,6 +433,7 @@ class UpdateSheetLink extends React.Component {
         );
     }
 }
+
 class Experimentation extends React.Component {
     constructor() {
         super();
@@ -482,7 +493,7 @@ class Experimentation extends React.Component {
     }
 }
 
-
+//Create Row generates row for source table
 class CreateRow extends React.Component {
     render() {
         const t = this.props.r;
@@ -496,6 +507,7 @@ class CreateRow extends React.Component {
     }
 
 }
+//SourceTable generates source table
 class SourceTable extends React.Component {
     render() {
         const rows = this.props.data.map(row => <CreateRow r={row} />);
@@ -518,6 +530,7 @@ class SourceTable extends React.Component {
     }
 
 }
+// calls sourcetable
 class Sourcecode extends React.Component {
 
     constructor() {
@@ -625,6 +638,8 @@ class Sourcecode extends React.Component {
     }
 
 }
+
+// Class for sending requests to user. 
 class Adding_Members extends React.Component {
     constructor() {
         super();
@@ -638,7 +653,7 @@ class Adding_Members extends React.Component {
         e.preventDefault();
         const form = document.forms.add_user;
 
-        alert("inside handler");
+        //alert("inside handler");
 
         const field = {
             name: form.user_id.value, role: form.user_role.value, projectID: form.project_id.value,
@@ -647,7 +662,7 @@ class Adding_Members extends React.Component {
 
         const projectID = String(field.projectID);
 
-        alert(projectID);
+        //alert(projectID);
 
         /*
         const get_project_from_ID = `query getProjectDetailsFromProjectID($projectID : String!)
@@ -661,12 +676,14 @@ class Adding_Members extends React.Component {
             }
         }`;
         */
+        var flag = 0;
         const query = `query getProjectDetailsFromProjectID($projectID: String!)
         {
             getProjectDetailsFromProjectID(projectID : $projectID)
             {
                 name
                 desc
+                owner
             }
         }`;
 
@@ -679,17 +696,44 @@ class Adding_Members extends React.Component {
 
         const body = await response.text();
         const result = JSON.parse(body);
+        console.log("in try");
+        console.log(result);
 
-        field.projectName = result.data.getProjectDetailsFromProjectID[0].name;
-        field.desc = result.data.getProjectDetailsFromProjectID[0].desc;
+        if (result.data.getProjectDetailsFromProjectID.length == 0) {
+            flag = 1;
+            alert("Invalid Project Key");
+        }
 
 
-        this.props.createUserReq(field);
-        // alert("field designed");
-        form.user_id.value = "";
-        form.user_role.value = "";
-        form.project_id.value = "";
+        console.log("in else statemebt");
+        //console.log(result.data.getProjectDetailsFromProjectID[0].owner);
 
+        if (flag == 0) {
+            if (result.data.getProjectDetailsFromProjectID.length > 0) { // checks if project key is correct
+                if (result.data.getProjectDetailsFromProjectID[0].owner != activeuser) { // allows user to only add his/her projects
+                    alert("Insufficent Priviliges");
+                }
+                else {
+                    field.projectName = result.data.getProjectDetailsFromProjectID[0].name;
+                    field.desc = result.data.getProjectDetailsFromProjectID[0].desc;
+                    this.props.createUserReq(field);
+                    // alert("field designed");
+                    form.user_id.value = "";
+                    form.user_role.value = "";
+                    form.project_id.value = "";
+                }
+
+            }
+            else {
+                alert("Invalid Project Key , retry");
+            }
+        }
+        else {
+            form.user_id.value = "";
+            form.user_role.value = "";
+            form.project_id.value = "";
+
+        }
     }
     goback() {
         this.setState({ d: '2' });
@@ -740,6 +784,8 @@ class Adding_Members extends React.Component {
         );
     }
 }
+
+//Updating link to paper draft
 class PaperDraft extends React.Component {
     constructor() {
         super();
@@ -797,7 +843,6 @@ class PaperDraft extends React.Component {
     }
 }
 
-
 class PaperDiv extends React.Component {
     render() {
         const t = this.props.data;
@@ -815,6 +860,7 @@ class PaperDiv extends React.Component {
     }
 
 }
+//Displays the paper 
 class DispPaper extends React.Component {
     render() {
         const arr = this.props.data.map(d => <PaperDiv data={d} />);
@@ -822,6 +868,8 @@ class DispPaper extends React.Component {
     }
 
 }
+
+//PaperSub maintains the submissions for each project
 class PaperSub extends React.Component {
     constructor() {
         super();
@@ -922,6 +970,8 @@ class PaperSub extends React.Component {
     }
 
 }
+
+//ScheduleRow generates rows for ScheudleTable
 class ScheduleRow extends React.Component {
     render() {
         const t = this.props.data;
@@ -937,6 +987,7 @@ class ScheduleRow extends React.Component {
         );
     }
 }
+//ScheduleTable generates rows for ScheudleTable
 class ScheduleTable extends React.Component {
     render() {
         const arr = this.props.data.map(r => <ScheduleRow data={r} />);
@@ -962,6 +1013,8 @@ class ScheduleTable extends React.Component {
     }
 
 }
+
+// Maintains the tasks for each user
 class Scheduling extends React.Component {
     constructor() {
         super();
@@ -1076,6 +1129,7 @@ class Scheduling extends React.Component {
 
 }
 
+// Chat version for adding comments
 class AddComment extends React.Component {
     render() {
         const handleSubmit = (e) => {
@@ -1098,7 +1152,7 @@ class AddComment extends React.Component {
     }
 }
 
-
+//invokes AddComment to display
 class Comments extends React.Component {
     constructor() {
         super();
@@ -1161,6 +1215,7 @@ class Comments extends React.Component {
     }
 }
 
+//creates rows for displaying memebers part of the project
 class Member_row extends React.Component {
     render() {
 
@@ -1175,6 +1230,7 @@ class Member_row extends React.Component {
     }
 }
 
+//creates table for displaying memebers part of the project
 class Member_table extends React.Component {
     render() {
         const arr = this.props.a.map(r => <Member_row data={r} />);
@@ -1196,6 +1252,7 @@ class Member_table extends React.Component {
     }
 
 }
+
 class DispMembers extends React.Component {
     constructor() {
         super();
@@ -1262,6 +1319,7 @@ class DispMembers extends React.Component {
 
 }
 
+//Wrapper to switch between tabs of the project
 class GenericDiv extends React.Component {
 
     constructor() {
@@ -1367,6 +1425,7 @@ class GenericDiv extends React.Component {
     }
 }
 
+//To create a new prject- renders a form and pushes to database
 class CreateProject extends React.Component {
     constructor() {
         super();
@@ -1457,6 +1516,7 @@ class CreateProject extends React.Component {
         );
     }
 }
+
 class Temp_display extends React.Component {
     constructor() {
         super();
@@ -1499,6 +1559,8 @@ class Temp_display extends React.Component {
         );
     }
 }
+
+//Displays the projects of a user in View My projects screen on the dashboard
 class Projects_Display extends React.Component {
     constructor() {
         super();
@@ -1606,6 +1668,9 @@ class My_Projects extends React.Component {
 
     }
 }
+
+
+//create div element for requests pending
 class CreateDiv extends React.Component {
     constructor() {
         super();
@@ -1626,7 +1691,7 @@ class CreateDiv extends React.Component {
         // alert(this.state.val.projectName);
         const t = this.props.data;
 
-        alert(activeuser);
+
         const field = {
             name: activeuser,
             role: t.role,
@@ -1656,7 +1721,6 @@ class CreateDiv extends React.Component {
     }
 
     async handleReject() {
-        alert("in reject");
         const t = this.props.data;
 
         const field = {
@@ -1716,6 +1780,8 @@ class CreateDiv extends React.Component {
         );
     }
 }
+
+//generate requests
 class RequestDiv extends React.Component {
     render() {
         const t = this.props.data;
@@ -1732,6 +1798,7 @@ class RequestDiv extends React.Component {
     }
 
 }
+// View respective request that a user recieves 
 class ViewRequests extends React.Component {
     constructor() {
         super();
@@ -1772,6 +1839,7 @@ class ViewRequests extends React.Component {
     }
 }
 
+// Main Dashboard 
 class Dashboard extends React.Component {
 
     constructor() {
@@ -1872,19 +1940,33 @@ class Dashboard extends React.Component {
     async addproject(field) {
 
 
-        const query = `mutation addProjectDetails($field: ProjectData!) {
+        const query = `query getProjectDetailsFromProjectID($projectID : String!)
+        {
+            getProjectDetailsFromProjectID(projectID : $projectID)
+            {
+                projectID
+            }
+        }`;
+
+        const projectID = field.projectID;
+        const user_data = await graphQLFetch(query, { projectID });
+        if (user_data.getProjectDetailsFromProjectID.length > 0) {
+            alert("Prokect Key Taken , choose another Key");
+        }
+        else {
+            const query = `mutation addProjectDetails($field: ProjectData!) {
                     addProjectDetails(field : $field)
                 {
                     name
                 }
         }`;
 
-        const response = await fetch('http://localhost:5000/graphql', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query, variables: { field } })
-        });
-
+            const response = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query, variables: { field } })
+            });
+        }
 
         /*
         const l = this.state.data.length + 1;
@@ -1899,19 +1981,34 @@ class Dashboard extends React.Component {
 
     }
     async createUserReq(field) {
-        const query = `mutation addNewRequests($field: Requests!){
+
+        const users_query = `query getExistingUsers($username: String!){
+            getExistingUsers(username: $username) {
+                username
+            }
+        }`;
+
+        const username = field.name;
+        const user_data = await graphQLFetch(users_query, { username });
+
+        if (user_data.getExistingUsers.length == 0) {
+            alert("User doesn't Exist , kindly retry");
+        }
+
+        else {
+            const query = `mutation addNewRequests($field: Requests!){
                     addNewRequests(field : $field)
                 {
                     name
                 }
-        }`;
+                }`;
 
-        const response = await fetch('http://localhost:5000/graphql', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query, variables: { field } })
-        });
-
+            const response = await fetch('http://localhost:5000/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query, variables: { field } })
+            });
+        }
     }
 
     render() {
@@ -1959,7 +2056,7 @@ class Dashboard extends React.Component {
 }
 
 
-
+//Wrapper for calling genericdiv
 class DisplayTabs extends React.Component {
     constructor() {
         super();
@@ -2177,6 +2274,8 @@ class DisplayTabs extends React.Component {
         );
     }
 }
+
+//Main Display
 class RenderProjectDetailsPage extends React.Component {
     constructor() {
         super();
@@ -2190,7 +2289,7 @@ class RenderProjectDetailsPage extends React.Component {
                     this.state.d == '1' &&
                     <div>
                         {/* <DisplayHeader /> */}
-                        <p>Hi {activeuser}!</p>
+                        <h4>Hi {activeuser}!</h4>
                         <Dashboard data={this.state.data} />
                     </div>
                 }

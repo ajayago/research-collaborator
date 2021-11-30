@@ -293,7 +293,8 @@ var DisplayUserCreationForm = /*#__PURE__*/function (_React$Component2) {
 
                 this.setState({
                   errormessage: "Please enter valid user name!"
-                });
+                }); //check for ID
+
                 return _context2.abrupt("return");
 
               case 3:
@@ -304,7 +305,8 @@ var DisplayUserCreationForm = /*#__PURE__*/function (_React$Component2) {
 
                 this.setState({
                   errormessage: "Please enter valid password!"
-                });
+                }); //check for password
+
                 return _context2.abrupt("return");
 
               case 6:
@@ -323,6 +325,7 @@ var DisplayUserCreationForm = /*#__PURE__*/function (_React$Component2) {
                   break;
                 }
 
+                // check if user already exists
                 this.setState({
                   errormessage: "User name already in use!"
                 });
